@@ -16,8 +16,8 @@ export default function Login() {
           <input
             type="email"
             placeholder="Email"
-            className="appearance-none rounded-lg border border-[#FFF9F9] bg-[rgba(62,60,60,0.5)] sansita-regular text-[#E0E0E0] p-3 pl-10 pr-10 w-full 
-              hover:bg-[rgba(62,60,60,0.5)] hover:border-2 hover:border-[#5E3CF6] transition duration-300"
+            className="appearance-none rounded-lg bg-[rgba(62,60,60,0.5)] sansita-regular text-[#E0E0E0] p-3 pl-10 pr-10 w-full 
+              border-2 border-transparent transition duration-300 hover:border-[#5E3CF6] focus:border-[#5E3CF6] focus:outline-none"
           />
           <img
             src={emailIcon}
@@ -27,12 +27,12 @@ export default function Login() {
         </div>
       
         {/* Password Input */}
-        <div className="relative mb-8 w-full">
+        <div className="relative mb-5 w-full">
           <input
             type="password"
             placeholder="Password"
-            className="appearance-none rounded-lg border border-[#FFF9F9] bg-[rgba(62,60,60,0.5)] sansita-regular text-[#E0E0E0] p-3 pl-10 pr-10 w-full 
-              hover:bg-[rgba(62,60,60,0.5)] hover:border-2 hover:border-[#5E3CF6] transition duration-300"
+            className="appearance-none rounded-lg bg-[rgba(62,60,60,0.5)] sansita-regular text-[#E0E0E0] p-3 pl-10 pr-10 w-full 
+              border-2 border-transparent transition duration-300 hover:border-[#5E3CF6] focus:border-[#5E3CF6] focus:outline-none"
           />
           <img
             src={lockIcon}
@@ -51,14 +51,14 @@ export default function Login() {
         
         {/* Login Button */}
         <button
-          className="sansita-regular text-white bold bg-[#398bc5] border-none p-3 rounded-lg w-full 
-            hover:scale-105 transform transition duration-300"
+          className="sansita-regular text-white bg-[#398bc5] border-none p-3 rounded-lg w-full 
+            hover:bg-[#30699f] transition duration-300 hover:scale-105"
         >
           Login
         </button>
 
         {/* SSO Section */}
-        <div className="mt-8">
+        <div className="mt-4">
           <h2 className="text-[#FFF9F9] text-lg text-center mb-4">Or</h2>
           <div className="flex justify-around items-center">
             <button className="flex items-center justify-center text-[#DB4437] bg-slate-100 rounded-lg px-4 py-2 transition duration-300 hover:scale-105">
@@ -76,4 +76,3 @@ export default function Login() {
     </div>
   );
 }
-
