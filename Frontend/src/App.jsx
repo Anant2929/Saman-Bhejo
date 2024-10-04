@@ -1,9 +1,24 @@
-import React from 'react'
-import Home from './pages/Home'
+import React from 'react';
+import Left from './pages/Left'; // Adjust path if needed
+import Right from './pages/right/Right'; // Adjust path if needed
+import bgImage from './assets/Saman bhejo.jpg'; // Adjust path if needed
 
 export default function App() {
   return (
-    <Home/>
-  )
+    <div
+      className="h-screen w-screen p-0 border-black flex"
+      style={{
+        backgroundImage: `url(${bgImage})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
+      <div className="w-[50%] h-full">
+        <Left />
+      </div>
+      <div className="w-[50%] h-full">
+        <Right />
+      </div>
+    </div>
+  );
 }
-
