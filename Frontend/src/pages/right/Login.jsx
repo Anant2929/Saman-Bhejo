@@ -27,7 +27,7 @@ export default function Login() {
     setErrors({});
 
     try {
-      const res = await axios.post('http://localhost:5000/user/login', { email, password });
+      const res = await axios.post('/api/user/login', { email, password });
       console.log("Login successful:", res.data);
 
       // Clear input fields and set login state

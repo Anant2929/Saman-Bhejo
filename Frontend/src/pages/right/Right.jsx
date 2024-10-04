@@ -8,8 +8,8 @@ export default function Right() {
 
   return (
     <div className="flex justify-center items-center w-full h-full">
-      {/* {userLogin ? <Login /> : <Signup />} */}
-      <Login/>
+      {userLogin ? <Login /> : <Signup />}
+      
     </div>
   );
 }
