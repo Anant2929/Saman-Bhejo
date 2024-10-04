@@ -1,10 +1,10 @@
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-dotenv.config();
+const { connect } = require('mongoose');
+const { config } =  require('dotenv');
+config();
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URI, {
+    await connect(process.env.MONGODB_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
@@ -16,3 +16,4 @@ const connectDB = async () => {
 };
 
 module.exports = connectDB;
+

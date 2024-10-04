@@ -1,7 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
-const userRoutes = require("./routes/User.route"); // Corrected import path
+const userRoutes = require("./routes/UserRoute"); // Corrected import path
 const session = require("express-session")
 const cors = require('cors');
 
