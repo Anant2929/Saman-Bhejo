@@ -4,9 +4,12 @@ import lockIcon from "../../assets/lock_icon.svg";
 import emailIcon from "../../assets/email_icon.svg";
 import axios from "axios";
 import { useUserLogin } from '../../context/userLoginContext';
+import { useMessage } from '../../context/MessageContext';  // Import the message context
 
 export default function Login() {
   const { setUserLogin } = useUserLogin();
+  const { setTimedMessage } = useMessage();  // Use the message context to display messages
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
@@ -29,7 +32,9 @@ export default function Login() {
     try {
       const res = await axios.post('/api/user/login', { email, password });
       console.log("Login successful:", res.data);
-      alert(res.data.message)
+
+      // Display success message
+      setTimedMessage(res.data.message, "success");
 
       // Clear input fields and set login state
       setEmail("");
@@ -38,6 +43,9 @@ export default function Login() {
     } catch (error) {
       const errorMsg = error.response?.data.message || "Login failed";
       setErrors({ general: errorMsg });
+
+      // Display error message
+      setTimedMessage(errorMsg, "error");
       console.error("Login failed:", error);
     }
   };
@@ -56,8 +64,7 @@ export default function Login() {
     <div className="flex items-center justify-center h-full w-full p-4 sm:p-8 lg:p-12 montserrat-regular">
       <form 
         onSubmit={handleSubmit} 
-        className="p-6 sm:p-8 lg:p-10 rounded-lg shadow-lg w-full max-w-md
-              "
+        className="p-6 sm:p-8 lg:p-10 rounded-lg shadow-lg w-full max-w-md"
       >
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#FFF9F9] mb-8 text-center">
           Login to your Account
