@@ -13,7 +13,7 @@ export default {
       keyframes: {
         typing: {
           '0%': { width: '0%' },
-          '100%': { width: '87%' },
+          '100%': { width: '76%' },
         },
         'blink-caret': {
           'from, to': { borderColor: 'transparent' },
