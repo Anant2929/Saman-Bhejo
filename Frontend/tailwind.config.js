@@ -20,7 +20,7 @@ export default {
           '50%': { borderColor: '#FFF9F9' },
         },
       },
-    },
+    }, 
   },
   plugins: [],
 }
