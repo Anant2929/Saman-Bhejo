@@ -1,6 +1,6 @@
-import React, { useState } from "react"; 
+import React, { useState } from "react";
 import "../../App.css";
-import emailIcon from "../../assets/email_icon.svg"; 
+import emailIcon from "../../assets/email_icon.svg";
 import lockIcon from "../../assets/lock_icon.svg";
 import callIcon from "../../assets/call_icon.svg";
 import personIcon from "../../assets/person_icon.svg";
@@ -49,13 +49,10 @@ export default function SignUp() {
     console.log("Form submitted:", formData);
     try {
       const res = await axios.post("/api/user/signup", formData);
-      
-      console.log(res.data);
       console.log(res.data.message);
 
-      // Set user login to true after a successful signup (201 response)
-      if (res.status === 201) { // Check for 201 status code
-        setUserLogin(true); 
+      if (res.status === 201) {
+        setUserLogin(true);
       }
     } catch (error) {
       console.error(error);
@@ -63,13 +60,13 @@ export default function SignUp() {
   };
 
   const handleLoginClick = () => {
-    setUserLogin(true); // Set user login to true when clicking the login link
+    setUserLogin(true);
   };
 
   return (
-    <div className="flex fixed items-center justify-center h-full w-full">
-      <form onSubmit={handleSubmit} className="p-8 rounded-lg shadow-lg w-full max-w-md min-w-[300px]">
-        <h1 className="sansita-regular text-2xl font-bold text-[#FFF9F9] mb-8 text-center">
+    <div className="flex items-center justify-center h-full w-full p-4 sm:p-8 lg:p-12">
+      <form onSubmit={handleSubmit} className=" p-6 sm:p-8 lg:p-10 rounded-lg shadow-lg w-full max-w-md">
+        <h1 className="sansita-regular text-2xl sm:text-3xl lg:text-4xl font-bold text-[#FFF9F9] mb-8 text-center">
           Create New Account
         </h1>
 
@@ -81,7 +78,7 @@ export default function SignUp() {
             name="name"
             value={formData.name}
             onChange={handleChange}
-            className="appearance-none rounded-lg bg-[rgba(62,60,60,0.5)] sansita-regular text-[#E0E0E0] p-3 pl-10 pr-10 w-full 
+            className="appearance-none rounded-lg bg-[rgba(62,60,60,0.5)] text-[#E0E0E0] p-3 pl-10 pr-10 w-full
               border-2 border-transparent transition duration-300 hover:border-[#5E3CF6] focus:border-[#5E3CF6] focus:outline-none"
           />
           <img
@@ -100,7 +97,7 @@ export default function SignUp() {
             name="email"
             value={formData.email}
             onChange={handleChange}
-            className="appearance-none rounded-lg bg-[rgba(62,60,60,0.5)] sansita-regular text-[#E0E0E0] p-3 pl-10 pr-10 w-full 
+            className="appearance-none rounded-lg bg-[rgba(62,60,60,0.5)] text-[#E0E0E0] p-3 pl-10 pr-10 w-full
               border-2 border-transparent transition duration-300 hover:border-[#5E3CF6] focus:border-[#5E3CF6] focus:outline-none"
           />
           <img
@@ -119,7 +116,7 @@ export default function SignUp() {
             name="password"
             value={formData.password}
             onChange={handleChange}
-            className="appearance-none rounded-lg bg-[rgba(62,60,60,0.5)] sansita-regular text-[#E0E0E0] p-3 pl-10 pr-10 w-full 
+            className="appearance-none rounded-lg bg-[rgba(62,60,60,0.5)] text-[#E0E0E0] p-3 pl-10 pr-10 w-full
               border-2 border-transparent transition duration-300 hover:border-[#5E3CF6] focus:border-[#5E3CF6] focus:outline-none"
           />
           <img
@@ -138,7 +135,7 @@ export default function SignUp() {
             name="contactNumber"
             value={formData.contactNumber}
             onChange={handleChange}
-            className="appearance-none rounded-lg bg-[rgba(62,60,60,0.5)] sansita-regular text-[#E0E0E0] p-3 pl-10 pr-10 w-full 
+            className="appearance-none rounded-lg bg-[rgba(62,60,60,0.5)] text-[#E0E0E0] p-3 pl-10 pr-10 w-full
               border-2 border-transparent transition duration-300 hover:border-[#5E3CF6] focus:border-[#5E3CF6] focus:outline-none"
           />
           <img
@@ -150,17 +147,17 @@ export default function SignUp() {
         </div>
 
         {/* Login Link */}
-        <span className="sansita-regular text-[#FFF9F9] font-normal mb-6 block">
-          Already a user? 
-          <a href="#" onClick={handleLoginClick} className="text-[#2d9be9] ml-2 text-lg font-normal">
+        <span className="text-[#FFF9F9] block text-center mb-6">
+          Already a user?
+          <a href="#" onClick={handleLoginClick} className="text-[#2d9be9] ml-2 text-lg">
             Login
           </a>
         </span>
 
         {/* Signup Button */}
         <button
-          type="submit" // Ensure the button type is "submit"
-          className="sansita-regular text-white bg-[#398bc5] p-3 rounded-lg w-full 
+          type="submit"
+          className="text-white bg-[#398bc5] p-3 rounded-lg w-full 
             hover:bg-[#30699f] transition duration-300 hover:scale-105"
         >
           Sign Up
@@ -169,3 +166,4 @@ export default function SignUp() {
     </div>
   );
 }
+

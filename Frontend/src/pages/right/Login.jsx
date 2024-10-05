@@ -52,10 +52,10 @@ export default function Login() {
   };
 
   return (
-    <div className="flex items-center justify-center h-full">
-      <div className="p-8 rounded-lg shadow-lg w-full max-w-lg min-w-[400px]">
+    <div className="flex items-center justify-center h-full min-h-screen p-4">
+      <div className="p-8 rounded-lg shadow-lg w-full max-w-sm">
         <form onSubmit={handleSubmit}>
-          <h1 className="sansita-regular text-2xl font-bold text-[#FFF9F9] mb-8 text-center">
+          <h1 className="sansita-regular text-2xl md:text-3xl font-bold text-white mb-8 text-center">
             Login to your Account
           </h1>
 
@@ -67,6 +67,7 @@ export default function Login() {
             onChange={setEmail}
             icon={emailIcon}
             errorMessage={errors.email}
+           
           />
 
           {/* Password Input */}
@@ -80,12 +81,12 @@ export default function Login() {
           />
 
           {/* General Error Message */}
-          {errors.general && <span className="text-red-500 text-sm">{errors.general}</span>}
+          {errors.general && <span className="text-red-500 text-sm block mb-4">{errors.general}</span>}
 
           {/* Signup link */}
-          <span className="sansita-regular text-[#FFF9F9] font-semibold mb-6 block">
-            New user?
-            <a href="#" onClick={handleSignUpClick} className="text-[#2d9be9] ml-2 font-semibold text-lg">
+          <span className="sansita-regular text-white font-semibold mb-6 block text-center">
+            New user? 
+            <a href="#" onClick={handleSignUpClick} className="text-blue-400 ml-2 font-semibold text-lg">
               Signup
             </a>
           </span>
@@ -93,18 +94,21 @@ export default function Login() {
           {/* Login Button */}
           <button
             type="submit"
-            className="sansita-regular text-white bg-[#398bc5] border-none p-3 rounded-lg w-full 
-              hover:bg-[#30699f] transition duration-300 hover:scale-105 font-semibold"
+            className="sansita-regular text-white bg-blue-500 border-none p-3 rounded-lg w-full 
+              hover:bg-blue-600 transition duration-300 hover:scale-105 font-semibold"
           >
             Login
           </button>
 
           {/* SSO Section */}
-          <div className="mt-4">
-            <h2 className="text-[#FFF9F9] text-lg text-center mb-4 font-semibold">Or</h2>
-            <div className="flex justify-around items-center">
-              <button className="flex items-center justify-center text-[#DB4437] bg-slate-100 rounded-lg px-4 py-2 transition duration-300 hover:scale-105" onClick={googleLogin}>
-                <span className="mr-2 sansita-regular text-[#070707] font-semibold">Continue with </span>
+          <div className="mt-6">
+            <h2 className="text-white text-lg text-center mb-4 font-semibold">Or</h2>
+            <div className="flex justify-center">
+              <button
+                className="flex items-center justify-center text-gray-900 bg-white rounded-lg px-6 py-2 transition duration-300 hover:scale-105"
+                onClick={googleLogin}
+              >
+                <span className="mr-2 sansita-regular font-semibold">Continue with</span>
                 <GoogleIcon />
               </button>
             </div>
@@ -123,8 +127,8 @@ const InputField = ({ type, placeholder, value, onChange, icon, errorMessage }) 
       placeholder={placeholder}
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="appearance-none rounded-lg bg-[rgba(62,60,60,0.5)] sansita-regular text-[#E0E0E0] p-3 pl-10 pr-10 w-full 
-        border-2 border-transparent transition duration-300 hover:border-[#5E3CF6] focus:border-[#5E3CF6] focus:outline-none"
+      className="appearance-none rounded-lg bg-gray-700 text-white p-3 pl-10 pr-10 w-full
+        border-2 border-transparent transition duration-300 hover:border-purple-500 focus:border-purple-500 focus:outline-none"
     />
     <img src={icon} alt={`${placeholder} Icon`} className="absolute left-3 top-1/2 transform -translate-y-1/2 w-6 h-6" />
     {errorMessage && <span className="text-red-500 text-sm">{errorMessage}</span>}
