@@ -26,4 +26,8 @@ export const MessageProvider = ({ children }) => {
       {children}
     </MessageContext.Provider>
   );
+<<<<<<< HEAD
 };
+=======
+};
+>>>>>>> 1c997bcfce9b93580773305c9da536ac3014f685
