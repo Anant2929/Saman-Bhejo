@@ -33,7 +33,7 @@ const signup = async (req, res) => {
     httpOnly: true, // Cookie is accessible only by the web server, helps with security
     secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
     sameSite: 'strict', // Helps with CSRF protection
-    maxAge: 3600000 // Token expiry time in milliseconds (1 hour in this case)
+    // Token expiry time in milliseconds (1 hour in this case)
 });
     // Send a response indicating successful signup
     return res.status(201).json({ message: "User created successfully" }); // Changed to 201 for created resource

@@ -23,7 +23,7 @@ router.get('/google', passport.authenticate('google',{
 // Google OAuth Callback Route
 router.get('/login/google',
 passport.authenticate('google',{
-  successRedirect:'/',
+  successRedirect:'http://localhost:3000/home',
   failureRedirect:'/login'
 })
 );
