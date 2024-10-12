@@ -5,18 +5,15 @@ import emailIcon from "../../assets/images/email_icon.svg";
 import axios from "axios";
 import { useUserLogin } from '../../context/userLoginContext';
 import { useMessage } from '../../context/MessageContext';  // Import the message context
-<<<<<<< HEAD:Frontend/src/pages/Auth/Login.jsx
+
 import { useNavigate } from 'react-router-dom';  // Import useNavigate
-=======
->>>>>>> 1c997bcfce9b93580773305c9da536ac3014f685:Frontend/src/pages/right/Login.jsx
 
 export default function Login() {
   const { setUserLogin } = useUserLogin();
   const { setTimedMessage } = useMessage();  // Use the message context to display messages
-<<<<<<< HEAD:Frontend/src/pages/Auth/Login.jsx
+
   const navigate = useNavigate();  // Initialize navigate
-=======
->>>>>>> 1c997bcfce9b93580773305c9da536ac3014f685:Frontend/src/pages/right/Login.jsx
+
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
