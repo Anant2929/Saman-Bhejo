@@ -13,7 +13,7 @@ const generateToken = (user) => {
 
 
 const verifyToken = (req, res, next) => {
-  ;const token = req.cookies.token; // Retrieve the token from request headers
+  const token = req.cookies.token; // Retrieve the token from request headers
 
   if (!token) {
     return res.status(403).json({ message: "Token is required" });
@@ -27,7 +27,6 @@ const verifyToken = (req, res, next) => {
     return res.status(401).json({ message: "Invalid Token" });
   }
 };
-
 
 
 module.exports = {

@@ -1,7 +1,7 @@
 const user = require("../models/UserModel.js");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
-const { generateToken } = require("../utils/jwtutils.js");
+const { generateToken, verifyToken } = require("../utils/jwtutils.js");
 const signup = async (req, res) => {
   let { email, password, name, contactNumber } = req.body;
 
@@ -74,4 +74,22 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { signup, login };
+
+const logout = (req, res, next) => {
+  // Verify the token first
+  const verify = verifyToken(req, res, next);
+  if (!verify) {
+    return res.status(401).json({ message: "Unauthorized. Token is invalid." });
+  }
+
+  // Clear the cookie where the token is stored
+  res.clearCookie('token'); // Assuming your cookie is named 'token'
+
+  // Optionally: If you have a blacklist implementation, add the token to it here
+  // For example: blacklist.push(req.cookies.token);
+
+  return res.status(200).json({ message: "Logout successful" });
+};
+
+
+module.exports = { signup, login,logout };
