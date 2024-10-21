@@ -32,10 +32,10 @@ import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Layout from "../Layouts/Layout";
 import Home from "../home/Home.jsx";
-import { useAuth } from '../../context/AuthContext.jsx';
+import Cookies from "js-cookie"
 
 export default function AppRoutes() {
-  const { token } = useAuth();  // Get the token from AuthContext
+  const { token } = Cookies.get('token');  // Get the token from AuthContext
   console.log("Token in AppRoutes: ", token);
 
   return (

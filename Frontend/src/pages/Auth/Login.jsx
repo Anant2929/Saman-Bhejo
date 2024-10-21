@@ -164,12 +164,10 @@ import axios from "axios";
 import { useUserLogin } from '../../context/userLoginContext';
 import { useMessage } from '../../context/MessageContext';  // Import the message context
 import { useNavigate } from 'react-router-dom';  // Import useNavigate
-import { useAuth } from '../../context/AuthContext'; // Import AuthContext
 
 export default function Login() {
   const { setUserLogin } = useUserLogin();
   const { setTimedMessage } = useMessage();  // Use the message context to display messages
-  const { updateToken } = useAuth(); // Get updateToken from AuthContext
   const navigate = useNavigate();  // Initialize navigate
 
   const [email, setEmail] = useState("");

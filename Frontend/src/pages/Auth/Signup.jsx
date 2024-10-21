@@ -8,14 +8,12 @@ import axios from "axios";
 import { useUserLogin } from '../../context/userLoginContext';
 import { useMessage } from '../../context/MessageContext';  
 import { useNavigate } from "react-router-dom"; 
-import { useAuth } from '../../context/AuthContext'; // Import AuthContext
 
 export default function SignUp() {
   
   const { setUserLogin } = useUserLogin();
   const { setTimedMessage } = useMessage();
   const navigate = useNavigate();
-  const { updateToken } = useAuth(); // Get updateToken from AuthContext
 
   const [formData, setFormData] = useState({
     name: "",
@@ -55,13 +53,6 @@ export default function SignUp() {
   
     try {
       const res = await axios.post("/api/user/signup", formData);
-      
-      // Check if token exists in the response and update it in context
-      if (res.data.token) {
-        updateToken(res.data.token); // Use updateToken to set the token
-      } else {
-        console.log("Token was not returned from the backend."); // Handle the absence of token
-      }
   
       setTimedMessage(res.data.message, "success");
       navigate("/home");

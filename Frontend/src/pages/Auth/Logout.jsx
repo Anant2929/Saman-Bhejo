@@ -33,10 +33,8 @@
 import React from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom"; // For navigation
-import { useAuth } from "../../context/AuthContext"; // Import AuthContext
 
 export default function Logout() {
-  const { clearToken } = useAuth(); // Get clearToken function from AuthContext
   const navigate = useNavigate(); // Use navigate to redirect
 
   const handleClick = async () => {
@@ -45,8 +43,6 @@ export default function Logout() {
       const response = await axios.post('/api/user/logout', {}, { withCredentials: true });
       console.log(response.data.message); // Log success message
 
-      // Clear token from context
-      clearToken();
 
       // Redirect to login page
       navigate("/user/login"); // Adjust the path if needed
