@@ -2,13 +2,16 @@ import React from "react";
 import AppRoutes from "./pages/routes/AppRoutes";
 import { UserLoginProvider } from "./context/userLoginContext";
 import { MessageProvider, useMessage } from "./context/MessageContext";
+import { AuthProvider } from "./context/AuthContext";
 
 export default function App() {
   return (
     <div>
       <UserLoginProvider>
         <MessageProvider>
-          <AppRoutes />
+          <AuthProvider>
+            <AppRoutes />
+          </AuthProvider>
           <AlertMessage />
         </MessageProvider>
       </UserLoginProvider>

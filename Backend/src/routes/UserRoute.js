@@ -23,10 +23,15 @@ router.get('/google', passport.authenticate('google',{
 
 // Google OAuth Callback Route
 router.get('/login/google',
-passport.authenticate('google',{
-  successRedirect:'http://localhost:3000/home',
-  failureRedirect:'/login'
-})
+  passport.authenticate('google', {
+    failureRedirect: '/signup', // Redirect to signup if user does not exist
+  }),
+  (req, res) => {
+    const { user, token } = req.user; 
+    res.cookie('token', token);
+    // If successful authentication, redirect to home
+    res.redirect('http://localhost:3000/home'); // Redirect to home if user exists
+  }
 );
 router.get('/dashboard');
 module.exports = router;

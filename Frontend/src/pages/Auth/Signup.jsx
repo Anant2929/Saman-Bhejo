@@ -7,12 +7,15 @@ import personIcon from "../../assets/images/person_icon.svg";
 import axios from "axios";
 import { useUserLogin } from '../../context/userLoginContext';
 import { useMessage } from '../../context/MessageContext';  
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom"; 
+import { useAuth } from '../../context/AuthContext'; // Import AuthContext
 
 export default function SignUp() {
+  
   const { setUserLogin } = useUserLogin();
-  const { setTimedMessage } = useMessage();  // Use setTimedMessage from context
-  const navigate = useNavigate(); // Create navigate function
+  const { setTimedMessage } = useMessage();
+  const navigate = useNavigate();
+  const { updateToken } = useAuth(); // Get updateToken from AuthContext
 
   const [formData, setFormData] = useState({
     name: "",
@@ -22,6 +25,7 @@ export default function SignUp() {
   });
 
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false); // Loading state
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -33,36 +37,45 @@ export default function SignUp() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Validate form fields
     const newErrors = {};
+  
+    // Validate inputs
     if (!formData.name) newErrors.name = "This field is required.";
     if (!formData.email) newErrors.email = "This field is required.";
     if (!formData.password) newErrors.password = "This field is required.";
     if (!formData.contactNumber) newErrors.contactNumber = "This field is required.";
-
+  
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-
-    // Reset errors
+  
     setErrors({});
-
-    // Submit form
+    setLoading(true);
+  
     try {
       const res = await axios.post("/api/user/signup", formData);
-      setTimedMessage(res.data.message, "success");  // Set the success message with timeout
-      setUserLogin(true);
-      navigate("/home"); // Navigate to home after successful signup
+      
+      // Check if token exists in the response and update it in context
+      if (res.data.token) {
+        updateToken(res.data.token); // Use updateToken to set the token
+      } else {
+        console.log("Token was not returned from the backend."); // Handle the absence of token
+      }
+  
+      setTimedMessage(res.data.message, "success");
+      navigate("/home");
     } catch (error) {
       if (error.response && error.response.data.message) {
-        setTimedMessage(error.response.data.message, "error");  // Set the error message with timeout
+        setTimedMessage(error.response.data.message, "error");
       } else {
         setTimedMessage("An unexpected error occurred during signup.", "error");
       }
+    } finally {
+      setLoading(false);
     }
   };
+  
 
   return (
     <div className="flex items-center justify-center h-full w-full p-3 sm:p-8 lg:p-12">
@@ -162,12 +175,14 @@ export default function SignUp() {
         {/* Signup Button */}
         <button
           type="submit"
+          disabled={loading}
           className="montserrat-regular text-white bg-[#398bc5] p-3 rounded-lg w-full 
             hover:bg-[#30699f] transition duration-300 hover:scale-105 font-semibold "
         >
-          Sign Up
+          {loading ? "Signing Up..." : "Sign Up"}
         </button>
       </form>
     </div>
   );
 }
+

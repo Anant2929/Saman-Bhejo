@@ -2,6 +2,7 @@ const user = require("../models/UserModel.js");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const dotenv = require("dotenv");
+const generateToken = require("../utils/jwtutils.js")
 
 dotenv.config();
 
@@ -32,9 +33,10 @@ passport.use(
       try {
         let userexist = await user.findOne({ email: profile.emails[0].value });
         if (!userexist) {
-          return done(null, false,{ message: "User logged in successfully" });
+          return done(null, false, { message: "User does not exist, please sign up." });
         }
-        return done(null,userexist);
+        const token = generateToken(userexist);
+        return done(null, { user: userexist, token }); 
       } catch (error) {
         console.error("Error in login:", error);
         return done(error,null);

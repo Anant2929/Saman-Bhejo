@@ -1,26 +1,26 @@
-const jwt = require('jsonwebtoken');
-const dotenv = require('dotenv');
+const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv");
 dotenv.config();
 
 const generateToken = (user) => {
   // Use user ID and email or other essential details as payload
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, 
-  
-  );
+  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
   return token;
 };
 
-
-
 const verifyToken = (req, res, next) => {
+  console.log("Entry in verify token for logout");
   const token = req.cookies.token; // Retrieve the token from request headers
 
   if (!token) {
     return res.status(403).json({ message: "Token is required" });
   }
 
+  console.log("token for logout: " , token) ;
+
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET); // Verify the token
+    console.log("Decoded : " , decoded);
     req.user = decoded; // Store user information in request
     next(); // Pass control to the next middleware or route handler
   } catch (error) {
@@ -28,9 +28,7 @@ const verifyToken = (req, res, next) => {
   }
 };
 
-
 module.exports = {
-    generateToken,
-    verifyToken
-   
+  generateToken,
+  verifyToken,
 };

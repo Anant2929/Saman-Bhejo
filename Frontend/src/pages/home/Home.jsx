@@ -1,5 +1,6 @@
 import React from 'react';
 import Logout from '../Auth/Logout';
+
 const Home = () => {
   return (
     <div className="relative flex min-h-screen flex-col bg-[#181411] dark overflow-x-hidden" style={{ fontFamily: '"Work Sans", "Noto Sans", sans-serif' }}>
