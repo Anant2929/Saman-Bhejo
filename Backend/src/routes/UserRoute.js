@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const app = express() ;
 const router = express.Router();
 const passport= require("passport")
-// const {verifytoken} = require('../utils/jwtutils')
+const {verifyToken} = require('../utils/jwtutils')
 const OthController = require('../controllers/OAuthController.js')
 
 
@@ -14,7 +14,7 @@ app.use(passport.session()) ;
 // Define the signup route
 router.post("/signup", signup); // This will handle POST requests to /api/signup
 router.post("/login",login);
-router.post("/logout",logout)
+router.post("/logout",verifyToken,logout)
 
 // Google OAuth Route
 router.get('/google', passport.authenticate('google',{

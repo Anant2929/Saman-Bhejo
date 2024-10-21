@@ -8,11 +8,13 @@ import axios from "axios";
 import { useUserLogin } from '../../context/userLoginContext';
 import { useMessage } from '../../context/MessageContext';  
 import { useNavigate } from "react-router-dom"; 
+import { useAuth } from '../../context/AuthContext'; 
 
 export default function SignUp() {
   
   const { setUserLogin } = useUserLogin();
   const { setTimedMessage } = useMessage();
+  const { setToken } = useAuth(); // Destructure setToken from context
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -55,6 +57,7 @@ export default function SignUp() {
       const res = await axios.post("/api/user/signup", formData);
   
       setTimedMessage(res.data.message, "success");
+      setToken(res.data.token);
       navigate("/home");
     } catch (error) {
       if (error.response && error.response.data.message) {

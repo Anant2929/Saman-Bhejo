@@ -80,14 +80,7 @@ const login = async (req, res) => {
   }
 };
 
-const logout = (req, res, next) => {
-  // Verify the token first
-  const verify = verifyToken(req, res, next);
-  
-  if (!verify) {
-    return res.status(401).json({ message: "Unauthorized. Token is invalid." });
-  }
-
+const logout = (req, res) => {
   // Clear the cookie where the token is stored
   res.clearCookie("token"); // Assuming your cookie is named 'token'
 
@@ -95,7 +88,7 @@ const logout = (req, res, next) => {
   // For example: blacklist.push(req.cookies.token);
 
   return res.status(200).json({ message: "Logout successful" });
-};
+};;
 
 
 module.exports = { signup, login, logout };
