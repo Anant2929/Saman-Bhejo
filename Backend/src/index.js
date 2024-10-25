@@ -15,7 +15,10 @@ const passport = require('passport');
 const app = express();
 const port = 5000;
 
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000', // Adjust according to your frontend's URL
+  credentials: true, // Enable credentials if needed
+}));
 // Middleware to parse JSON request bodies
 app.use(express.json());
 app.use(cookieParser());

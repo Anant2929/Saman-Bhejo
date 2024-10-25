@@ -14,7 +14,7 @@ router.get(
 router.get(
   "/auth/google/callback",
   passport.authenticate("google", {
-    failureRedirect: "/login",
+    failureRedirect: "http://localhost:3000/user/login",
     session: false,
   }),
   (req, res) => {
@@ -27,9 +27,9 @@ router.get(
     const token = jwt.sign({ id: req.user.id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
-
+      res.cookie("token",token)
     // Redirect to frontend with the token as a query parameter
-    res.redirect(`http://localhost:3000/home?token=${token}`);
+    res.redirect(`http://localhost:3000/home`);
   }
 );
 

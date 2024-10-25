@@ -1,14 +1,25 @@
-
-import React from "react";
+import Cookies from 'js-cookie';
+import React,{useEffect} from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Layout from "../Layouts/Layout";
 import Home from "../home/Home.jsx";
 import { useAuth } from '../../context/AuthContext'; // Import the Auth context
 
 export default function AppRoutes() {
-  const { token } = useAuth(); // Use the token from AuthContext
-  console.log("Token in AppRoutes: ", token);
+  const { token, setToken } = useAuth();
 
+  useEffect(() => {
+    // Check if token exists in context; if not, check Cookies and set if available
+    if (!token) {
+      const gettoken = Cookies.get('token');
+      console.log("Token from cookies: ", gettoken);
+
+      // Set token in context if found in cookies
+      if (gettoken) {
+        setToken(gettoken);  // This should automatically save in localStorage
+      }
+    }
+  }, [token, setToken]);
   return (
     <BrowserRouter>
       <Routes>

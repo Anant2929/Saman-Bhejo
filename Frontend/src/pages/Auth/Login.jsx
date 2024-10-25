@@ -60,9 +60,9 @@ export default function Login() {
     }
   };
 
-  const googleLogin = (e) => {
-    e.preventDefault();
-    window.location.href = "/api/oAuth/auth/google";
+  const googleLogin = () => {
+   console.log (window.location.href = "/api/oAuth/auth/google"); // Redirect to Google OAuth
+    
   };
 
   //oAuth/auth/google
