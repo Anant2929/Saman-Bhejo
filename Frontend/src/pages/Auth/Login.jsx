@@ -8,6 +8,7 @@ import { useMessage } from '../../context/MessageContext';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext'; // Import the Auth context
 
+
 export default function Login() {
   const { setUserLogin } = useUserLogin();
   const { setTimedMessage } = useMessage();
@@ -61,9 +62,10 @@ export default function Login() {
 
   const googleLogin = (e) => {
     e.preventDefault();
-    window.location.href = "/api/user/login/google";
+    window.location.href = "/api/oAuth/auth/google";
   };
 
+  //oAuth/auth/google
   const handleSignUpClick = () => {
     setUserLogin(false);
     console.log("Navigating to Sign Up");

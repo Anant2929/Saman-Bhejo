@@ -9,18 +9,14 @@ const generateToken = (user) => {
 };
 
 const verifyToken = (req, res, next) => {
-  console.log("Entry in verify token for logout");
   const token = req.cookies.token; // Retrieve the token from request headers
 
   if (!token) {
     return res.status(403).json({ message: "Token is required" });
   }
 
-  console.log("token for logout: " , token) ;
-
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET); // Verify the token
-    console.log("Decoded : " , decoded);
     req.user = decoded; // Store user information in request
     next(); // Pass control to the next middleware or route handler
   } catch (error) {
