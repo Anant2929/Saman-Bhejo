@@ -6,13 +6,13 @@ const router = express.Router();
 const passport= require("passport")
 const {verifyToken} = require('../utils/jwtutils')
 const OAuthController = require('../controllers/OAuthController.js')
-
+const {createParcel} = require('../controllers/SendParcelController.js')
 
 // Define the signup route
 router.post("/signup", signup); // This will handle POST requests to /api/signup
 router.post("/login",login);
 router.post("/logout",verifyToken,logout)
-
+router.post('/sentparcel',createParcel)
 
 
 

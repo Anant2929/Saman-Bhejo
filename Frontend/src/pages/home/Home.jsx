@@ -1,6 +1,4 @@
 import React from 'react';
-import Logout from '../Auth/Logout';
-
 const Home = () => {
   return (
     <div className="relative flex min-h-screen flex-col bg-[#181411] dark overflow-x-hidden" style={{ fontFamily: '"Work Sans", "Noto Sans", sans-serif' }}>
@@ -16,7 +14,7 @@ const Home = () => {
             <h2 className="text-white text-lg font-bold leading-tight tracking-[-0.015em]">Saman Bhejo</h2>
           </div>
 
-          <div className="flex flex-1 justify-end gap-8">
+          <div className="flex flex-1 justify-end gap-8 hover:">
             <nav className="flex items-center gap-9">
               <a className="text-white text-sm font-medium" href="#">Home</a>
               <a className="text-white text-sm font-medium" href="#">About</a>
@@ -25,17 +23,21 @@ const Home = () => {
               <a className="text-white text-sm font-medium" href="#">Contact</a>
             </nav>
 
-            <Logout/>
+            <div className="flex gap-2">
+              <button className="flex h-10 min-w-[84px] cursor-pointer items-center justify-center rounded-full px-4 bg-[#ec7113] text-white text-sm font-bold">
+              Logout
+              </button>
+            </div>
           </div>
         </header>
 
         {/* Main Content Section */}
-        <div className="px-10 md:px-40 flex flex-1 justify-center py-5 ">
+        <div className="px-10 md:px-40 flex flex-1 justify-center py-5">
           <div className="layout-content-container flex flex-col max-w-[960px] flex-1">
             <h1 className="text-white text-[32px] font-bold text-center py-6">Welcome, John Doe</h1>
             <h2 className="text-white text-[22px] font-bold py-5">Manage Parcel</h2>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5 ">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
               <Card
                 imageUrl="https://cdn.usegalileo.ai/sdxl10/b5f666c4-2f14-4001-b667-06435e9eefa3.png"
                 title="Get Parcel"
@@ -63,9 +65,9 @@ const Home = () => {
 // Reusable Card component
 const Card = ({ imageUrl, title }) => {
   return (
-    <div className="flex flex-col gap-3 pb-3 ">
+    <div className="flex flex-col gap-3 pb-3">
       <div
-        className="w-full aspect-square bg-center bg-cover rounded-xl hover:scale-110 duration-300"
+        className="w-full aspect-square bg-center bg-cover rounded-xl"
         style={{ backgroundImage: `url(${imageUrl})` }}
       ></div>
       <p className="text-white text-base font-medium">{title}</p>

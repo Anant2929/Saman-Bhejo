@@ -36,9 +36,6 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get("/dashboard" , (req,res) => {
-  res.send("Hey! , Welcome to the dashboard page");
-})
 
 
 // Route to check if the user is logged in
@@ -53,6 +50,7 @@ app.get('/home', (req, res) => {
 app.use('/oAuth' , oAuthRoutes);
 // Use the user routes
 app.use("/user", userRoutes); // Prefix all user routes with /api
+
 // Start the server
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
