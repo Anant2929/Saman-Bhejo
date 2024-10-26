@@ -28,20 +28,20 @@ const calculateEstimatedPrice = (weight, parcelType, distance) => {
 const createParcel = async (req, res) => {
     try {
         const {
-            parcelName, parcelWeight, parcelType, parcelDescription, parcelPhotoUrl,
-            sender, senderAddress, receiverID, receiverAddress,
-            carrierID, carrierVehicle, fromCity, toCity, expectedDeliveryDate
+            parcelName, parcelWeight, parcelType, parcelDescription, parcelPhotoUrl,volume,
+            sender, senderAddress, receiver, receiverAddress,distance,
+            carrier, carrierVehicle, fromCity, toCity,expectedDeliveryDate,deliveryCharges,
         } = req.body;
 
         // Validate required fields
         if (!parcelName || !parcelWeight || !parcelType || !parcelDescription || !parcelPhotoUrl ||
-            !sender || !senderAddress || !receiverID || !receiverAddress ||
-            !carrierID || !carrierVehicle || !fromCity || !toCity || !expectedDeliveryDate) {
+            !sender || !senderAddress || !receiver || !receiverAddress ||
+            !carrier || !carrierVehicle || !fromCity || !toCity || !expectedDeliveryDate) {
             return res.status(400).json({ error: 'All required fields must be filled.' });
         }
 
         // Calculate distance between fromCity and toCity
-        let distance = 0;
+        
         try {
             // Example distance calculation using an API or custom logic 
             const response = getDistance(fromCity , toCity);
@@ -62,12 +62,13 @@ const createParcel = async (req, res) => {
             parcelPhotoUrl,
             sender,
             senderAddress,
-            receiverID,
+            receiver,
             receiverAddress,
-            carrierID,
+            carrier,
             carrierVehicle,
             fromCity,
             toCity,
+            distance,
             expectedDeliveryDate,
             deliveryCharges: estimatedPrice,
             paymentStatus: 'Pending',

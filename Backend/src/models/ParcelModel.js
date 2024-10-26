@@ -23,15 +23,10 @@ const parcelSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    dimensions: {
-        length: { type: Number },
-        width: { type: Number },
-        height: { type: Number }
+    volume: {
+        type: Number,
+        required: true
     },
-    specialHandlingInstructions: {
-        type: String, // e.g., fragile, handle with care
-    },
-
     // Sender Information
     sender: {
         type: mongoose.Schema.Types.ObjectId,
@@ -44,7 +39,7 @@ const parcelSchema = new mongoose.Schema({
     },
 
     // Receiver Information
-    receiverID: {
+    receiver: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
@@ -55,7 +50,7 @@ const parcelSchema = new mongoose.Schema({
     },
 
     // Carrier Information
-    carrierID: {
+    carrier: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
@@ -75,19 +70,17 @@ const parcelSchema = new mongoose.Schema({
         required: true
     },
 
+    distance:{
+        type: Number,
+        required: true,
+        default:0
+    },
+
     // Tracking and status
     trackingStatus: {
         type: String,
         enum: ['Booked', 'Picked Up', 'In Transit', 'Delivered', 'Canceled'],
         default: 'Booked'
-    },
-    verificationStatus: {
-        type: String,
-        enum: ['Pending', 'Verified', 'Rejected'],
-        default: 'Pending' // For Aadhaar or identity verification
-    },
-    verificationDate: {
-        type: Date
     },
     
     // Payment information
