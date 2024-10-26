@@ -22,7 +22,8 @@ const userSchema = new mongoose.Schema({
   contactNumber: {
     type: String,
     minlength: 10, // Assuming a minimum length for contact number
-    maxlength: 10, // Assuming a maximum length for contact number
+    maxlength: 10,
+    unique: true, // Assuming a maximum length for contact number
   },
 });
 

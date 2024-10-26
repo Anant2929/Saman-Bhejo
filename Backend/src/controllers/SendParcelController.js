@@ -1,8 +1,7 @@
-// controllers/parcelController.js
-
-const Parcel = require('../models/Parcel'); // Import the Parcel model
+const Parcel = require('../models/ParcelModel.js'); // Import the Parcel model
+const User = require('../models/UserModel.js'); // Import the User model
 const axios = require('axios'); // Optional: for distance calculation API
-const getDistance = require('../Services/DistanceCalculate');
+const {getDistance }= require('../Services/DistanceCalculate');
 
 // Base rates for different parcel types (in INR per kg)
 const baseRates = {
@@ -25,27 +24,41 @@ const calculateEstimatedPrice = (weight, parcelType, distance) => {
 };
 
 // Controller function to handle parcel creation
-const createParcel = async (req, res) => {
+const registerParcel = async (req, res) => {
     try {
-        const {
+       let {
             parcelName, parcelWeight, parcelType, parcelDescription, parcelPhotoUrl,volume,
-            sender, senderAddress, receiver, receiverAddress,distance,
-            carrier, carrierVehicle, fromCity, toCity,expectedDeliveryDate,deliveryCharges,
+            senderNum, senderAddress, receiverNum, receiverAddress, distance,
+            carrier, carrierVehicle, fromCity, toCity, expectedDeliveryDate
         } = req.body;
 
         // Validate required fields
         if (!parcelName || !parcelWeight || !parcelType || !parcelDescription || !parcelPhotoUrl ||
-            !sender || !senderAddress || !receiver || !receiverAddress ||
+            !senderNum || !senderAddress || !receiverNum || !receiverAddress ||
             !carrier || !carrierVehicle || !fromCity || !toCity || !expectedDeliveryDate) {
             return res.status(400).json({ error: 'All required fields must be filled.' });
         }
 
+        // Check if sender exists in the database
+        const sender = await User.findOne({ contactNumber: senderNum });
+        console.log('sender',sender)
+        if (!sender) {
+            return res.status(404).json({ error: 'Sender not found.' });
+        }
+
+        // Check if receiver exists in the database
+        const receiver = await User.findOne({ contactNumber: receiverNum });
+        if (!receiver) {
+            return res.status(404).json({ error: 'Receiver not found.' });
+        }
+
         // Calculate distance between fromCity and toCity
-        
+    
         try {
-            // Example distance calculation using an API or custom logic 
-            const response = getDistance(fromCity , toCity);
-            distance = response.data.distance;
+            distance = await getDistance(fromCity, toCity);
+            console.log("distance is",distance)
+     
+           
         } catch (error) {
             return res.status(500).json({ error: 'Error fetching distance between cities.' });
         }
@@ -60,15 +73,16 @@ const createParcel = async (req, res) => {
             parcelType,
             parcelDescription,
             parcelPhotoUrl,
-            sender,
+            sender: sender._id, // Store sender's ObjectId
             senderAddress,
-            receiver,
+            receiver: receiver._id, // Store receiver's ObjectId
             receiverAddress,
             carrier,
             carrierVehicle,
             fromCity,
             toCity,
             distance,
+            volume,
             expectedDeliveryDate,
             deliveryCharges: estimatedPrice,
             paymentStatus: 'Pending',
@@ -85,5 +99,5 @@ const createParcel = async (req, res) => {
 };
 
 module.exports = {
-    createParcel
+    registerParcel
 };

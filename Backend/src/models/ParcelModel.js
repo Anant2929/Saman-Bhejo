@@ -51,13 +51,10 @@ const parcelSchema = new mongoose.Schema({
 
     // Carrier Information
     carrier: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
+        type: String,
     },
     carrierVehicle: {
-        type: String,
-        required: true
+        type: String
     },
 
     // City details

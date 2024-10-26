@@ -69,10 +69,10 @@ async function getDistance(originCity, destinationCity) {
     }
 }
 
-// // Example usage
-// (async () => {
-//     try {
-//         const distance = await getDistance("Bistan", "Bhopal");
+// // // Example usage
+//  (async () => {
+//      try {
+//         const distance = await getDistance(CityA,CityB);
 //         console.log(`Distance between Bistan and Bhopal: ${distance.toFixed(2)} km`);
 //     } catch (error) {
 //         console.error("An error occurred:", error.message);

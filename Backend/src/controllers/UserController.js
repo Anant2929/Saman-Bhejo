@@ -5,6 +5,7 @@ const { generateToken, verifyToken } = require("../utils/jwtutils.js");
 
 const signup = async (req, res) => {
   let { email, password, name, contactNumber } = req.body;
+  console.log("req.body",req.body)
 
   try {
     // Check if user already exists
@@ -22,8 +23,9 @@ const signup = async (req, res) => {
       email,
       password: hashedPassword,
       name,
-      contactNumber,
+      contactNumber:contactNumber
     });
+    console.log("newuser body",newUser)
 
     // Save the new user to the database
     await newUser.save();

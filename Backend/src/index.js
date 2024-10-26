@@ -6,7 +6,7 @@ const session = require("express-session")
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const oAuthRoutes = require('./routes/oAuthRoute')
-
+const parcelRoutes = require('./routes/ParcelRoute')
 
 dotenv.config();
 const passport = require('passport');  
@@ -50,7 +50,7 @@ app.get('/home', (req, res) => {
 app.use('/oAuth' , oAuthRoutes);
 // Use the user routes
 app.use("/user", userRoutes); // Prefix all user routes with /api
-
+app.use("/parcel", parcelRoutes);
 // Start the server
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
