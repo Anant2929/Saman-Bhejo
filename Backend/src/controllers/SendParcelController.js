@@ -2,6 +2,7 @@
 
 const Parcel = require('../models/Parcel'); // Import the Parcel model
 const axios = require('axios'); // Optional: for distance calculation API
+const getDistance = require('../Services/DistanceCalculate');
 
 // Base rates for different parcel types (in INR per kg)
 const baseRates = {
@@ -42,8 +43,8 @@ const createParcel = async (req, res) => {
         // Calculate distance between fromCity and toCity
         let distance = 0;
         try {
-            // Example distance calculation using an API or custom logic
-            const response = await axios.get(`YOUR_DISTANCE_API?from=${fromCity}&to=${toCity}`);
+            // Example distance calculation using an API or custom logic 
+            const response = getDistance(fromCity , toCity);
             distance = response.data.distance;
         } catch (error) {
             return res.status(500).json({ error: 'Error fetching distance between cities.' });
