@@ -1,5 +1,10 @@
 import React from 'react'
 import ParcelForm from './ParcelDetails'
+import ReceiverAddress from './ReceiverDetails'
+import SenderForm from './SenderDetails'
+
+
+
 
 function ParcelRegistration() {
   return (

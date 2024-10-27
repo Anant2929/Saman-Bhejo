@@ -3,17 +3,20 @@ import AppRoutes from "./pages/routes/AppRoutes";
 import { UserLoginProvider } from "./context/userLoginContext";
 import { MessageProvider, useMessage } from "./context/MessageContext";
 import { AuthProvider } from "./context/AuthContext";
+import { ParcelRegistrationProvider } from "./context/ParcelContext"
 
 export default function App() {
   return (
     <div>
       <UserLoginProvider>
+        <ParcelRegistrationProvider>
         <MessageProvider>
           <AuthProvider>
             <AppRoutes />
           </AuthProvider>
           <AlertMessage />
         </MessageProvider>
+        </ParcelRegistrationProvider>
       </UserLoginProvider>
     </div>
   );
