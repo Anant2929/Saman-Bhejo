@@ -1,12 +1,12 @@
-import React from 'react'
-import ParcelForm from './ParcelDetails'
-import ReceiverAddress from './ReceiverDetails'
-import SenderForm from './SenderDetails'
-
-
-
+import React from 'react';
+import ParcelForm from './ParcelDetails';
+import ReceiverAddress from './ReceiverDetails';
+import SenderForm from './SenderDetails';
+import { useParcelRegistration } from '../../context/ParcelContext';
 
 function ParcelRegistration() {
+  const {  currentState, setCurrentState } = useParcelRegistration();
+
   return (
     <div className="relative flex size-full min-h-screen flex-col bg-[#1C1D22] dark group/design-root overflow-x-hidden" style={{ fontFamily: 'Inter, "Noto Sans", sans-serif' }}>
       <header className="fixed top-0 w-full flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#3C3F4A] px-10 py-3 bg-[#1C1D22] z-50">
@@ -35,11 +35,15 @@ function ParcelRegistration() {
         </div>
       </header>
 
-      <div className="mt-[72px]"> {/* Adjust this margin to offset the fixed header height */}
-        <ParcelForm />
+      <div className="mt-[72px]">
+        {/* Conditionally render forms based on currentState */}
+        {currentState === 1 && <ParcelForm />}
+        {currentState === 2 && <SenderForm />}
+        {currentState === 3 && <ReceiverAddress />}
       </div>
+
     </div>
-  )
+  );
 }
 
-export default ParcelRegistration
+export default ParcelRegistration;
