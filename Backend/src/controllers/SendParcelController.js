@@ -1,7 +1,6 @@
 const Parcel = require('../models/ParcelModel.js'); // Import the Parcel model
 const User = require('../models/UserModel.js'); // Import the User model
-const axios = require('axios'); // Optional: for distance calculation API
-const {getDistance }= require('../Services/DistanceCalculate');
+const { getDistance } = require('../Services/DistanceCalculate');
 
 // Base rates for different parcel types (in INR per kg)
 const baseRates = {
@@ -26,14 +25,14 @@ const calculateEstimatedPrice = (weight, parcelType, distance) => {
 // Controller function to handle parcel creation
 const registerParcel = async (req, res) => {
     try {
-       let {
-            parcelName, parcelWeight, parcelType, parcelDescription, parcelPhotoUrl,volume,
+        let {
+            parcelName, parcelWeight, parcelType, parcelDescription, volume,
             senderNum, senderAddress, receiverNum, receiverAddress, distance,
             carrier, carrierVehicle, fromCity, toCity, expectedDeliveryDate
         } = req.body;
 
-        // Validate required fields
-        if (!parcelName || !parcelWeight || !parcelType || !parcelDescription || !parcelPhotoUrl ||
+        // Validate required fields (except for parcelPhotoUrl)
+        if (!parcelName || !parcelWeight || !parcelType || !parcelDescription ||
             !senderNum || !senderAddress || !receiverNum || !receiverAddress ||
             !carrier || !carrierVehicle || !fromCity || !toCity || !expectedDeliveryDate) {
             return res.status(400).json({ error: 'All required fields must be filled.' });
@@ -41,7 +40,6 @@ const registerParcel = async (req, res) => {
 
         // Check if sender exists in the database
         const sender = await User.findOne({ contactNumber: senderNum });
-        console.log('sender',sender)
         if (!sender) {
             return res.status(404).json({ error: 'Sender not found.' });
         }
@@ -52,13 +50,10 @@ const registerParcel = async (req, res) => {
             return res.status(404).json({ error: 'Receiver not found.' });
         }
 
+
         // Calculate distance between fromCity and toCity
-    
         try {
             distance = await getDistance(fromCity, toCity);
-            console.log("distance is",distance)
-     
-           
         } catch (error) {
             return res.status(500).json({ error: 'Error fetching distance between cities.' });
         }
@@ -66,16 +61,19 @@ const registerParcel = async (req, res) => {
         // Calculate estimated price
         const estimatedPrice = calculateEstimatedPrice(parcelWeight, parcelType, distance);
 
+        // Handle photo upload
+        const parcelPhotoUrl = req.file ? `/uploads/${req.file.filename}` : null;
+
         // Create and save parcel
         const parcel = new Parcel({
             parcelName,
             parcelWeight,
             parcelType,
             parcelDescription,
-            parcelPhotoUrl,
-            sender: sender._id, // Store sender's ObjectId
+            parcelPhotoUrl, // Save photo URL from upload
+            sender: sender._id,
             senderAddress,
-            receiver: receiver._id, // Store receiver's ObjectId
+            receiver: receiver._id,
             receiverAddress,
             carrier,
             carrierVehicle,

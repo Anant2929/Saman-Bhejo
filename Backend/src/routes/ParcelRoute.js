@@ -1,9 +1,9 @@
-const express = require("express");
-const app = express() ;
+const express = require('express');
 const router = express.Router();
-const {registerParcel} = require('../controllers/SendParcelController.js')
+const SendParcelController = require('../controllers/SendParcelController');
+const upload = require('../config/multerConfig'); // Import multer config
 
-// Define the signup route)
-router.post('/register',registerParcel)
+// Route to handle parcel creation with photo upload
+router.post('/register', upload.single('parcelPhoto'), SendParcelController.registerParcel);
 
 module.exports = router;
