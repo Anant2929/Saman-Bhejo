@@ -24,7 +24,7 @@ export default function ParcelForm() {
     if (!localFormData.type) newErrors.type = 'This field is required';
     if (!localFormData.description) newErrors.description = 'This field is required';
     if (!localFormData.volume) newErrors.volume = 'This field is required';
-    if (!localFormData.volume) newErrors.photoURL = 'This field is required';
+    if (!localFormData.photoURL) newErrors.photoURL = 'This field is required';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -43,10 +43,10 @@ export default function ParcelForm() {
           <div className="layout-content-container flex flex-col w-[512px] max-w-[512px] py-5 max-w-[960px] flex-1">
             <div className="flex flex-col gap-3 p-4">
               <div className="flex gap-6 justify-between">
-                <p className="text-[#F9FAFA] text-base font-medium leading-normal">Step 1 of 5</p>
+                <p className="text-[#F9FAFA] text-base font-medium leading-normal">Step 1/4</p>
               </div>
               <div className="rounded bg-[#505362]">
-                <div className="h-2 rounded bg-[#607AFB]" style={{ width: '20%' }}></div>
+                <div className="h-2 rounded bg-[#607AFB]" style={{ width: '25%' }}></div>
               </div>
             </div>
             <h1 className="text-[#F9FAFA] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 text-left pb-3 pt-5">Parcel Details</h1>

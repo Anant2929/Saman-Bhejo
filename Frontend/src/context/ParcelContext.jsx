@@ -6,11 +6,11 @@ const ParcelContext = createContext();
 // Create a provider component
 export const ParcelRegistrationProvider = ({ children }) => {
   const [currentState, setCurrentState] = useState(1);
-  const [error,setError] = useState("");
+
   const [formData,setFormData] = useState({})
 
   return (
-    <ParcelContext.Provider value={{ currentState, setCurrentState,error,setError,formData,setFormData }}>
+    <ParcelContext.Provider value={{ currentState, setCurrentState,formData,setFormData }}>
       {children}
     </ParcelContext.Provider>
   );

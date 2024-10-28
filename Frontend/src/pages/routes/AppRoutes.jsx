@@ -29,7 +29,7 @@ export default function AppRoutes() {
         <Route path="/home" element={token ? <Home /> : <Navigate to="/user/login" />} />
         <Route path="/user/login" element={token ? <Navigate to="/home" /> : <Layout />} />
         <Route path="/oAuth/auth/google" element={token ? <Navigate to="/home" /> : <Layout />} />
-        <Route path="/parcel/details" element={ <ParcelRegistration/> } />
+        <Route path="/parcel/details" element={ token ? <ParcelRegistration/> : <Navigate to="/home" />} />
       </Routes>
     </BrowserRouter>
   );
