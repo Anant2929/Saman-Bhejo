@@ -1,5 +1,15 @@
 import React from 'react';
+import Logout from '../Auth/Logout';
+import { useNavigate } from "react-router-dom";
+
 const Home = () => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    console.log("clicking");
+    navigate("/parcel/details");
+  };
+
   return (
     <div className="relative flex min-h-screen flex-col bg-[#181411] dark overflow-x-hidden" style={{ fontFamily: '"Work Sans", "Noto Sans", sans-serif' }}>
       <div className="layout-container flex h-full grow flex-col">
@@ -24,9 +34,7 @@ const Home = () => {
             </nav>
 
             <div className="flex gap-2">
-              <button className="flex h-10 min-w-[84px] cursor-pointer items-center justify-center rounded-full px-4 bg-[#ec7113] text-white text-sm font-bold">
-              Logout
-              </button>
+              <Logout />
             </div>
           </div>
         </header>
@@ -41,6 +49,7 @@ const Home = () => {
               <Card
                 imageUrl="https://cdn.usegalileo.ai/sdxl10/b5f666c4-2f14-4001-b667-06435e9eefa3.png"
                 title="Get Parcel"
+                onClick={handleClick} // Pass the handleClick function as a prop
               />
               <Card
                 imageUrl="https://cdn.usegalileo.ai/sdxl10/e72c4298-cc13-4e77-b114-7eee8427ce37.png"
@@ -63,9 +72,9 @@ const Home = () => {
 };
 
 // Reusable Card component
-const Card = ({ imageUrl, title }) => {
+const Card = ({ imageUrl, title, onClick }) => { // Accept onClick as a prop
   return (
-    <div className="flex flex-col gap-3 pb-3">
+    <div className="flex flex-col gap-3 pb-3 cursor-pointer" onClick={onClick}> {/* Add onClick handler here */}
       <div
         className="w-full aspect-square bg-center bg-cover rounded-xl"
         style={{ backgroundImage: `url(${imageUrl})` }}

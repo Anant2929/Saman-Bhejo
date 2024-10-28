@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom"; // For navigation
 import { useAuth } from '../../context/AuthContext'; // Import Auth context
+import Cookies from 'js-cookie';
 
 export default function Logout() {
   const navigate = useNavigate(); // Use navigate to redirect
@@ -15,6 +16,8 @@ export default function Logout() {
 
       // Clear the token from local storage and Auth context
       localStorage.removeItem('token'); // Remove the token from local storage
+      Cookies.remove('token');
+      console.log("gettoken is",Cookies.get('token'))
       setToken(null); // Clear the token in Auth context
 
       // Redirect to login page

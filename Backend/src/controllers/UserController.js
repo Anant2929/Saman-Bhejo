@@ -84,6 +84,7 @@ const login = async (req, res) => {
 
 const logout = (req, res) => {
   // Clear the cookie where the token is stored
+  console.log("logout b  ")
   res.clearCookie("token"); // Assuming your cookie is named 'token'
 
   // Optionally: If you have a blacklist implementation, add the token to it here
