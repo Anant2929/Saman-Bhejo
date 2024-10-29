@@ -5,7 +5,7 @@ const { generateToken, verifyToken } = require("../utils/jwtutils.js");
 
 const signup = async (req, res) => {
   let { email, password, name, contactNumber } = req.body;
-  console.log("req.body",req.body)
+  console.log("req.body", req.body);
 
   try {
     // Check if user already exists
@@ -23,9 +23,9 @@ const signup = async (req, res) => {
       email,
       password: hashedPassword,
       name,
-      contactNumber:contactNumber
+      contactNumber: contactNumber,
     });
-    console.log("newuser body",newUser)
+    console.log("newuser body", newUser);
 
     // Save the new user to the database
     await newUser.save();
@@ -84,14 +84,35 @@ const login = async (req, res) => {
 
 const logout = (req, res) => {
   // Clear the cookie where the token is stored
-  console.log("logout b  ")
+
   res.clearCookie("token"); // Assuming your cookie is named 'token'
 
   // Optionally: If you have a blacklist implementation, add the token to it here
   // For example: blacklist.push(req.cookies.token);
 
   return res.status(200).json({ message: "Logout successful" });
-};;
+};
 
 
-module.exports = { signup, login, logout };
+
+// GET /api/user/getName - Fetch the user's name based on the JWT token
+
+const getname = async (req, res) => {
+  try {
+    const userId = req.user.id
+    console.log("userid",userId) // Retrieve the user ID from the token's payload set by verifyToken middleware
+    const username = await user.findById(userId).select("name");
+
+    if (!username) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({name:username.name }); // Return the username
+  } catch (error) {
+    console.error("Error fetching username:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+module.exports = { signup, login, logout,getname};

@@ -1,6 +1,6 @@
 const Parcel = require('../models/ParcelModel.js'); // Import the Parcel model
 const User = require('../models/UserModel.js'); // Import the User model
-const { getDistance } = require('../Services/DistanceCalculate');
+const { getDistance } = require('../Services/DistanceCalculate.js');
 
 // Base rates for different parcel types (in INR per kg)
 const baseRates = {
@@ -27,8 +27,7 @@ const registerParcel = async (req, res) => {
     try {
         let {
             parcelName, parcelWeight, parcelType, parcelDescription, volume,
-            senderNum, senderAddress, receiverNum, receiverAddress, distance,
-            carrier, carrierVehicle, fromCity, toCity, expectedDeliveryDate
+             distance, fromCity, toCity, expectedDeliveryDate
         } = req.body;
 
         // Validate required fields (except for parcelPhotoUrl)

@@ -1,9 +1,27 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Logout from '../Auth/Logout';
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useAuth } from '../../context/AuthContext';
 
 const Home = () => {
   const navigate = useNavigate();
+  const [username, setUsername] = useState(''); // State to store the username
+  const { token } = useAuth();
+
+  useEffect(() => {
+    const fetchUsername = async () => {
+      try {
+        const response = await axios.get('/api/user/getname', {}, { withCredentials: true });
+        console.log(response.data.name)
+        setUsername(response.data.name); // Assuming the response has a 'username' field
+      } catch (error) {
+        console.error("Error fetching username:", error);
+      }
+    };
+
+    fetchUsername();
+  }, [token]);
 
   const handleClick = () => {
     console.log("clicking");
@@ -24,7 +42,7 @@ const Home = () => {
             <h2 className="text-white text-lg font-bold leading-tight tracking-[-0.015em]">Saman Bhejo</h2>
           </div>
 
-          <div className="flex flex-1 justify-end gap-8 hover:">
+          <div className="flex flex-1 justify-end gap-8">
             <nav className="flex items-center gap-9">
               <a className="text-white text-sm font-medium" href="#">Home</a>
               <a className="text-white text-sm font-medium" href="#">About</a>
@@ -42,14 +60,14 @@ const Home = () => {
         {/* Main Content Section */}
         <div className="px-10 md:px-40 flex flex-1 justify-center py-5">
           <div className="layout-content-container flex flex-col max-w-[960px] flex-1">
-            <h1 className="text-white text-[32px] font-bold text-center py-6">Welcome, John Doe</h1>
+            <h1 className="text-white text-[32px] font-bold text-center py-6">Welcome  {username} </h1> {/* Display username */}
             <h2 className="text-white text-[22px] font-bold py-5">Manage Parcel</h2>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
               <Card
                 imageUrl="https://cdn.usegalileo.ai/sdxl10/b5f666c4-2f14-4001-b667-06435e9eefa3.png"
                 title="Get Parcel"
-                onClick={handleClick} // Pass the handleClick function as a prop
+                onClick={handleClick}
               />
               <Card
                 imageUrl="https://cdn.usegalileo.ai/sdxl10/e72c4298-cc13-4e77-b114-7eee8427ce37.png"
@@ -72,9 +90,9 @@ const Home = () => {
 };
 
 // Reusable Card component
-const Card = ({ imageUrl, title, onClick }) => { // Accept onClick as a prop
+const Card = ({ imageUrl, title, onClick }) => {
   return (
-    <div className="flex flex-col gap-3 pb-3 cursor-pointer" onClick={onClick}> {/* Add onClick handler here */}
+    <div className="flex flex-col gap-3 pb-3 cursor-pointer" onClick={onClick}>
       <div
         className="w-full aspect-square bg-center bg-cover rounded-xl"
         style={{ backgroundImage: `url(${imageUrl})` }}

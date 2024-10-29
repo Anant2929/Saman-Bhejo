@@ -2,7 +2,7 @@ import Cookies from 'js-cookie';
 import React,{useEffect} from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Layout from "../Layouts/Layout";
-import Home from "../home/Home.jsx";
+import Home from "../Home/Home.jsx";
 import ParcelRegistration from "../Parcels/ParcelRegistration.jsx"
 import { useAuth } from '../../context/AuthContext'; // Import the Auth context
 

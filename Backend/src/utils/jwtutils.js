@@ -4,7 +4,8 @@ dotenv.config();
 
 const generateToken = (user) => {
   // Use user ID and email or other essential details as payload
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+  console.log("userid in gdenerating token",user.id)
+  const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
   return token;
 };
 
@@ -18,6 +19,7 @@ const verifyToken = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET); // Verify the token
     req.user = decoded; // Store user information in request
+    console.log("verifying token",decoded)
     next(); // Pass control to the next middleware or route handler
   } catch (error) {
     return res.status(401).json({ message: "Invalid Token" });
