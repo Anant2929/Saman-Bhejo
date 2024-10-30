@@ -19,7 +19,6 @@ export default function Logout() {
       Cookies.remove('token');
       console.log("gettoken is",Cookies.get('token'))
       setToken(null); // Clear the token in Auth context
-
       // Redirect to login page
       navigate("/user/login"); // Adjust the path if needed
     } catch (error) {

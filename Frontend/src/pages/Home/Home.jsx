@@ -12,7 +12,7 @@ const Home = () => {
   useEffect(() => {
     const fetchUsername = async () => {
       try {
-        const response = await axios.get('/api/user/getname', {}, { withCredentials: true });
+        const response = await axios.get('/api/user/getname', { withCredentials: true });
         console.log(response.data.name)
         setUsername(response.data.name); // Assuming the response has a 'username' field
       } catch (error) {

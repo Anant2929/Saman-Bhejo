@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+
+import React, { useEffect, useState } from 'react';
 import { useParcelRegistration } from '../../context/ParcelContext';
+import axios from 'axios'; // Backend par data bhejne ke liye axios ya fetch use karenge
 
 const DeliveryDetailsForm = () => {
-  const { setFormData, setCurrentState } = useParcelRegistration(); // Context functions
+  const { formData, setFormData, setCurrentState } = useParcelRegistration();
   const [localFormData, setLocalFormData] = useState({
     fromCity: '',
     fromState: '',
@@ -13,6 +15,7 @@ const DeliveryDetailsForm = () => {
     expectedDeliveryDate: '',
   });
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false); // To control backend submission
 
   const handleInputChange = (e) => {
     setLocalFormData({ ...localFormData, [e.target.name]: e.target.value });
@@ -32,17 +35,35 @@ const DeliveryDetailsForm = () => {
   };
 
   const handleSubmitClick = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (validateFields()) {
       setFormData((prevData) => ({ ...prevData, ...localFormData }));
-      // Here you can add any additional logic for form submission, like sending data to an API
-      alert("Form submitted successfully!"); // Example confirmation
+      setIsSubmitting(true); // Set flag to trigger useEffect for submission
     }
   };
 
-  // Handle previous step
+  useEffect(() => {
+    // Form submit only when `isSubmitting` is true and `formData` has updated data
+    if (isSubmitting) {
+      const submitDataToBackend = async () => {
+        try {
+          // const response = await axios.post('/api/delivery', formData); // Replace with your backend API URL
+          console.log('Data sent successfully:', formData);
+          alert('Form submitted successfully!');
+          setCurrentState(1)
+        } catch (error) {
+          console.error('Error submitting data:', error);
+          alert('Failed to submit data. Please try again.');
+        } finally {
+          setIsSubmitting(false); // Reset submitting state
+        }
+      };
+      submitDataToBackend();
+    }
+  }, [formData, isSubmitting]); // Re-run when `formData` or `isSubmitting` changes
+
   const handlePrevClick = () => {
-    setCurrentState(3); // Go back to previous step
+    setCurrentState(3);
   };
 
   return (

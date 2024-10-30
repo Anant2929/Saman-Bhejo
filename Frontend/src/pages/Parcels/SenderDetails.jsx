@@ -4,12 +4,12 @@ import { useParcelRegistration } from '../../context/ParcelContext';
 const SenderForm = () => {
   const { setFormData, setCurrentState } = useParcelRegistration(); // Context functions
   const [localFormData, setLocalFormData] = useState({
-    senderName: '',
-    contactNumber: '',
-    address: '',
-    city: '',
-    state: '',
-    postalCode: '',
+ senderName: '',
+ senderContactNumber: '',
+ senderaddress: '',
+ sendercity: '',
+ senderstate: '',
+ senderpostalCode: '',
   });
   const [errors, setErrors] = useState({});
 
@@ -20,11 +20,11 @@ const SenderForm = () => {
   const validateFields = () => {
     let newErrors = {};
     if (!localFormData.senderName) newErrors.senderName = 'This field is required';
-    if (!localFormData.contactNumber) newErrors.contactNumber = 'This field is required';
-    if (!localFormData.address) newErrors.address = 'This field is required';
-    if (!localFormData.city) newErrors.city = 'This field is required';
-    if (!localFormData.state) newErrors.state = 'This field is required';
-    if (!localFormData.postalCode) newErrors.postalCode = 'This field is required';
+    if (!localFormData.senderContactNumber) newErrors.senderContactNumber = 'This field is required';
+    if (!localFormData.senderaddress) newErrors.senderaddress = 'This field is required';
+    if (!localFormData.sendercity) newErrors.sendercity = 'This field is required';
+    if (!localFormData.senderstate) newErrors.senderstate = 'This field is required';
+    if (!localFormData.senderpostalCode) newErrors.senderpostalCode = 'This field is required';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -62,11 +62,11 @@ const SenderForm = () => {
             {/* Form Fields */}
             {[
               { label: "Full Name", name: "senderName", placeholder: "E.g. John Doe" },
-              { label: "Contact Number", name: "contactNumber", placeholder: "E.g. +911234567890" },
-              { label: "Address", name: "address", placeholder: "123 Main St" },
-              { label: "City", name: "city", placeholder: "E.g. New York" },
-              { label: "State", name: "state", placeholder: "E.g. New York" },
-              { label: "Postal Code", name: "postalCode", placeholder: "12345" }
+              { label: "Contact Number", name: "senderContactNumber", placeholder: "E.g. +911234567890" },
+              { label: "Address", name: "senderaddress", placeholder: "123 Main St" },
+              { label: "City", name: "sendercity", placeholder: "E.g. New York" },
+              { label: "State", name: "senderstate", placeholder: "E.g. New York" },
+              { label: "Postal Code", name: "senderpostalCode", placeholder: "12345" }
             ].map((field) => (
               <div key={field.name} className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
                 <label className="flex flex-col min-w-40 flex-1">

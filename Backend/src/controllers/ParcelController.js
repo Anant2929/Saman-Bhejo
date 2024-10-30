@@ -26,16 +26,25 @@ const calculateEstimatedPrice = (weight, parcelType, distance) => {
 const registerParcel = async (req, res) => {
     try {
         let {
-            parcelName, parcelWeight, parcelType, parcelDescription, volume,
-             distance, fromCity, toCity, expectedDeliveryDate
+      parcelName,
+      parcelWeight,
+      parcelType,
+      parcelDescription,
+      volume,
+      fromCity,
+      fromState,
+      fromPincode,
+      toCity,
+      toState,
+      toPincode,
+      expectedDeliveryDate
         } = req.body;
 
         // Validate required fields (except for parcelPhotoUrl)
-        if (!parcelName || !parcelWeight || !parcelType || !parcelDescription ||
-            !senderNum || !senderAddress || !receiverNum || !receiverAddress ||
-            !carrier || !carrierVehicle || !fromCity || !toCity || !expectedDeliveryDate) {
-            return res.status(400).json({ error: 'All required fields must be filled.' });
-        }
+       // Validate required fields
+    if (!parcelName || !parcelWeight || !parcelType || !parcelDescription || !parcelPhotoUrl || !volume ||  !fromCity || !fromState || !fromPincode || !toCity || !toState || !toPincode || !expectedDeliveryDate) {
+        return res.status(400).json({ message: "All fields are required" });
+      }
 
         // Check if sender exists in the database
         const sender = await User.findOne({ contactNumber: senderNum });
@@ -56,6 +65,19 @@ const registerParcel = async (req, res) => {
         } catch (error) {
             return res.status(500).json({ error: 'Error fetching distance between cities.' });
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         // Calculate estimated price
         const estimatedPrice = calculateEstimatedPrice(parcelWeight, parcelType, distance);
@@ -84,7 +106,8 @@ const registerParcel = async (req, res) => {
             deliveryCharges: estimatedPrice,
             paymentStatus: 'Pending',
             trackingStatus: 'Booked'
-        });
+        }); 
+        
 
         await parcel.save();
         res.status(201).json({ message: 'Parcel created successfully', parcel });

@@ -52,7 +52,6 @@ const parcelSchema = new mongoose.Schema({
   carrierDetails: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Carrier",
-    required: true,
   },
 
   // from City details
