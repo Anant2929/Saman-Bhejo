@@ -19,6 +19,10 @@ const receiverSchema = new mongoose.Schema({
         type: String, // No enum here, so any state can be saved
         required: true
     },
+    ParcelsReceived: {
+        type: Number,
+        required : true
+    },
     PostCode: {
         type: Number,
         required: true,

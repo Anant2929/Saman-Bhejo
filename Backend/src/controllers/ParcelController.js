@@ -1,5 +1,7 @@
 const Parcel = require('../models/ParcelModel.js'); // Import the Parcel model
 const User = require('../models/UserModel.js'); // Import the User model
+const Sender = require('../models/SenderModel.js');
+const Reciever = require('../models/ReceiverModel.js');
 const { getDistance } = require('../Services/DistanceCalculate.js');
 
 // Base rates for different parcel types (in INR per kg)
@@ -26,13 +28,13 @@ const calculateEstimatedPrice = (weight, parcelType, distance) => {
 const registerParcel = async (req, res) => {
     try {
         let {
-            parcelName, parcelWeight, parcelType, parcelDescription, volume,
-             distance, fromCity, toCity, expectedDeliveryDate
+            parcelName, parcelWeight, parcelType, parcelDescription , parcelPhotoURL, volume,senderNum, 
+             distance, fromCity, receiverNum ,fromState, fromPincode, toCity,toState, toPincode, expectedDeliveryDate
         } = req.body;
 
         // Validate required fields (except for parcelPhotoUrl)
         if (!parcelName || !parcelWeight || !parcelType || !parcelDescription ||
-            !senderNum || !senderAddress || !receiverNum || !receiverAddress ||
+            !senderNum || !senderAddress || !receiverNum || !receiverAddress || !fromState || !fromPincode ||
             !carrier || !carrierVehicle || !fromCity || !toCity || !expectedDeliveryDate) {
             return res.status(400).json({ error: 'All required fields must be filled.' });
         }
@@ -61,7 +63,7 @@ const registerParcel = async (req, res) => {
         const estimatedPrice = calculateEstimatedPrice(parcelWeight, parcelType, distance);
 
         // Handle photo upload
-        const parcelPhotoUrl = req.file ? `/uploads/${req.file.filename}` : null;
+        const parcelPhotoUri = req.file ? `/uploads/${req.file.filename}` : null;
 
         // Create and save parcel
         const parcel = new Parcel({
@@ -69,7 +71,7 @@ const registerParcel = async (req, res) => {
             parcelWeight,
             parcelType,
             parcelDescription,
-            parcelPhotoUrl, // Save photo URL from upload
+            parcelPhotoUri, // Save photo URL from upload
             sender: sender._id,
             senderAddress,
             receiver: receiver._id,
@@ -87,6 +89,29 @@ const registerParcel = async (req, res) => {
         });
 
         await parcel.save();
+
+        //Create and Save Sender
+        const sender_save = new Sender({
+            sender:sender._id,
+            Address:senderAddress, 
+            City:fromCity,
+            State:fromState,
+            ParcelsSent:parcel._id,
+            PostCode:fromPincode
+        });
+
+        await sender_save.save();
+
+        //Create and Save Reciever
+        const Receiver_save = new Reciever({
+            receiver:receiver._id,
+            Address:receiverAddress,
+            City:toCity,
+            State:toState,
+            ParcelsReceived:parcel._id,
+            PostCode:toPincode
+        })
+
         res.status(201).json({ message: 'Parcel created successfully', parcel });
 
     } catch (error) {
