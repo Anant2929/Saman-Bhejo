@@ -36,6 +36,7 @@ const signup = async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
+      maxAge: 24 * 60 * 60 * 1000 * 2,
     });
 
     // Send a response indicating successful signup with the token
@@ -70,7 +71,9 @@ const login = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true, // Cookie is accessible only by the web server, helps with security
       secure: process.env.NODE_ENV === "production", // Use secure cookies in production
-      sameSite: "strict", // Helps with CSRF protection
+      sameSite: "strict",
+      maxAge: 24 * 60 * 60 * 1000 * 2,
+     
     });
     return res.status(201).json({
       message: "User Login successfully",
@@ -93,26 +96,23 @@ const logout = (req, res) => {
   return res.status(200).json({ message: "Logout successful" });
 };
 
-
-
 // GET /api/user/getName - Fetch the user's name based on the JWT token
 
 const getname = async (req, res) => {
   try {
-    const userId = req.user.id
-    console.log("userid",userId) // Retrieve the user ID from the token's payload set by verifyToken middleware
+    const userId = req.user.id;
+    console.log("userid", userId); // Retrieve the user ID from the token's payload set by verifyToken middleware
     const username = await user.findById(userId).select("name");
 
     if (!username) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.json({name:username.name }); // Return the username
+    res.json({ name: username.name }); // Return the username
   } catch (error) {
     console.error("Error fetching username:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
 
-
-module.exports = { signup, login, logout,getname};
+module.exports = { signup, login, logout, getname };

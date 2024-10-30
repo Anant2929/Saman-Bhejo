@@ -5,11 +5,11 @@ const ReceiverAddress = () => {
   const { setFormData, setCurrentState } = useParcelRegistration(); // Context functions
   const [localFormData, setLocalFormData] = useState({
     ReciverName: '',
-    contactNumber: '',
-    address: '',
-    city: '',
-    state: '',
-    postalCode: '',
+    RecivercontactNumber: '',
+    Reciveraddress: '',
+    Recivercity: '',
+    Reciverstate: '',
+    ReciverpostalCode: '',
   });
   const [errors, setErrors] = useState({});
 
@@ -19,12 +19,12 @@ const ReceiverAddress = () => {
 
   const validateFields = () => {
     let newErrors = {};
-    if (!localFormData.ReciverName) newErrors.ReciverName= 'This field is required';
-    if (!localFormData.contactNumber) newErrors.contactNumber = 'This field is required';
-    if (!localFormData.address) newErrors.address = 'This field is required';
-    if (!localFormData.city) newErrors.city = 'This field is required';
-    if (!localFormData.state) newErrors.state = 'This field is required';
-    if (!localFormData.postalCode) newErrors.postalCode = 'This field is required';
+    if (!localFormData.ReciverName) newErrors.ReciverName = 'This field is required';
+    if (!localFormData.RecivercontactNumber) newErrors.RecivercontactNumber = 'This field is required';
+    if (!localFormData.Reciveraddress) newErrors.Reciveraddress = 'This field is required';
+    if (!localFormData.Recivercity) newErrors.Recivercity = 'This field is required';
+    if (!localFormData.Reciverstate) newErrors.Reciverstate = 'This field is required';
+    if (!localFormData.ReciverpostalCode) newErrors.ReciverpostalCode = 'This field is required';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -56,17 +56,17 @@ const ReceiverAddress = () => {
               </div>
             </div>
             <h2 className="text-[#F8F9FB] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">
-             Receiver Information
+              Receiver Information
             </h2>
 
             {/* Form Fields */}
             {[
               { label: "Full Name", name: "ReciverName", placeholder: "E.g. John Doe" },
-              { label: "Contact Number", name: "contactNumber", placeholder: "E.g. +911234567890" },
-              { label: "Address", name: "address", placeholder: "123 Main St" },
-              { label: "City", name: "city", placeholder: "E.g. New York" },
-              { label: "State", name: "state", placeholder: "E.g. New York" },
-              { label: "Postal Code", name: "postalCode", placeholder: "12345" }
+              { label: "Contact Number", name: "RecivercontactNumber", placeholder: "E.g. +911234567890" },
+              { label: "Address", name: "Reciveraddress", placeholder: "123 Main St" },
+              { label: "City", name: "Recivercity", placeholder: "E.g. New York" },
+              { label: "State", name: "Reciverstate", placeholder: "E.g. New York" },
+              { label: "Postal Code", name: "ReciverpostalCode", placeholder: "12345" }
             ].map((field) => (
               <div key={field.name} className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
                 <label className="flex flex-col min-w-40 flex-1">
