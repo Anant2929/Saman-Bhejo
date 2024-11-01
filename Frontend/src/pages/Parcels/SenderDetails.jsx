@@ -6,10 +6,10 @@ const SenderForm = () => {
   const [localFormData, setLocalFormData] = useState({
  senderName: '',
  senderContactNumber: '',
- senderaddress: '',
- sendercity: '',
- senderstate: '',
- senderpostalCode: '',
+ senderAddress: '',
+ senderCity: '',
+ senderState: '',
+ senderPostalCode: '',
   });
   const [errors, setErrors] = useState({});
 
@@ -21,10 +21,10 @@ const SenderForm = () => {
     let newErrors = {};
     if (!localFormData.senderName) newErrors.senderName = 'This field is required';
     if (!localFormData.senderContactNumber) newErrors.senderContactNumber = 'This field is required';
-    if (!localFormData.senderaddress) newErrors.senderaddress = 'This field is required';
-    if (!localFormData.sendercity) newErrors.sendercity = 'This field is required';
-    if (!localFormData.senderstate) newErrors.senderstate = 'This field is required';
-    if (!localFormData.senderpostalCode) newErrors.senderpostalCode = 'This field is required';
+    if (!localFormData.senderAddress) newErrors.senderAddress = 'This field is required';
+    if (!localFormData.senderCity) newErrors.senderCity = 'This field is required';
+    if (!localFormData.senderState) newErrors.senderState = 'This field is required';
+    if (!localFormData.senderPostalCode) newErrors.senderPostalCode = 'This field is required';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -63,10 +63,10 @@ const SenderForm = () => {
             {[
               { label: "Full Name", name: "senderName", placeholder: "E.g. John Doe" },
               { label: "Contact Number", name: "senderContactNumber", placeholder: "E.g. +911234567890" },
-              { label: "Address", name: "senderaddress", placeholder: "123 Main St" },
-              { label: "City", name: "sendercity", placeholder: "E.g. New York" },
-              { label: "State", name: "senderstate", placeholder: "E.g. New York" },
-              { label: "Postal Code", name: "senderpostalCode", placeholder: "12345" }
+              { label: "Address", name: "senderAddress", placeholder: "123 Main St" },
+              { label: "City", name: "senderCity", placeholder: "E.g. New York" },
+              { label: "State", name: "senderState", placeholder: "E.g. New York" },
+              { label: "Postal Code", name: "senderPostalCode", placeholder: "12345" }
             ].map((field) => (
               <div key={field.name} className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
                 <label className="flex flex-col min-w-40 flex-1">

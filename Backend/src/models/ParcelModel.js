@@ -1,15 +1,8 @@
 const mongoose = require("mongoose");
 
 const parcelSchema = new mongoose.Schema({
-  // Parcel details
-  parcelName: {
-    type: String,
-    required: true,
-  },
-  parcelWeight: {
-    type: Number,
-    required: true,
-  },
+  parcelName: { type: String, required: true },
+  parcelWeight: { type: Number, required: true },
   parcelType: {
     type: String,
     enum: [
@@ -22,114 +15,45 @@ const parcelSchema = new mongoose.Schema({
     ],
     required: true,
   },
-  parcelDescription: {
-    type: String,
-    required: true,
-  },
-  parcelPhotoUrl: {
-    type: String,
-    required: true,
-  },
-  volume: {
-    type: Number,
-    required: true,
-  },
-  // Sender Information
+  parcelDescription: { type: String, required: true },
+  parcelPhotoUrl: { type: String },
+  volume: { type: Number, required: true },
   senderDetails: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Sender",
+    ref: "User",
     required: true,
   },
-
-  // Receiver Information
   receiverDetails: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Receiver",
+    ref: "User",
     required: true,
   },
-
-  // Carrier Information
-  carrierDetails: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Carrier",
-  },
-
-  // from City details
-  fromCity: {
-    type: String,
-    required: true,
-  },
-  fromState: {
-    type: String,
-    required: true,
-  },
-  fromPincode: {
-    type: Number,
-    required: true,
-    length: 6,
-  },
-
-  // to city
-  toCity: {
-    type: String,
-    required: true,
-  },
-  toState: {
-    type: String,
-    required: true,
-  },
-  toPincode: {
-    type: Number,
-    required: true,
-    length: 6,
-  },
-
-  distance: {
-    type: Number,
-    required: true,
-    default: 0,
-  },
-
-  // Tracking and status
+  fromCity: { type: String, required: true },
+  fromState: { type: String, required: true },
+  fromPincode: { type: Number, required: true },
+  toCity: { type: String, required: true },
+  toState: { type: String, required: true },
+  toPincode: { type: Number, required: true },
+  distance: { type: Number, required: true },
   trackingStatus: {
     type: String,
     enum: ["Booked", "Picked Up", "In Transit", "Delivered", "Canceled"],
     default: "Booked",
   },
-
-  // Payment information
   paymentStatus: {
     type: String,
     enum: ["Pending", "In Progress", "Completed", "Failed"],
     default: "Pending",
   },
-  deliveryCharges: {
-    type: Number,
-    required: true,
-  },
-
-  // Date fields
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now,
-  },
-  expectedDeliveryDate: {
-    type: Date,
-    required: true,
-  },
+  deliveryCharges: { type: Number, required: true },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
+  expectedDeliveryDate: { type: Date, required: true },
 });
 
-// Adding a pre-save hook to update the 'updatedAt' timestamp on changes
 parcelSchema.pre("save", function (next) {
   this.updatedAt = Date.now();
   next();
 });
 
-// Creating the Parcel model
-const Parcel = mongoose.model("Parcel", parcelSchema);
-
-module.exports = Parcel;
+module.exports = mongoose.model("Parcel", parcelSchema);

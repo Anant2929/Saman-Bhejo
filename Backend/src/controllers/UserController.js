@@ -101,7 +101,6 @@ const logout = (req, res) => {
 const getname = async (req, res) => {
   try {
     const userId = req.user.id;
-    console.log("userid", userId); // Retrieve the user ID from the token's payload set by verifyToken middleware
     const username = await user.findById(userId).select("name");
 
     if (!username) {

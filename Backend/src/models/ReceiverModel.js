@@ -1,36 +1,27 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-// Define receiver schema without enum in State and City
-const receiverSchema = new mongoose.Schema({
+const receiverSchema = new mongoose.Schema(
+  {
     receiver: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
-    Address: {
-        type: String,
-        required: true
-    },
-    City: {
-        type: String, // No enum here, so any city can be saved
-        required: true
-    },
-    State: {
-        type: String, // No enum here, so any state can be saved
-        required: true
-    },
-    ParcelsReceived: {
-        type: Number,
-        required : true
-    },
-    PostCode: {
-        type: Number,
-        required: true,
-        length: 6
-    }
-}, { timestamps: true });
+    address: { type: String, required: true },
 
-// Creating the receiver model
-const Receiver = mongoose.model('Receiver', receiverSchema);
+    city: { type: String, required: true },
 
-module.exports = Receiver;
+    state: { type: String, required: true },
+
+    parcelsReceived: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Parcel",
+      required: true,
+    },
+
+    postCode: { type: Number, required: true },
+  },
+  { timestamps: true }
+);
+
+module.exports = mongoose.model("Receiver", receiverSchema);

@@ -1,38 +1,26 @@
+const mongoose = require("mongoose");
 
-
-const mongoose = require('mongoose');
-
-// Define sender schema without enum in State and City
-const senderSchema = new mongoose.Schema({
+const senderSchema = new mongoose.Schema(
+  {
     sender: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
-    Address: {
-        type: String,
-        required: true
+    address: {
+      type: String,
+      required: true,
     },
-    City: {
-        type: String, // No enum here, so any city can be saved
-        required: true
+    city: { type: String, required: true },
+    state: { type: String, required: true },
+    parcelsSent: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Parcel",
+      required: true,
     },
-    State: {
-        type: String, // No enum here, so any state can be saved
-        required: true
-    },
-    ParcelsSent: {
-        type: Number,
-        required: true
-    },
-    PostCode: {
-        type: Number,
-        required: true,
-        length: 6
-    }
-}, { timestamps: true });
+    postCode: { type: Number, required: true },
+  },
+  { timestamps: true }
+);
 
-// Creating the Sender model
-const Sender = mongoose.model('Sender', senderSchema);
-
-module.exports = Sender;
+module.exports = mongoose.model("Sender", senderSchema);

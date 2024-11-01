@@ -9,7 +9,7 @@ export default function ParcelForm() {
     parcelType: '',
     parcelDescription: '',
     parcelPhotoURL: '',
-    parcelVolume: '',
+    volume: '',
   });
   const [errors, setErrors] = useState({});
 
@@ -23,8 +23,8 @@ export default function ParcelForm() {
     if (!localFormData.parcelWeight) newErrors.parcelWeight = 'This field is required';
     if (!localFormData.parcelType) newErrors.parcelType = 'This field is required';
     if (!localFormData.parcelDescription) newErrors.parcelDescription = 'This field is required';
-    if (!localFormData.parcelVolume) newErrors.parcelVolume = 'This field is required';
-    if (!localFormData.parcelPhotoURL) newErrors.parcelPhotoURL = 'This field is required';
+    if (!localFormData.volume) newErrors.volume = 'This field is required';
+    // if (!localFormData.parcelPhotoURL) newErrors.parcelPhotoURL = 'This field is required';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -127,13 +127,13 @@ export default function ParcelForm() {
               <label className="flex flex-col min-w-40 flex-1">
                 <p className="text-[#F9FAFA] text-base font-medium leading-normal pb-2">Volume</p>
                 <input
-                  name="parcelVolume"
-                  value={localFormData.parcelVolume}
+                  name="volume"
+                  value={localFormData.volume}
                   onChange={handleInputChange}
                   placeholder="E.g. 1ft x 1ft x 1ft"
                   className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#F9FAFA] focus:outline-0 focus:ring-0 border border-[#505362] bg-[#22232A] focus:border-[#505362] h-14 placeholder:text-[#D5D6DD] p-[15px] text-base font-normal leading-normal"
                 />
-                {errors.parcelVolume && <span className="text-red-500 text-sm">{errors.parcelVolume}</span>}
+                {errors.volume && <span className="text-red-500 text-sm">{errors.volume}</span>}
               </label>
             </div>
 

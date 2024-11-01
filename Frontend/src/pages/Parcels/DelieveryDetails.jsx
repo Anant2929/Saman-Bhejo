@@ -47,8 +47,8 @@ const DeliveryDetailsForm = () => {
     if (isSubmitting) {
       const submitDataToBackend = async () => {
         try {
-          // const response = await axios.post('/api/delivery', formData); // Replace with your backend API URL
-          console.log('Data sent successfully:', formData);
+          const response = await axios.post('/api/parcel/register', formData); // Replace with your backend API URL
+          console.log('Data sent successfully:', response);
           alert('Form submitted successfully!');
           setCurrentState(1)
         } catch (error) {

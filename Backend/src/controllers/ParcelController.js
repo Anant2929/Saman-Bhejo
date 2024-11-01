@@ -1,125 +1,116 @@
-const Parcel = require('../models/ParcelModel.js'); // Import the Parcel model
-const User = require('../models/UserModel.js'); // Import the User model
-const Sender = require('../models/SenderModel.js');
-const Reciever = require('../models/ReceiverModel.js');
-const { getDistance } = require('../Services/DistanceCalculate.js');
+const Parcel = require("../models/ParcelModel.js");
+const User = require("../models/UserModel.js");
+const Sender = require("../models/SenderModel.js");
+const Receiver = require("../models/ReceiverModel.js");
+const { getDistance } = require("../services/DistanceCalculate.js");
 
-// Base rates for different parcel types (in INR per kg)
-const baseRates = {
-    Document: 5,
-    Clothing: 15,
-    Electronics: 40,
-    Food: 10,
-    Medicines: 12,
-    Others: 7
+const BASE_RATES = {
+  Document: 5,
+  Clothing: 15,
+  Electronics: 40,
+  Food: 10,
+  Medicines: 12,
+  Others: 7,
 };
+const DISTANCE_RATE = 0.3;
 
-// Distance rate (in INR per km)
-const distanceRate = 0.3;
-
-// Function to calculate estimated price based on weight, type, and distance
 const calculateEstimatedPrice = (weight, parcelType, distance) => {
-    const baseRate = baseRates[parcelType] || baseRates.Others;
-    const price = (baseRate * weight) + (distance * distanceRate);
-    return price;
+  const baseRate = BASE_RATES[parcelType] || BASE_RATES.Others;
+  return baseRate * weight + distance * DISTANCE_RATE;
 };
 
-// Controller function to handle parcel creation
 const registerParcel = async (req, res) => {
-    try {
-        let {
-            parcelName, parcelWeight, parcelType, parcelDescription , parcelPhotoURL, volume,senderNum, 
-             distance, fromCity, receiverNum ,fromState, fromPincode, toCity,toState, toPincode, expectedDeliveryDate
-        } = req.body;
+  try {
+    const {
+      parcelName,
+      parcelWeight,
+      parcelType,
+      parcelDescription,
+      parcelPhotoURL,
+      volume,
+      senderContactNumber,
+      senderAddress,
+      senderCity,
+      senderState,
+      senderPostalCode,
+      ReciverAddress,
+      ReciverCity,
+      ReciverState,
+      ReciverPostalCode,
+      RecivercontactNumber,
+      expectedDeliveryDate,
+    } = req.body;
 
-        // Validate required fields (except for parcelPhotoUrl)
-        if (!parcelName || !parcelWeight || !parcelType || !parcelDescription ||
-            !senderNum || !senderAddress || !receiverNum || !receiverAddress || !fromState || !fromPincode ||
-            !carrier || !carrierVehicle || !fromCity || !toCity || !expectedDeliveryDate) {
-            return res.status(400).json({ error: 'All required fields must be filled.' });
-        }
-
-        // Check if sender exists in the database
-        const sender = await User.findOne({ contactNumber: senderNum });
-        if (!sender) {
-            return res.status(404).json({ error: 'Sender not found.' });
-        }
-
-        // Check if receiver exists in the database
-        const receiver = await User.findOne({ contactNumber: receiverNum });
-        if (!receiver) {
-            return res.status(404).json({ error: 'Receiver not found.' });
-        }
-
-
-        // Calculate distance between fromCity and toCity
-        try {
-            distance = await getDistance(fromCity, toCity);
-        } catch (error) {
-            return res.status(500).json({ error: 'Error fetching distance between cities.' });
-        }
-
-        // Calculate estimated price
-        const estimatedPrice = calculateEstimatedPrice(parcelWeight, parcelType, distance);
-
-        // Handle photo upload
-        const parcelPhotoUri = req.file ? `/uploads/${req.file.filename}` : null;
-
-        // Create and save parcel
-        const parcel = new Parcel({
-            parcelName,
-            parcelWeight,
-            parcelType,
-            parcelDescription,
-            parcelPhotoUri, // Save photo URL from upload
-            sender: sender._id,
-            senderAddress,
-            receiver: receiver._id,
-            receiverAddress,
-            carrier,
-            carrierVehicle,
-            fromCity,
-            toCity,
-            distance,
-            volume,
-            expectedDeliveryDate,
-            deliveryCharges: estimatedPrice,
-            paymentStatus: 'Pending',
-            trackingStatus: 'Booked'
-        });
-
-        await parcel.save();
-
-        //Create and Save Sender
-        const sender_save = new Sender({
-            sender:sender._id,
-            Address:senderAddress, 
-            City:fromCity,
-            State:fromState,
-            ParcelsSent:parcel._id,
-            PostCode:fromPincode
-        });
-
-        await sender_save.save();
-
-        //Create and Save Reciever
-        const Receiver_save = new Reciever({
-            receiver:receiver._id,
-            Address:receiverAddress,
-            City:toCity,
-            State:toState,
-            ParcelsReceived:parcel._id,
-            PostCode:toPincode
-        })
-
-        res.status(201).json({ message: 'Parcel created successfully', parcel });
-
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Server error. Please try again later.' });
+    if (!parcelName || !parcelWeight || !parcelType || !parcelDescription || !senderContactNumber || !volume ||    !senderAddress || !senderCity || !senderState || !senderPostalCode || !ReciverAddress || !ReciverCity ||      !ReciverState || !ReciverPostalCode || !RecivercontactNumber || !expectedDeliveryDate) {
+      return res.status(400).json({ error: "All required fields must be filled." });
     }
+
+    const sender = await User.findOne({ contactNumber: senderContactNumber });
+    if (!sender) return res.status(404).json({ error: "Sender not found." });
+
+    const receiver = await User.findOne({ contactNumber: RecivercontactNumber });
+    if (!receiver) return res.status(404).json({ error: "Receiver not found." });
+
+    let distance;
+    try {
+      distance = await getDistance(senderCity, ReciverCity);
+    } catch (error) {
+      return res.status(500).json({ error: "Error fetching distance between cities." });
+    }
+
+    const estimatedPrice = calculateEstimatedPrice(parcelWeight, parcelType, distance);
+    const parcelPhotoUrl = req.file ? `/uploads/${req.file.filename}` : parcelPhotoURL;
+
+    const parcel = new Parcel({
+      parcelName,
+      parcelWeight,
+      parcelType,
+      parcelDescription,
+      parcelPhotoUrl,
+      senderDetails: sender._id,
+      receiverDetails: receiver._id,
+      fromCity:senderCity,
+      fromState :senderState ,
+      fromPincode: senderPostalCode,
+      toCity:ReciverCity,
+      toState:ReciverState,
+      toPincode: ReciverPostalCode,
+      distance,
+      volume,
+      expectedDeliveryDate,
+      deliveryCharges: estimatedPrice,
+      paymentStatus: "Pending",
+      trackingStatus: "Booked",
+    });
+
+    await parcel.save();
+
+    const senderRecord = new Sender({
+      sender: sender._id,
+      address: senderAddress,
+      city: senderCity,
+      state: senderState,
+      parcelsSent: parcel._id,
+      postCode: senderPostalCode,
+    });
+    await senderRecord.save();
+
+    const receiverRecord = new Receiver({
+      receiver: receiver._id,
+      address: ReciverAddress,
+      city: ReciverCity ,
+      state: ReciverState,
+      parcelsReceived: parcel._id,
+      postCode: ReciverPostalCode,
+    });
+    await receiverRecord.save();
+
+    console.log("Everything working as expected");
+    res.status(201).json({ message: "Parcel created successfully", parcel });
+  } catch (error) {
+    console.error("Error in registerParcel:", error);
+    res.status(500).json({ error: "Server error. Please try again later." });
+  }
 };
 
-module.exports = {
-    registerParcel
-};
+module.exports = { registerParcel };
