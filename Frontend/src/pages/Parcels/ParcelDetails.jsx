@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { useParcelRegistration } from '../../context/ParcelContext';
 
 export default function ParcelForm() {
-  const { setFormData, setCurrentState } = useParcelRegistration();
+  const {formData,setFormData, setCurrentState } = useParcelRegistration();
   const [localFormData, setLocalFormData] = useState({
     parcelName: '',
     parcelWeight: '',
@@ -12,10 +12,23 @@ export default function ParcelForm() {
     volume: '',
   });
   const [errors, setErrors] = useState({});
+  useEffect(() => {
+    const savedData = JSON.parse(localStorage.getItem('parcelFormData'));
+    if (savedData) {
+      setLocalFormData(prevData => ({
+        ...prevData,
+        ...savedData,
+      }));
+    }
+  }, []);
+
 
   const handleInputChange = (e) => {
-    setLocalFormData({ ...localFormData, [e.target.name]: e.target.value });
+    const updatedData = { ...localFormData, [e.target.name]: e.target.value };
+    setLocalFormData(updatedData);
   };
+
+  
 
   const validateFields = () => {
     let newErrors = {};
@@ -31,10 +44,12 @@ export default function ParcelForm() {
 
   const handleNextClick = () => {
     if (validateFields()) {
-      setFormData(prevData => ({ ...prevData, ...localFormData }));
-      setCurrentState(2);
+        const updatedFormData = { ...formData, ...localFormData };
+        setFormData(updatedFormData);
+        localStorage.setItem('parcelFormData', JSON.stringify(updatedFormData));
+        setCurrentState(2);
     }
-  };
+};
 
   return (
     <div className="relative flex size-full min-h-screen flex-col bg-[#1C1D22] dark group/design-root overflow-x-hidden" style={{ fontFamily: 'Inter, "Noto Sans", sans-serif' }}>

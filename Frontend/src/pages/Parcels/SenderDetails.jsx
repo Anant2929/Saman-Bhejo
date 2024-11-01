@@ -1,20 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParcelRegistration } from '../../context/ParcelContext';
 
 const SenderForm = () => {
-  const { setFormData, setCurrentState } = useParcelRegistration(); // Context functions
+  const { formData, setFormData, setCurrentState } = useParcelRegistration(); // Context functions
   const [localFormData, setLocalFormData] = useState({
- senderName: '',
- senderContactNumber: '',
- senderAddress: '',
- senderCity: '',
- senderState: '',
- senderPostalCode: '',
+    senderName: '',
+    senderContactNumber: '',
+    senderAddress: '',
+    senderCity: '',
+    senderState: '',
+    senderPostalCode: '',
   });
   const [errors, setErrors] = useState({});
+  useEffect(() => {
+    const savedData = JSON.parse(localStorage.getItem('parcelFormData'));
+    if (savedData) {
+      setLocalFormData(prevData => ({
+        ...prevData,
+        ...savedData,
+      }));
+    }
+  }, []);
 
   const handleInputChange = (e) => {
-    setLocalFormData({ ...localFormData, [e.target.name]: e.target.value });
+    const updatedData = { ...localFormData, [e.target.name]: e.target.value };
+    setLocalFormData(updatedData);
   };
 
   const validateFields = () => {
@@ -31,12 +41,16 @@ const SenderForm = () => {
 
   const handleNextClick = () => {
     if (validateFields()) {
-      setFormData((prevData) => ({ ...prevData, ...localFormData }));
-      setCurrentState(3); // Move to the next step
+        const updatedFormData = { ...formData, ...localFormData };
+        setFormData(updatedFormData);
+        localStorage.setItem('parcelFormData', JSON.stringify(updatedFormData));
+        setCurrentState(3);
     }
-  };
+};
 
   const handlePrevClick = () => {
+    const updatedFormData = { ...formData, ...localFormData };
+    localStorage.setItem('parcelFormData', JSON.stringify(updatedFormData));
     setCurrentState(1); // Go back to previous step
   };
 

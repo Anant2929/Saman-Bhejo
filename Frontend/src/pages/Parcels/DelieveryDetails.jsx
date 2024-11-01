@@ -5,7 +5,7 @@ import axios from 'axios'; // Backend par data bhejne ke liye axios ya fetch use
 
 const DeliveryDetailsForm = () => {
   const { formData, setFormData, setCurrentState } = useParcelRegistration();
-  const [localFormData, setLocalFormData] = useState({
+  let [localFormData, setLocalFormData] = useState({
     fromCity: '',
     fromState: '',
     fromZip: '',
@@ -16,9 +16,21 @@ const DeliveryDetailsForm = () => {
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false); // To control backend submission
+  useEffect(() => {
+    const savedData = JSON.parse(localStorage.getItem('parcelFormData'));
+    if (savedData) {
+      setLocalFormData(prevData => ({
+        ...prevData,
+        ...savedData,
+      }));
+    }
+  }, []);
+ 
+
 
   const handleInputChange = (e) => {
-    setLocalFormData({ ...localFormData, [e.target.name]: e.target.value });
+    const updatedData = { ...localFormData, [e.target.name]: e.target.value };
+    setLocalFormData(updatedData);
   };
 
   const validateFields = () => {
@@ -37,19 +49,23 @@ const DeliveryDetailsForm = () => {
   const handleSubmitClick = (e) => {
     e.preventDefault();
     if (validateFields()) {
-      setFormData((prevData) => ({ ...prevData, ...localFormData }));
+      const updatedFormData = { ...formData, ...localFormData };
+      setFormData(updatedFormData);
+      localStorage.setItem('parcelFormData', JSON.stringify(updatedFormData));
       setIsSubmitting(true); // Set flag to trigger useEffect for submission
     }
   };
 
   useEffect(() => {
-    // Form submit only when `isSubmitting` is true and `formData` has updated data
+    // Form submit only when `isSubmitting` is true and `formData` has updated data 
     if (isSubmitting) {
       const submitDataToBackend = async () => {
         try {
-          const response = await axios.post('/api/parcel/register', formData); // Replace with your backend API URL
-          console.log('Data sent successfully:', response);
+           const response = await axios.post('/api/parcel/register', formData); // Replace with your backend API URL
+          console.log('Data sent successfully:', formData);
           alert('Form submitted successfully!');
+          localStorage.removeItem('parcelFormData');
+          
           setCurrentState(1)
         } catch (error) {
           console.error('Error submitting data:', error);
@@ -63,7 +79,11 @@ const DeliveryDetailsForm = () => {
   }, [formData, isSubmitting]); // Re-run when `formData` or `isSubmitting` changes
 
   const handlePrevClick = () => {
+    const updatedFormData = { ...formData, ...localFormData };
+    localStorage.setItem('parcelFormData', JSON.stringify(updatedFormData));
     setCurrentState(3);
+    
+    
   };
 
   return (
