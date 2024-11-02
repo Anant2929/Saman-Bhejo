@@ -1,19 +1,10 @@
 // AuthContext.jsx
-import React, { createContext, useContext, useState, useEffect } from 'react';
-
+import React, { createContext, useContext, useState, useEffect } from "react";
+import Cookies from "js-cookie";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(localStorage.getItem('token') || null);
-
-  useEffect(() => {
-    if (token) {
-      localStorage.setItem('token', token);
-    } else {
-      localStorage.removeItem('token');
-    }
-  }, [token]);
-
+  const [token, setToken] = useState(Cookies.get("token") || null);
   return (
     <AuthContext.Provider value={{ token, setToken }}>
       {children}

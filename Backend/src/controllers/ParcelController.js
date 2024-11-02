@@ -19,65 +19,120 @@ const calculateEstimatedPrice = (weight, parcelType, distance) => {
   return baseRate * weight + distance * DISTANCE_RATE;
 };
 
+// Function to destructure and validate common parcel data
+const extractParcelData = (req) => {
+  const {
+    parcelName,
+    parcelWeight,
+    parcelType,
+    parcelDescription,
+    parcelPhotoURL,
+    volume,
+    senderContactNumber,
+    senderAddress,
+    senderCity,
+    senderState,
+    senderPostalCode,
+    ReciverAddress,
+    ReciverCity,
+    ReciverState,
+    ReciverPostalCode,
+    RecivercontactNumber,
+    expectedDeliveryDate,
+  } = req.body;
+
+  if (!parcelName || !parcelWeight || !parcelType || !parcelDescription || !senderContactNumber || !volume ||
+    !senderAddress || !senderCity || !senderState || !senderPostalCode ||
+    !ReciverAddress || !ReciverCity || !ReciverState || !ReciverPostalCode ||
+    !RecivercontactNumber || !expectedDeliveryDate) {
+    throw new Error("All required fields must be filled.");
+  }
+  const parcelPhotoUrl = req.file ? `/uploads/${req.file.filename}` : parcelPhotoURL;
+  return {
+    parcelName,
+    parcelWeight,
+    parcelType,
+    parcelDescription,
+    parcelPhotoURL,
+    volume,
+    senderContactNumber,
+    senderAddress,
+    senderCity,
+    senderState,
+    senderPostalCode,
+    ReciverAddress,
+    ReciverCity,
+    ReciverState,
+    ReciverPostalCode,
+    RecivercontactNumber,
+    expectedDeliveryDate,
+  };
+};
+
+// Function to find sender and receiver by contact number
+const findSenderReceiver = async (senderContactNumber, RecivercontactNumber) => {
+  const sender = await User.findOne({ contactNumber: senderContactNumber });
+  if (!sender) throw new Error("Sender not found.");
+
+  const receiver = await User.findOne({ contactNumber: RecivercontactNumber });
+  if (!receiver) throw new Error("Receiver not found.");
+
+  return { sender, receiver };
+};
+
+// Function to calculate price and distance
+const calculatePriceAndDistance = async (parcelWeight, parcelType, senderCity, ReciverCity) => {
+  let distance;
+  try {
+    distance = await getDistance(senderCity, ReciverCity);
+  } catch (error) {
+    throw new Error("Error fetching distance between cities.");
+  }
+
+  const estimatedPrice = calculateEstimatedPrice(parcelWeight, parcelType, distance);
+  return { estimatedPrice, distance };
+};
+
+// Function to handle price and distance calculation response
+const get_price_distance = async (req, res) => {
+  try {
+    const parcelData = extractParcelData(req);
+    const { sender, receiver } = await findSenderReceiver(parcelData.senderContactNumber, parcelData.RecivercontactNumber);
+    const { estimatedPrice, distance } = await calculatePriceAndDistance(parcelData.parcelWeight, parcelData.parcelType, parcelData.senderCity, parcelData.ReciverCity);
+
+    res.status(200).json({ message: "Price and distance calculated successfully", distance, estimatedPrice });
+  } catch (error) {
+    console.error("Error in get_price_distance:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Function to handle parcel registration and save it to the database
 const registerParcel = async (req, res) => {
   try {
-    const {
-      parcelName,
-      parcelWeight,
-      parcelType,
-      parcelDescription,
-      parcelPhotoURL,
-      volume,
-      senderContactNumber,
-      senderAddress,
-      senderCity,
-      senderState,
-      senderPostalCode,
-      ReciverAddress,
-      ReciverCity,
-      ReciverState,
-      ReciverPostalCode,
-      RecivercontactNumber,
-      expectedDeliveryDate,
-    } = req.body;
+    const parcelData = extractParcelData(req);
+    const { sender, receiver } = await findSenderReceiver(parcelData.senderContactNumber, parcelData.RecivercontactNumber);
+    const { estimatedPrice, distance } = await calculatePriceAndDistance(parcelData.parcelWeight, parcelData.parcelType, parcelData.senderCity, parcelData.ReciverCity);
 
-    if (!parcelName || !parcelWeight || !parcelType || !parcelDescription || !senderContactNumber || !volume ||    !senderAddress || !senderCity || !senderState || !senderPostalCode || !ReciverAddress || !ReciverCity ||      !ReciverState || !ReciverPostalCode || !RecivercontactNumber || !expectedDeliveryDate) {
-      return res.status(400).json({ error: "All required fields must be filled." });
-    }
-
-    const sender = await User.findOne({ contactNumber: senderContactNumber });
-    if (!sender) return res.status(404).json({ error: "Sender not found." });
-
-    const receiver = await User.findOne({ contactNumber: RecivercontactNumber });
-    if (!receiver) return res.status(404).json({ error: "Receiver not found." });
-
-    let distance;
-    try {
-      distance = await getDistance(senderCity, ReciverCity);
-    } catch (error) {
-      return res.status(500).json({ error: "Error fetching distance between cities." });
-    }
-
-    const estimatedPrice = calculateEstimatedPrice(parcelWeight, parcelType, distance);
-    const parcelPhotoUrl = req.file ? `/uploads/${req.file.filename}` : parcelPhotoURL;
+    const parcelPhotoUrl = req.file ? `/uploads/${req.file.filename}` : parcelData.parcelPhotoURL;
 
     const parcel = new Parcel({
-      parcelName,
-      parcelWeight,
-      parcelType,
-      parcelDescription,
+      parcelName: parcelData.parcelName,
+      parcelWeight: parcelData.parcelWeight,
+      parcelType: parcelData.parcelType,
+      parcelDescription: parcelData.parcelDescription,
       parcelPhotoUrl,
       senderDetails: sender._id,
       receiverDetails: receiver._id,
-      fromCity:senderCity,
-      fromState :senderState ,
-      fromPincode: senderPostalCode,
-      toCity:ReciverCity,
-      toState:ReciverState,
-      toPincode: ReciverPostalCode,
+      fromCity: parcelData.senderCity,
+      fromState: parcelData.senderState,
+      fromPincode: parcelData.senderPostalCode,
+      toCity: parcelData.ReciverCity,
+      toState: parcelData.ReciverState,
+      toPincode: parcelData.ReciverPostalCode,
       distance,
-      volume,
-      expectedDeliveryDate,
+      volume: parcelData.volume,
+      expectedDeliveryDate: parcelData.expectedDeliveryDate,
       deliveryCharges: estimatedPrice,
       paymentStatus: "Pending",
       trackingStatus: "Booked",
@@ -85,32 +140,32 @@ const registerParcel = async (req, res) => {
 
     await parcel.save();
 
+    // Save sender and receiver records
     const senderRecord = new Sender({
       sender: sender._id,
-      address: senderAddress,
-      city: senderCity,
-      state: senderState,
+      address: parcelData.senderAddress,
+      city: parcelData.senderCity,
+      state: parcelData.senderState,
       parcelsSent: parcel._id,
-      postCode: senderPostalCode,
+      postCode: parcelData.senderPostalCode,
     });
     await senderRecord.save();
 
     const receiverRecord = new Receiver({
       receiver: receiver._id,
-      address: ReciverAddress,
-      city: ReciverCity ,
-      state: ReciverState,
+      address: parcelData.ReciverAddress,
+      city: parcelData.ReciverCity,
+      state: parcelData.ReciverState,
       parcelsReceived: parcel._id,
-      postCode: ReciverPostalCode,
+      postCode: parcelData.ReciverPostalCode,
     });
     await receiverRecord.save();
 
-    console.log("Everything working as expected");
-    res.status(201).json({ message: "Parcel created successfully", parcel });
+    res.status(201).json({ message: "Parcel registered successfully", parcel });
   } catch (error) {
     console.error("Error in registerParcel:", error);
-    res.status(500).json({ error: "Server error. Please try again later." });
+    res.status(500).json({ error: error.message });
   }
 };
 
-module.exports = { registerParcel };
+module.exports = { registerParcel, get_price_distance };

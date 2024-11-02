@@ -15,7 +15,7 @@ export default function Logout() {
       console.log(response.data.message); // Log success message
 
       // Clear the token from local storage and Auth context
-      localStorage.removeItem('token'); // Remove the token from local storage
+      
       Cookies.remove('token');
       console.log("gettoken is",Cookies.get('token'))
       setToken(null); // Clear the token in Auth context
