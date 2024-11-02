@@ -20,6 +20,7 @@ export default function Logout() {
       console.log("gettoken is",Cookies.get('token'))
       setToken(null); // Clear the token in Auth context
       // Redirect to login page
+      localStorage.clear();
       navigate("/user/login"); // Adjust the path if needed
     } catch (error) {
       console.error("Logout failed:", error.response?.data?.message || "An error occurred");

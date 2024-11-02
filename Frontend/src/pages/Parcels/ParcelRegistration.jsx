@@ -4,6 +4,7 @@ import ParcelForm from './ParcelDetails';
 import ReceiverAddress from './ReceiverDetails';
 import SenderForm from './SenderDetails';
 import DeliveryDetailsForm from './DelieveryDetails';
+import Confirmation from './Confirmation';
 
 import { useParcelRegistration } from '../../context/ParcelContext';
 
@@ -49,6 +50,7 @@ function ParcelRegistration() {
         {currentState === 2 && <SenderForm />}
         {currentState === 3 && <ReceiverAddress />}
         {currentState === 4 && <DeliveryDetailsForm />}
+        {currentState === 5 && <Confirmation />}
    
       </div>
 

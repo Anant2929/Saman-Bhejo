@@ -16,7 +16,7 @@ const DISTANCE_RATE = 0.3;
 
 const calculateEstimatedPrice = (weight, parcelType, distance) => {
   const baseRate = BASE_RATES[parcelType] || BASE_RATES.Others;
-  return baseRate * weight + distance * DISTANCE_RATE;
+  return Math.round(baseRate * weight + distance * DISTANCE_RATE);
 };
 
 // Function to destructure and validate common parcel data
@@ -41,19 +41,44 @@ const extractParcelData = (req) => {
     expectedDeliveryDate,
   } = req.body;
 
-  if (!parcelName || !parcelWeight || !parcelType || !parcelDescription || !senderContactNumber || !volume ||
-    !senderAddress || !senderCity || !senderState || !senderPostalCode ||
-    !ReciverAddress || !ReciverCity || !ReciverState || !ReciverPostalCode ||
-    !RecivercontactNumber || !expectedDeliveryDate) {
-    throw new Error("All required fields must be filled.");
+  // List of required fields and their values
+  const requiredFields = {
+    parcelName,
+    parcelWeight,
+    parcelType,
+    parcelDescription,
+    volume,
+    senderContactNumber,
+    senderAddress,
+    senderCity,
+    senderState,
+    senderPostalCode,
+    ReciverAddress,
+    ReciverCity,
+    ReciverState,
+    ReciverPostalCode,
+    RecivercontactNumber,
+    expectedDeliveryDate,
+  };
+
+  // Check for any missing fields
+  const missingFields = Object.entries(requiredFields)
+    .filter(([key, value]) => !value) // Identify fields with empty values
+    .map(([key]) => key); // Collect the names of missing fields
+
+  if (missingFields.length > 0) {
+    throw new Error(`The following fields are required and must be filled: ${missingFields.join(", ")}.`);
   }
+
+  // If all fields are present, handle the parcel photo URL
   const parcelPhotoUrl = req.file ? `/uploads/${req.file.filename}` : parcelPhotoURL;
+  
   return {
     parcelName,
     parcelWeight,
     parcelType,
     parcelDescription,
-    parcelPhotoURL,
+    parcelPhotoURL: parcelPhotoUrl,
     volume,
     senderContactNumber,
     senderAddress,
@@ -96,10 +121,12 @@ const calculatePriceAndDistance = async (parcelWeight, parcelType, senderCity, R
 // Function to handle price and distance calculation response
 const get_price_distance = async (req, res) => {
   try {
+    console.log("Entered for price and distance");
     const parcelData = extractParcelData(req);
     const { sender, receiver } = await findSenderReceiver(parcelData.senderContactNumber, parcelData.RecivercontactNumber);
     const { estimatedPrice, distance } = await calculatePriceAndDistance(parcelData.parcelWeight, parcelData.parcelType, parcelData.senderCity, parcelData.ReciverCity);
-
+    // const estimatedPrice = 600;
+    // const distance = 6;
     res.status(200).json({ message: "Price and distance calculated successfully", distance, estimatedPrice });
   } catch (error) {
     console.error("Error in get_price_distance:", error);

@@ -5,6 +5,6 @@ const upload = require('../config/multerConfig'); // Import multer config
 
 // Route to handle parcel creation with photo upload
 router.post('/register', upload.single('parcelPhoto'), registerParcel);
-router.post('/get_price_distance', upload.single('parcelPhoto'), get_price_distance);
+router.post('/getPriceDistance', upload.single('parcelPhoto'), get_price_distance);
 
 module.exports = router;

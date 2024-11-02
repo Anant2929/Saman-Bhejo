@@ -60,7 +60,7 @@ async function getDistance(originCity, destinationCity) {
         });
 
         const distanceInMeters = response.data.distances[0][1];
-        const distanceInKm = distanceInMeters / 1000; // Convert meters to kilometers
+        const distanceInKm = Math.round((distanceInMeters / 1000) * 100)/100; // Convert meters to kilometers
         return distanceInKm;
 
     } catch (error) {

@@ -19,7 +19,6 @@ const Home = () => {
         console.error("Error fetching username:", error);
       }
     };
-
     fetchUsername();
   }, [token]);
 
