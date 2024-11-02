@@ -20,7 +20,7 @@ const Home = () => {
       }
     };
     fetchUsername();
-  }, [token]);
+  }, []);
 
   const handleClick = () => {
     console.log("clicking");
@@ -91,7 +91,10 @@ const Home = () => {
 // Reusable Card component
 const Card = ({ imageUrl, title, onClick }) => {
   return (
-    <div className="flex flex-col gap-3 pb-3 cursor-pointer" onClick={onClick}>
+    <div
+      className="flex flex-col gap-3 pb-3 cursor-pointer transform transition-transform duration-200 hover:scale-105"
+      onClick={onClick}
+    >
       <div
         className="w-full aspect-square bg-center bg-cover rounded-xl"
         style={{ backgroundImage: `url(${imageUrl})` }}

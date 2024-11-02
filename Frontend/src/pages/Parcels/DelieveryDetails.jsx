@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useParcelRegistration } from "../../context/ParcelContext";
 import axios from "axios"; // Backend par data bhejne ke liye axios ya fetch use karenge
+import { useMessage } from "../../context/MessageContext";
 
 const DeliveryDetailsForm = () => {
   const { formData, setFormData, setCurrentState } = useParcelRegistration();
-  const { currentState } = useParcelRegistration();
+  // const { currentState } = useParcelRegistration();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { setTimedMessage } = useMessage();
+
   let [localFormData, setLocalFormData] = useState({
     fromCity: "",
     fromState: "",
@@ -52,29 +56,38 @@ const DeliveryDetailsForm = () => {
       const updatedFormData = { ...formData, ...localFormData };
       setFormData(updatedFormData);
       localStorage.setItem("parcelFormData", JSON.stringify(updatedFormData));
-      setCurrentState(5); // Set flag to trigger useEffect for submission
+      setIsSubmitting(true);
     }
   };
 
-  // useEffect(() => {
-  //   // Form submit only when `isSubmitting` is true and `formData` has updated data
-  //   if (isSubmitting) {
-  //     console.log("Submit: " , isSubmitting);
-  //     const submitDataToBackend = async () => {
-  //       try {
-  //         console.log('Data sent successfully:', formData);
-  //         alert('Form submitted successfully!');
-  //         setCurrentState(5)
-  //       } catch (error) {
-  //         console.error('Error submitting data:', error);
-  //         alert('Failed to submit data. Please try again.');
-  //       } finally {
-  //         setIsSubmitting(false); // Reset submitting state
-  //       }
-  //     };
-  //     submitDataToBackend();
-  //   }
-  // }, [formData, isSubmitting]); // Re-run when `formData` or `isSubmitting` changes
+  useEffect(() => {
+    // Form submit only when `isSubmitting` is true and `formData` has updated data
+    if (isSubmitting) {
+      console.log("Submit: ", isSubmitting);
+      const submitDataToBackend = async () => {
+        try {
+          const response = await axios.post(
+            "/api/parcel/getPriceDistance",
+            formData
+          );
+          console.log("Data sent successfully:", formData);
+          setTimedMessage("Form submitted successfully!" ,"success");
+          const updatedFormData = { ...formData, ...response.data };
+          setFormData(updatedFormData);
+          setCurrentState(5);
+        } catch (error) {
+          const errorMessage =
+            error.response?.data?.error ||
+            "Failed to submit data. Please try again.";
+          console.error("Error submitting data:", errorMessage);
+          setTimedMessage(errorMessage); // Display the backend error message in alert
+        } finally {
+          setIsSubmitting(false); // Reset submitting state
+        }
+      };
+      submitDataToBackend();
+    }
+  }, [formData, isSubmitting]); // Re-run when `formData` or `isSubmitting` changes
 
   const handlePrevClick = () => {
     const updatedFormData = { ...formData, ...localFormData };

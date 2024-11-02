@@ -127,10 +127,10 @@ const get_price_distance = async (req, res) => {
     const { estimatedPrice, distance } = await calculatePriceAndDistance(parcelData.parcelWeight, parcelData.parcelType, parcelData.senderCity, parcelData.ReciverCity);
     // const estimatedPrice = 600;
     // const distance = 6;
-    res.status(200).json({ message: "Price and distance calculated successfully", distance, estimatedPrice });
+    return res.status(200).json({ message: "Price and distance calculated successfully", distance, estimatedPrice });
   } catch (error) {
-    console.error("Error in get_price_distance:", error);
-    res.status(500).json({ error: error.message });
+    console.error("Error in getting price and distance:", error);
+    return res.status(500).json({ error: error.message });
   }
 };
 

@@ -28,14 +28,16 @@ function AlertMessage() {
   return (
     message && (
       <div
-        className={`absolute top-4 left-1/2 transform -translate-x-1/2 p-3 rounded-lg text-white text-center font-medium ${
+        className={`fixed top-4 left-1/2 transform -translate-x-1/2 p-3 rounded-lg text-white text-center font-medium ${
           alertType === "success"
             ? "bg-green-500 border border-green-600"
             : "bg-red-500 border border-red-600"
         }`}
+        style={{ zIndex: 9999 }}  // Ensures alert is always on top
       >
         {message}
       </div>
     )
   );
 }
+

@@ -2,38 +2,17 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParcelRegistration } from "../../context/ParcelContext";
 import { useMessage } from "../../context/MessageContext";
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function SubmissionSummary() {
   const navigate = useNavigate();
   const { formData , setCurrentState } = useParcelRegistration();
   const { setTimedMessage } = useMessage();
-  const [parcelInfo, setParcelInfo] = useState({ distance: '', estimatedPrice: '' });
 
   const handleEditClick = (path) => {
     navigate(path);
   };
 
-  useEffect(() => {
-    // Fetch distance and price once when the component mounts
-    const fetchParcelInfo = async () => {
-      try {
-        console.log("Fetching parcel info");
-        const response = await axios.post('/api/parcel/getPriceDistance',formData);
-        setParcelInfo({
-          distance: response.data.distance,
-          estimatedPrice: response.data.estimatedPrice,
-        });
-      } catch (error) {
-        console.error("Failed to fetch parcel info:", error.response?.data?.message || error.message);
-      }
-    };
-
-    // Use a flag to avoid duplicate calls in development
-    let didCancel = false;
-    if (!didCancel) fetchParcelInfo();
-    return () => { didCancel = true; };
-  }, [formData]);
 
   const handleConfirmClick = (e) => {
     e.preventDefault();
@@ -42,8 +21,10 @@ function SubmissionSummary() {
           const response = await axios.post('/api/parcel/register', formData); // Replace with your backend API URL
           console.log('Data sent successfully:', formData);
           setTimedMessage(response.data.message, "success");
-          localStorage.removeItem('parcelFormData');
-          Navigate('/home')
+        //   localStorage.removeItem('parcelFormData');
+        navigate('/home');
+          setCurrentState(1)
+       
         } catch (error) {
           console.error('Error submitting data:', error);
           alert('Failed to submit data. Please try again.');
@@ -52,27 +33,6 @@ function SubmissionSummary() {
       submitDataToBackend();
   };
 
-//   useEffect(() => {
-//     // Form submit only when `isSubmitting` is true and `formData` has updated data 
-//     if (isSubmitting) {
-//       console.log("Submit: " , isSubmitting);
-//       const submitDataToBackend = async () => {
-//         try {
-//            const response = await axios.post('/api/parcel/register', formData); // Replace with your backend API URL
-//           console.log('Data sent successfully:', formData);
-//           alert('Form submitted successfully!');
-//           localStorage.removeItem('parcelFormData');
-//           setCurrentState(1)
-//         } catch (error) {
-//           console.error('Error submitting data:', error);
-//           alert('Failed to submit data. Please try again.');
-//         } finally {
-//           setIsSubmitting(false); // Reset submitting state
-//         }
-//       };
-//       submitDataToBackend();
-//     }
-//   }, [formData, isSubmitting]); // Re-run when `formData` or `isSubmitting` changes
 
   return (
     <div className="max-w-4xl mx-auto p-8 bg-gray-900 text-white rounded-lg shadow-xl">
@@ -128,10 +88,10 @@ function SubmissionSummary() {
         <div className="flex justify-between items-center">
           <div className="text-gray-300">
             <p>Last Delivery Date: {formData.expectedDeliveryDate}</p>
-            <p>Distance: {parcelInfo.distance} KM</p>
+            <p>Distance: {formData.distance} KM</p>
           </div>
           <div className="text-right">
-            <p className="text-4xl font-bold text-green-400">₹{parcelInfo.estimatedPrice}</p>
+            <p className="text-4xl font-bold text-green-400">₹{formData.estimatedPrice}</p>
           </div>
         </div>
       </div>
