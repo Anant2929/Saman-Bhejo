@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Layout from "../Layouts/Layout";
 import Home from "../Home/Home.jsx";
 import ParcelRegistration from "../Parcels/ParcelRegistration.jsx"
+import ParcelTracking from '../Tracking/Tracking.jsx';
 import { useAuth } from '../../context/AuthContext'; // Import the Auth context
 
 
@@ -30,6 +31,7 @@ export default function AppRoutes() {
         <Route path="/user/login" element={token ? <Navigate to="/home" /> : <Layout />} />
         <Route path="/oAuth/auth/google" element={token ? <Navigate to="/home" /> : <Layout />} />
         <Route path="/parcel/details" element={ token ? <ParcelRegistration/> : <Navigate to="/home" />} />
+        <Route path="/trackingStatus" element={token ? <ParcelTracking /> : <Layout />} />
       </Routes>
     </BrowserRouter>
   );

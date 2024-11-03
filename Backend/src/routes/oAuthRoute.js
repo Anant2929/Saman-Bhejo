@@ -25,10 +25,10 @@ router.get(
 
     // Generate token after successful login
     const token = jwt.sign({ id: req.user.id }, process.env.JWT_SECRET, {
-      expiresIn: "1h"
+      expiresIn: '1d'
     });
     res.cookie("token", token, {
-      maxAge: 24 * 60 * 60 * 1000 * 2,
+      maxAge: 24 * 60 * 60 * 1000 * 1,
     });
     // Redirect to frontend with the token as a query parameter
     res.redirect(`http://localhost:3000/home`);
