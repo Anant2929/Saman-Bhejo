@@ -4,7 +4,9 @@ const Sender = require("../models/SenderModel.js");
 const Receiver = require("../models/ReceiverModel.js");
 const { getDistance } = require("../services/DistanceCalculate.js");
 const { getSocket } = require("../sockets/socketManager"); 
-const UserSocket = require("../models/SocketIdModel.js")
+// const UserSocket = require("../models/SocketIdModel.js")
+
+
 const BASE_RATES = {
   Document: 5,
   Clothing: 15,
@@ -22,7 +24,7 @@ const calculateEstimatedPrice = (weight, parcelType, distance) => {
  const socket = getSocket() 
 const emitReceiverConfirmation = async (receiver) => {
   try {
-    const userSocket = await UserSocket.findOne({ user: receiver._id });
+    const userSocket = await User.findOne({ user: receiver._id });
 
     if (userSocket) {
     socket.to(userSocket.socketId).emit("newParcelNotification", {

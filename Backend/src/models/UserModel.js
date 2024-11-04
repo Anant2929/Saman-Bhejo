@@ -25,6 +25,10 @@ const userSchema = new mongoose.Schema({
     maxlength: 10,
     unique: true, // Assuming a maximum length for contact number
   },
+  socketId: {
+    type: String,
+    default: null, // Initially null, will be set after user registers and connects
+  }
 });
 
 // Create the User model based on the schema

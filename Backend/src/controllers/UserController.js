@@ -1,8 +1,6 @@
-const user = require("../models/UserModel.js");
-const mongoose = require("mongoose");
+const User = require("../models/UserModel.js");
 const bcrypt = require("bcrypt");
-const { generateToken, verifyToken } = require("../utils/jwtutils.js");
-const { onUserRegistration } = require("../sockets/onEvents.js");
+const { generateToken } = require("../utils/jwtutils.js");
 const { getSocket } = require("../sockets/socketManager");
 
 const signup = async (req, res) => {
@@ -11,26 +9,27 @@ const signup = async (req, res) => {
 
   try {
     // Check if user already exists
-    const userExists = await user.findOne({ email });
-
+    const userExists = await User.findOne({ email });
     if (userExists) {
-      return res.status(400).json({ message: "User already exists" }); // Change to status(400)
+      return res.status(400).json({ message: "User already exists" });
     }
 
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create a new user instance
-    const newUser = new user({
+    const newUser = new User({
       email,
       password: hashedPassword,
       name,
-      contactNumber: contactNumber,
+      contactNumber
     });
     console.log("newuser body", newUser);
 
     // Save the new user to the database
     await newUser.save();
+
+    // Generate and assign a token
     const token = generateToken({ id: newUser._id });
 
     // Send the token as a cookie
@@ -41,16 +40,17 @@ const signup = async (req, res) => {
       maxAge: 24 * 60 * 60 * 1000 * 2,
     });
 
+    // Get the connected socket and set socketId in user document
     const socket = getSocket();
     if (socket) {
-        socket.emit("userRegistered", { id: newUser._id });
-        console.log("Socket emitted userRegistered event for new user.");
+      newUser.socketId = socket.id; // Assign the socket's ID
+      await newUser.save(); // Update the user with the socketId in the database
+      console.log(`Socket ID ${socket.id} stored for User ID: ${newUser._id}`);
     } else {
-        console.log("Socket not connected, unable to emit registration event.");
+      console.log("Socket not connected, unable to store socket ID.");
     }
 
     // Send a response indicating successful signup with the token
-    
     return res.status(201).json({
       message: "User created successfully",
       token, // Send the token in the response
@@ -60,6 +60,7 @@ const signup = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
+
 
 const login = async (req, res) => {
   let { email, password } = req.body;
