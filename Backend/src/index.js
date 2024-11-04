@@ -1,44 +1,57 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
-const userRoutes = require("./routes/UserRoute"); // Corrected import path
-const session = require("express-session")
+const userRoutes = require("./routes/UserRoute");
+const session = require("express-session");
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-const oAuthRoutes = require('./routes/oAuthRoute')
-const parcelRoutes = require('./routes/ParcelRoute')
+const oAuthRoutes = require('./routes/oAuthRoute');
+const parcelRoutes = require('./routes/ParcelRoute');
+const http = require("http");
+const socketIo = require("socket.io");
+const passport = require('passport');
+const {setupSocketHandlers} = require("./sockets/socketHandler.js");
 
 dotenv.config();
-const passport = require('passport');  
-
 
 const app = express();
-const port = 5000;
+const server = http.createServer(app); // Create server for socket.io
+const io = socketIo(server, {
+  cors: {
+    origin: "http://localhost:3000", // Replace with your frontend URL
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
 
+// Define port
+const port = process.env.PORT || 5000;
+
+// Middlewares
 app.use(cors({
-  origin: 'http://localhost:3000', // Adjust according to your frontend's URL
-  credentials: true, // Enable credentials if needed
+  origin: "http://localhost:3000", // Adjust according to your frontend's URL
+  credentials: true,
 }));
-// Middleware to parse JSON request bodies
 app.use(express.json());
 app.use(cookieParser());
 
-// Call the connectDB function to establish a connection
+// Database Connection
 connectDB();
-// Set up session middleware
+
+// Session Middleware
 app.use(session({
   secret: process.env.JWT_SECRET,
   resave: false,
   saveUninitialized: true,
 }));
 
-// Initialize passport and session
+// Passport Middleware
 app.use(passport.initialize());
 app.use(passport.session());
 
+setupSocketHandlers(io);
 
-
-// Route to check if the user is logged in
+// Routes
 app.get('/home', (req, res) => {
   if (req.isAuthenticated()) {
     res.send(`Hello, ${req.user.displayName}!`);
@@ -46,15 +59,19 @@ app.get('/home', (req, res) => {
     res.redirect('/login');
   }
 });
-
-app.use('/oAuth' , oAuthRoutes);
-// Use the user routes
-app.use("/user", userRoutes); // Prefix all user routes with /api
+app.use('/oAuth', oAuthRoutes);
+app.use("/user", userRoutes);
 app.use("/parcel", parcelRoutes);
-// Start the server
-app.listen(port, () => {
+
+// Start the server using `server.listen` to enable socket.io
+server.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
 
-
-
+// Graceful Shutdown
+process.on('SIGINT', () => {
+  server.close(() => {
+    console.log('Server closed');
+    process.exit(0);
+  });
+});

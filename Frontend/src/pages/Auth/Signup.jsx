@@ -10,6 +10,7 @@ import { useMessage } from '../../context/MessageContext';
 import { useNavigate } from "react-router-dom"; 
 import { useAuth } from '../../context/AuthContext'; 
 
+
 export default function SignUp() {
   
   const { setUserLogin } = useUserLogin();

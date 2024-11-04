@@ -2,6 +2,8 @@ const user = require("../models/UserModel.js");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const { generateToken, verifyToken } = require("../utils/jwtutils.js");
+const { onUserRegistration } = require("../sockets/onEvents.js");
+const { getSocket } = require("../sockets/socketManager");
 
 const signup = async (req, res) => {
   let { email, password, name, contactNumber } = req.body;
@@ -39,7 +41,16 @@ const signup = async (req, res) => {
       maxAge: 24 * 60 * 60 * 1000 * 2,
     });
 
+    const socket = getSocket();
+    if (socket) {
+        socket.emit("userRegistered", { id: newUser._id });
+        console.log("Socket emitted userRegistered event for new user.");
+    } else {
+        console.log("Socket not connected, unable to emit registration event.");
+    }
+
     // Send a response indicating successful signup with the token
+    
     return res.status(201).json({
       message: "User created successfully",
       token, // Send the token in the response

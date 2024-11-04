@@ -1,21 +1,25 @@
-import React from "react";
+import React, { useEffect } from "react";
+
 import AppRoutes from "./pages/routes/AppRoutes";
 import { UserLoginProvider } from "./context/userLoginContext";
 import { MessageProvider, useMessage } from "./context/MessageContext";
 import { AuthProvider } from "./context/AuthContext";
-import { ParcelRegistrationProvider } from "./context/ParcelContext"
-
+import { ParcelRegistrationProvider } from "./context/ParcelContext";
+import { SocketProvider } from "./context/SocketContext"
 export default function App() {
+
   return (
     <div>
       <UserLoginProvider>
         <ParcelRegistrationProvider>
-        <MessageProvider>
-          <AuthProvider>
-            <AppRoutes />
-          </AuthProvider>
-          <AlertMessage />
-        </MessageProvider>
+          <MessageProvider>
+            <AuthProvider>
+            <SocketProvider>
+              <AppRoutes />
+              </SocketProvider>
+            </AuthProvider>
+            <AlertMessage />
+          </MessageProvider>
         </ParcelRegistrationProvider>
       </UserLoginProvider>
     </div>
@@ -40,4 +44,3 @@ function AlertMessage() {
     )
   );
 }
-
