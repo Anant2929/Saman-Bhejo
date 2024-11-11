@@ -1,13 +1,16 @@
 // sockets/socketManager.js
 
-let sendingsocket = null;
+let socket = null;
+let io = null
 
-const setSocket = (socket) => {
-    sendingsocket = socket;
+const setSocket = (s,i) => {
+    
+    socket = s;
+    io = i;
 };
 
 const getSocket = () => {
-    return sendingsocket;
+    return {socket,io};
 };
 
 module.exports = { setSocket, getSocket };

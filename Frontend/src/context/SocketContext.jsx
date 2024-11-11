@@ -4,38 +4,40 @@ import { io } from 'socket.io-client';
 // Create a context
 const SocketContext = createContext();
 
-// Socket URL (replace with your actual socket server URL)
-const SOCKET_SERVER_URL = 'http://localhost:5000'; // Change to your server URL
+// Socket URL
+const SOCKET_SERVER_URL = 'http://localhost:5000';
 
 // Create a provider component
 export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
+  const [parcelNotification, setParcelNotification] = useState(null); // State for parcel notification
 
   useEffect(() => {
-    // Establish connection to the backend server
-    const newSocket = io(SOCKET_SERVER_URL); // Replace with your backend URL
+    const newSocket = io(SOCKET_SERVER_URL);
 
-    // Handle connection event
     newSocket.on("connect", () => {
       console.log(`Connected to server: ${newSocket.id}`);
     });
 
-    // Optional: Handle disconnection event
     newSocket.on("disconnect", () => {
       console.log("Disconnected from server");
     });
 
-    // Save the socket to the state
+    // Listen for parcel notification
+    newSocket.on("newParcelNotification", (data) => {
+      setParcelNotification(data); // Set the received parcel data
+      console.log("data in notification",data)
+    });
+
     setSocket(newSocket);
 
-    // Cleanup on unmount
     return () => {
       newSocket.disconnect();
     };
   }, []);
 
   return (
-    <SocketContext.Provider value={socket}>
+    <SocketContext.Provider value={{ socket, parcelNotification, setParcelNotification }}>
       {children}
     </SocketContext.Provider>
   );

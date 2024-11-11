@@ -3,9 +3,8 @@ const User = require("../models/UserModel.js");
 const Sender = require("../models/SenderModel.js");
 const Receiver = require("../models/ReceiverModel.js");
 const { getDistance } = require("../services/DistanceCalculate.js");
-const { getSocket } = require("../sockets/socketManager"); 
-// const UserSocket = require("../models/SocketIdModel.js")
-
+const{ setupEmitEvents} = require("../sockets/emitEvents.js")
+const {getSocket} = require("../sockets/socketManager.js")
 
 const BASE_RATES = {
   Document: 5,
@@ -21,23 +20,8 @@ const calculateEstimatedPrice = (weight, parcelType, distance) => {
   const baseRate = BASE_RATES[parcelType] || BASE_RATES.Others;
   return Math.round(baseRate * weight + distance * DISTANCE_RATE);
 }; 
- const socket = getSocket() 
-const emitReceiverConfirmation = async (receiver) => {
-  try {
-    const userSocket = await User.findOne({ user: receiver._id });
-
-    if (userSocket) {
-    socket.to(userSocket.socketId).emit("newParcelNotification", {
-        message: "A new parcel has been registered for you.",
-      });
-      console.log(`Notification sent to User ID: ${receiver._id}`);
-    } else {
-      console.log(`Receiver with ID ${receiver._id} not found.`);
-    }
-  } catch (error) {
-    console.error(`Error finding receiver for parcel: ${error.message}`);
-  }
-};
+ 
+ 
 // Function to destructure and validate common parcel data
 const extractParcelData = (req) => {
   const {
@@ -248,10 +232,11 @@ const registerParcel = async (req, res) => {
       postCode: parcelData.ReciverPostalCode,
     });
     await receiverRecord.save();
-
+    const {socket, io }= getSocket()
+    const { emitReceiverConfirmation} = setupEmitEvents();
     
-    await emitReceiverConfirmation(parcelData);
- 
+     emitReceiverConfirmation(receiver._id,parcelData);
+ console.log("userid",sender._id,"receive",receiver._id)
     res.status(201).json({ message: "Parcel registered successfully", parcel });
   } catch (error) {
     console.error("Error in registerParcel:", error);

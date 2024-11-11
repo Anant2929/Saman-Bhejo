@@ -3,11 +3,12 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom"; // For navigation
 import { useAuth } from '../../context/AuthContext'; // Import Auth context
 import Cookies from 'js-cookie';
+import { useParcelRegistration } from "../../context/ParcelContext";
 
 export default function Logout() {
   const navigate = useNavigate(); // Use navigate to redirect
   const { setToken } = useAuth(); // Get the setToken function from AuthContext
-
+const {setFormData} = useParcelRegistration
   const handleClick = async () => {
     try {
       // Send the logout request to the server
@@ -21,6 +22,7 @@ export default function Logout() {
       setToken(null); // Clear the token in Auth context
       // Redirect to login page
       localStorage.clear();
+        setFormData({})
       navigate("/user/login"); // Adjust the path if needed
     } catch (error) {
       console.error("Logout failed:", error.response?.data?.message || "An error occurred");

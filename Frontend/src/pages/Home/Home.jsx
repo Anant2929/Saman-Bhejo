@@ -20,21 +20,21 @@ const Home = () => {
       }
     };
 
-    const checkNotification = async () => {
-      try {
-        const response = await axios.get('/api/parcel/checkNotification', { withCredentials: true });
-        setShowNotification(response.data.notificationReceived); // Toggle modal based on server response
-      } catch (error) {
-        console.error("Error checking notifications:", error);
-      }
-    };
+    // const checkNotification = async () => {
+    //   try {
+    //     const response = await axios.get('/api/parcel/checkNotification', { withCredentials: true });
+    //     setShowNotification(response.data.notificationReceived); // Toggle modal based on server response
+    //   } catch (error) {
+    //     console.error("Error checking notifications:", error);
+    //   }
+    // };
 
     fetchUsername();
-    checkNotification();
+    // checkNotification();
   }, [token]);
 
   const handleNotificationClick = () => {
-    navigate("/parcel/confirm");
+    navigate("/parcel/details");
   };
 
   return (

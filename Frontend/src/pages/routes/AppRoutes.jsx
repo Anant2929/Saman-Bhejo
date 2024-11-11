@@ -7,6 +7,7 @@ import ParcelRegistration from "../Parcels/ParcelRegistration.jsx"
 import ParcelTracking from '../Tracking/Tracking.jsx';
 import { useAuth } from '../../context/AuthContext'; // Import the Auth context
 
+import ParcelNotification from '../../Notification/ReciverConfirmationMessage.jsx';
 
 export default function AppRoutes() {
   const { token, setToken } = useAuth();
@@ -32,6 +33,8 @@ export default function AppRoutes() {
         <Route path="/oAuth/auth/google" element={token ? <Navigate to="/home" /> : <Layout />} />
         <Route path="/parcel/details" element={ token ? <ParcelRegistration/> : <Navigate to="/home" />} />
         <Route path="/trackingStatus" element={token ? <ParcelTracking /> : <Layout />} />
+        <Route path="/home/parcel" element={token ? <ParcelNotification /> : <Navigate to="/home" /> } />
+             {/* Renders the parcel notification modal */}
       </Routes>
     </BrowserRouter>
   );
