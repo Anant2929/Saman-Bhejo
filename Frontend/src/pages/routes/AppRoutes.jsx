@@ -5,6 +5,7 @@ import Layout from "../Layouts/Layout";
 import Home from "../Home/Home.jsx";
 import ParcelRegistration from "../Parcels/ParcelRegistration.jsx"
 import ParcelTracking from '../Tracking/Tracking.jsx';
+import CarriersList from '../Parcels/CarrierList.jsx';
 import { useAuth } from '../../context/AuthContext'; // Import the Auth context
 
 import ParcelNotification from '../../Notification/ReciverConfirmationMessage.jsx';
@@ -34,6 +35,7 @@ export default function AppRoutes() {
         <Route path="/parcel/details" element={ token ? <ParcelRegistration/> : <Navigate to="/home" />} />
         <Route path="/trackingStatus" element={token ? <ParcelTracking /> : <Layout />} />
         <Route path="/home/parcel" element={token ? <ParcelNotification /> : <Navigate to="/home" /> } />
+        <Route path="/home/parcel/CarriersList" element={token ? <CarriersList /> : <Navigate to="/home" /> } />
              {/* Renders the parcel notification modal */}
       </Routes>
     </BrowserRouter>
