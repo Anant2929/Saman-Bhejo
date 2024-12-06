@@ -18,6 +18,7 @@ const Home = () => {
         const response = await axios.get('/api/user/getname', { withCredentials: true });
         setUsername(response.data.name);
         if(parcelNotification){
+          console.log("i am in notification box")
           setShowNotification(true)
         }
 
@@ -30,7 +31,7 @@ const Home = () => {
 
     fetchUsername();
     
-  }, [token]);
+  }, [token,parcelNotification]);
 
   const handleNotificationClick = () => {
     navigate("/parcel/details");

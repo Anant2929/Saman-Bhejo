@@ -41,7 +41,7 @@ const signup = async (req, res) => {
     return res.status(201).json({
       message: "User created successfully",
       token,
-      id : newUser._id, // Send the token in the response
+      id: newUser._id, // Send the token in the response
     });
   } catch (error) {
     console.error("Error in signup: ", error);
@@ -74,10 +74,11 @@ const login = async (req, res) => {
       sameSite: "strict",
       maxAge: 24 * 60 * 60 * 1000 * 1,
     });
+
     return res.status(201).json({
       message: "User Login successfully",
-      token, // Send the token in the response
-     id : loginUser._id,
+      id: loginUser._id,
+      token, //a Send the token in the response
     }); // Status 200 for successful login
   } catch (error) {
     console.error("Error in login:", error);

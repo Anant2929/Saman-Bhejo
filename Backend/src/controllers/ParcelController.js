@@ -3,8 +3,7 @@ const User = require("../models/UserModel.js");
 const Sender = require("../models/SenderModel.js");
 const Receiver = require("../models/ReceiverModel.js");
 const { getDistance } = require("../Services/DistanceCalculate.js");
-const{ setupEmitEvents} = require("../sockets/emitEvents.js")
-
+const { setupEmitEvents } = require("../sockets/emitEvents.js");
 
 const BASE_RATES = {
   Document: 5,
@@ -19,9 +18,8 @@ const DISTANCE_RATE = 0.3;
 const calculateEstimatedPrice = (weight, parcelType, distance) => {
   const baseRate = BASE_RATES[parcelType] || BASE_RATES.Others;
   return Math.round(baseRate * weight + distance * DISTANCE_RATE);
-}; 
- 
- 
+};
+
 // Function to destructure and validate common parcel data
 const extractParcelData = (req) => {
   const {
@@ -156,13 +154,11 @@ const get_price_distance = async (req, res) => {
     );
     // const estimatedPrice = 600;
     // const distance = 6;
-    return res
-      .status(200)
-      .json({
-        message: "Price and distance calculated successfully",
-        distance,
-        estimatedPrice,
-      });
+    return res.status(200).json({
+      message: "Price and distance calculated successfully",
+      distance,
+      estimatedPrice,
+    });
   } catch (error) {
     console.error("Error in getting price and distance:", error);
     return res.status(500).json({ error: error.message });
@@ -233,11 +229,11 @@ const registerParcel = async (req, res) => {
     });
     await receiverRecord.save();
 
-    const { emitReceiverConfirmation} = setupEmitEvents();
-    
-     emitReceiverConfirmation(receiver._id,parcelData);
- console.log("userid",sender._id,"receive",receiver._id)
-    res.status(201).json({ message: "Parcel registered successfully", parcel });
+    console.log("userid", sender._id, "receive", receiver._id);
+    let receiverid = receiver._id;
+    res
+      .status(201)
+      .json({ message: "Parcel registered successfully", receiverid, parcel });
   } catch (error) {
     console.error("Error in registerParcel:", error);
     res.status(500).json({ error: error.message });
