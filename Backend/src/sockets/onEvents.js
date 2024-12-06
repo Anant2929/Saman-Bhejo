@@ -1,38 +1,48 @@
 // onEvents.js
 const { getSocket } = require("./socketManager");
-const {setupEmitEvents} = require("./emitEvents.js")
-const users = {}; // This will hold online users' socket IDs
-const pendingMessages = {}; // This will temporarily store offline messages
+const { setupEmitEvents } = require("./emitEvents.js");
+const User = require("../models/UserModel.js");
 
- const  setupOnEvents = () =>{
-const {socket,io} = getSocket()
-const handleUserRegistration = (userId) => {
-    console.log("welcome to registration ")
-    socket.on("registerUser", (userId) => {
-       
-        users[userId] = socket.id; // Store user socket ID when they connect
-        console.log(`User registered: ${userId} with socket ID: ${socket.id}`);
+const setupOnEvents = () => {
+    const { socket, io } = getSocket();
 
-        // Check for any pending messages for this user
-        if (pendingMessages[userId] && pendingMessages[userId].length > 0) {
-            pendingMessages[userId].forEach((request) => {
-                const {emitReceiverConfirmation } = setupEmitEvents(socket);
-  
-                emitReceiverConfirmation(receiverId,parcelData)
-            });
-            // Clear pending messages after sending
-            delete pendingMessages[userId];
-            console.log(`Pending messages sent to User ID: ${userId}`);
-        }
-    });
+    const handleUserRegistration = async () => {
+        console.log("Welcome to registration");
+
+        // Listen for the "registerUser" event from client-side
+        socket.on("registerUser", async ({ id }, callback) => {
+            if (!id) {
+                console.log("User ID is missing");
+                return callback({ success: false, message: "User ID is missing" });
+            }
+
+            try {
+                // Query by _id since MongoDB uses _id as the primary key by default
+                console.log("Looking up user with ID:", id);
+                const user = await User.findOne({ _id: id });
+
+                if (!user) {
+                    console.log("User not found");
+                    return callback({ success: false, message: "User not found" });
+                }
+
+                // Store user socket ID when they connect
+                user.socketId = socket.id;
+                await user.save(); // Ensure the socket ID is saved to the database
+                    console.log("newuser",user._id);
+                    console.log("id",id)
+                console.log(`User registered: ${id} with socket ID: ${socket.id}`);
+
+                // Respond to client with confirmation
+                callback({ success: true, message: "User registered successfully!" });
+            } catch (error) {
+                console.error("Error during user registration:", error);
+                callback({ success: false, message: "An error occurred during registration" });
+            }
+        });
+    };
+
+    return { handleUserRegistration };
 };
-
-
-
-
-return {handleUserRegistration}
-}
-
-
 
 module.exports = { setupOnEvents };

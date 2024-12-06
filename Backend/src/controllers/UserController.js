@@ -1,9 +1,7 @@
 const user = require("../models/UserModel.js");
 const bcrypt = require("bcrypt");
 const { generateToken } = require("../utils/jwtutils.js");
-const {getSocket}=require("../sockets/socketManager.js");
-const { setupEmitEvents } = require("../sockets/emitEvents.js");
-const { setupOnEvents } = require("../sockets/onEvents.js");
+
 const signup = async (req, res) => {
   let { email, password, name, contactNumber } = req.body;
   console.log("req.body", req.body);
@@ -23,9 +21,8 @@ const signup = async (req, res) => {
       email,
       password: hashedPassword,
       name,
-      contactNumber
+      contactNumber,
     });
-    
 
     // Save the new user to the database
     await newUser.save();
@@ -41,17 +38,16 @@ const signup = async (req, res) => {
       maxAge: 24 * 60 * 60 * 1000 * 2,
     });
 
-    
     return res.status(201).json({
       message: "User created successfully",
-      token, // Send the token in the response
+      token,
+      id : newUser._id, // Send the token in the response
     });
   } catch (error) {
     console.error("Error in signup: ", error);
     return res.status(500).json({ message: "Server error" });
   }
 };
-
 
 const login = async (req, res) => {
   let { email, password } = req.body;
@@ -68,6 +64,7 @@ const login = async (req, res) => {
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Invalid credentials" }); // Change status to 401
     }
+
     const token = generateToken({ id: loginUser._id });
 
     // Send the token as a cookie
@@ -76,11 +73,11 @@ const login = async (req, res) => {
       secure: process.env.NODE_ENV === "production", // Use secure cookies in production
       sameSite: "strict",
       maxAge: 24 * 60 * 60 * 1000 * 1,
-     
     });
     return res.status(201).json({
       message: "User Login successfully",
       token, // Send the token in the response
+     id : loginUser._id,
     }); // Status 200 for successful login
   } catch (error) {
     console.error("Error in login:", error);
@@ -102,7 +99,6 @@ const logout = (req, res) => {
 // GET /api/user/getName - Fetch the user's name based on the JWT token
 
 const getname = async (req, res) => {
-
   try {
     const userId = req.user.id;
     const username = await user.findById(userId).select("name");
@@ -110,13 +106,6 @@ const getname = async (req, res) => {
     if (!username) {
       return res.status(404).json({ message: "User not found" });
     }
-    const {socket, io }= getSocket()
-    const { emitUserRegistration } = setupEmitEvents(); // Get the function
-
-    // Call the emitUserRegistration function
-    emitUserRegistration(username._id);
-    const { handleUserRegistration } = setupOnEvents(socket);
-    handleUserRegistration(username._id);
 
     res.json({ name: username.name }); // Return the username
   } catch (error) {

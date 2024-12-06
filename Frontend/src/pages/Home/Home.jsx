@@ -3,9 +3,11 @@ import Logout from '../Auth/Logout';
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from '../../context/AuthContext';
+import { useSocket } from '../../context/SocketContext';
 
 const Home = () => {
   const navigate = useNavigate();
+  const {parcelNotification} = useSocket()
   const [username, setUsername] = useState('');
   const { token } = useAuth();
   const [showNotification, setShowNotification] = useState(false); // State to control modal visibility
@@ -15,22 +17,19 @@ const Home = () => {
       try {
         const response = await axios.get('/api/user/getname', { withCredentials: true });
         setUsername(response.data.name);
+        if(parcelNotification){
+          setShowNotification(true)
+        }
+
       } catch (error) {
         console.error("Error fetching username:", error);
       }
     };
 
-    // const checkNotification = async () => {
-    //   try {
-    //     const response = await axios.get('/api/parcel/checkNotification', { withCredentials: true });
-    //     setShowNotification(response.data.notificationReceived); // Toggle modal based on server response
-    //   } catch (error) {
-    //     console.error("Error checking notifications:", error);
-    //   }
-    // };
+  
 
     fetchUsername();
-    // checkNotification();
+    
   }, [token]);
 
   const handleNotificationClick = () => {

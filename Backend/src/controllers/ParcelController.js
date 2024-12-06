@@ -4,7 +4,7 @@ const Sender = require("../models/SenderModel.js");
 const Receiver = require("../models/ReceiverModel.js");
 const { getDistance } = require("../services/DistanceCalculate.js");
 const{ setupEmitEvents} = require("../sockets/emitEvents.js")
-const {getSocket} = require("../sockets/socketManager.js")
+
 
 const BASE_RATES = {
   Document: 5,
@@ -232,7 +232,7 @@ const registerParcel = async (req, res) => {
       postCode: parcelData.ReciverPostalCode,
     });
     await receiverRecord.save();
-    const {socket, io }= getSocket()
+
     const { emitReceiverConfirmation} = setupEmitEvents();
     
      emitReceiverConfirmation(receiver._id,parcelData);

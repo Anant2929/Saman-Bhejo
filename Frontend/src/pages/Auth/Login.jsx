@@ -7,11 +7,13 @@ import { useUserLogin } from "../../context/userLoginContext";
 import { useMessage } from "../../context/MessageContext";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext"; // Import the Auth context
+import { useSocket } from "../../context/SocketContext"; // Import the SocketContext
 
 export default function Login() {
   const { setUserLogin } = useUserLogin();
   const { setTimedMessage } = useMessage();
   const { setToken } = useAuth(); // Destructure setToken from context
+  const { setId } = useSocket(); // Access the setid function from SocketContext
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -36,6 +38,9 @@ export default function Login() {
     try {
       const res = await axios.post("/api/user/login", { email, password });
       console.log("Login successful:", res.data);
+
+      // Store user ID from response in SocketContext
+      setId(res.data.id); // Assuming `userId` is part of the response data
 
       // Display success message
       setTimedMessage(res.data.message, "success");
@@ -63,7 +68,7 @@ export default function Login() {
     window.location.href = "/api/oAuth/auth/google"; // Redirect to Google OAuth
   };
 
-  //oAuth/auth/google
+  // oAuth/auth/google
   const handleSignUpClick = () => {
     setUserLogin(false);
     console.log("Navigating to Sign Up");

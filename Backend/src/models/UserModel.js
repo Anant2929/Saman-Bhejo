@@ -25,6 +25,9 @@ const userSchema = new mongoose.Schema({
     maxlength: 10,
     unique: true, // Assuming a maximum length for contact number
   },
+  socketId: {
+    type : String, 
+  }
  
 });
 

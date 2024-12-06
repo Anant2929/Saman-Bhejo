@@ -5,12 +5,14 @@ const { setupOnEvents } = require("./onEvents"); // Import on events
 
 const setupSocketHandlers = (io) => {
     io.on("connection", (socket) => {
+        
         console.log(`New client connected: ${socket.id}`);
 
         // Set the socket instance
         setSocket(socket,io);
         
-        setupOnEvents(); 
+      const {handleUserRegistration}=  setupOnEvents(); 
+      handleUserRegistration();
         setupEmitEvents()
         // Handle user registration event
         socket.on("disconnect", () => {
