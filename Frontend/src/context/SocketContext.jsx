@@ -5,7 +5,7 @@ import { io } from 'socket.io-client';
 const SocketContext = createContext();
 
 // Socket URL
-const SOCKET_SERVER_URL = 'http://localhost:5000';
+const SOCKET_SERVER_URL = 'https://saman-bhejo-backend.onrender.com';
 
 // Create a provider component
 export const SocketProvider = ({ children }) => {
