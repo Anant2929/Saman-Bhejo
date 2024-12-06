@@ -2,7 +2,7 @@ const Parcel = require("../models/ParcelModel.js");
 const User = require("../models/UserModel.js");
 const Sender = require("../models/SenderModel.js");
 const Receiver = require("../models/ReceiverModel.js");
-const { getDistance } = require("../services/DistanceCalculate.js");
+const { getDistance } = require("../Services/DistanceCalculate.js");
 const{ setupEmitEvents} = require("../sockets/emitEvents.js")
 
 

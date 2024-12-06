@@ -132,7 +132,7 @@ const ParcelTracking = () => {
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white font-inter">
       <header className="border-b border-gray-700 py-4 px-6 flex justify-between items-center bg-gray-950 shadow-md">
         <div className="flex items-center gap-3">
-          <div className="text-2xl font-bold text-teal-500 animate-pulse">Delivr</div>
+          <div className="text-2xl font-bold text-teal-500 animate-pulse">Saman Bhejo</div>
           <span className="text-sm text-gray-400">Tracking your parcel</span>
         </div>
         <nav className="flex gap-6">
