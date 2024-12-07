@@ -4,112 +4,50 @@ import { useSocket } from "../context/SocketContext";
 function ParcelAcceptanceForm() {
   // State for form fields
   const [fields, setFields] = useState({
-     senderName,
-        senderContactNumber : "",
-        senderAddress: "",
-        senderCity: "",
-        senderState: "",
-        senderPostalCode: "",
-        receiverName: "",
-        receiverContactNumber: "",
-        receiverAddress: "",
-        receiverCity: "",
-        receiverState: "",
-        receiverPostalCode: "",
-        fromCity: "",
-        fromState: "",
-        fromPincode: "",
-        toCity: "",
-        toState: "",
-        toPincode: "",
-        parcelName: "",
-        parcelWeight: "",
-        parcelType: "",
-        volume: "",
-        parcelDescription: "",
-        parcelPhotoUrl: "",
-        distance: "",
-        expectedDeliveryDate: "",
-        deliveryCharges: "",
+    senderName: "",
+    senderContactNumber: "",
+    senderAddress: "",
+    senderCity: "",
+    senderState: "",
+    senderPostalCode: "",
+    receiverName: "",
+    receiverContactNumber: "",
+    receiverAddress: "",
+    receiverCity: "",
+    receiverState: "",
+    receiverPostalCode: "",
+    fromCity: "",
+    fromState: "",
+    fromPincode: "",
+    toCity: "",
+    toState: "",
+    toPincode: "",
+    parcelName: "",
+    parcelWeight: "",
+    parcelType: "",
+    volume: "",
+    parcelDescription: "",
+    parcelPhotoUrl: "",
+    distance: "",
+    expectedDeliveryDate: "",
+    deliveryCharges: "",
   });
 
   const { parcelData, senderData, receiverData } = useSocket();
 
-  const {
-    parcelName,
-    parcelWeight,
-    parcelType,
-    parcelDescription,
-    parcelPhotoUrl,
-    volume,
-    fromCity,
-    fromState,
-    fromPincode,
-    toCity,
-    toState,
-    toPincode,
-    distance,
-    deliveryCharges,
-    expectedDeliveryDate,
-  } = parcelData;
-
-  const {
-    receiverName,
-    receiverContactNumber,
-    receiverAddress,
-    receiverCity,
-    receiverState,
-    receiverPostalCode,
-  } = receiverData;
-
-  const {
-    senderName,
-    senderContactNumber,
-    senderAddress,
-    senderCity,
-    senderState,
-    senderPostalCode,
-  } = senderData;
-
-  // Simulate an API call to populate data
   useEffect(() => {
-    const fetchParcelDetails = async () => {
-      const mockAPIResponse = {
-        senderName,
-        senderContactNumber,
-        senderAddress,
-        senderCity,
-        senderState,
-        senderPostalCode,
-        receiverName,
-        receiverContactNumber,
-        receiverAddress,
-        receiverCity,
-        receiverState,
-        receiverPostalCode,
-        fromCity,
-        fromState,
-        fromPincode,
-        toCity,
-        toState,
-        toPincode,
-        parcelName,
-        parcelWeight,
-        parcelType,
-        volume,
-        parcelDescription,
-        parcelPhotoUrl,
-        distance,
-        expectedDeliveryDate,
-        deliveryCharges,
-      };
+    if (parcelData && senderData && receiverData) {
+      setFields({
+        ...parcelData,
+        ...senderData,
+        ...receiverData,
+      });
+    }
+  }, [parcelData, senderData, receiverData]);
 
-      // Set the fields with API response
-      setFields(mockAPIResponse);
-    };
-
-    fetchParcelDetails();
-  }, []);
+  if (!parcelData || !senderData || !receiverData) {
+    return <div className="text-white">Loading parcel details...</div>;
+  }
 
   return (
     <div
