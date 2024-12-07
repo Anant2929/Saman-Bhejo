@@ -213,11 +213,11 @@ const registerParcel = async (req, res) => {
       sender: sender._id,
       senderName : sender.name,
       senderContactNumber:sender.contactNumber,
-      address: parcelData.senderAddress,
-      city: parcelData.senderCity,
-      state: parcelData.senderState,
+      senderAddress: parcelData.senderAddress,
+      senderCity: parcelData.senderCity,
+      senderState: parcelData.senderState,
       parcelsSent: parcel._id,
-      postCode: parcelData.senderPostalCode,
+      senderPostalCode: parcelData.senderPostalCode,
     });
     await senderRecord.save();
 
@@ -225,11 +225,11 @@ const registerParcel = async (req, res) => {
       receiver: receiver._id,
       receiverName : receiver.name,
       receivierContactNumber:receiver.contactNumber,
-      address: parcelData.ReciverAddress,
-      city: parcelData.ReciverCity,
-      state: parcelData.ReciverState,
+      receiverAddress: parcelData.ReciverAddress,
+      receiverCity: parcelData.ReciverCity,
+      receiverState: parcelData.ReciverState,
       parcelsReceived: parcel._id,
-      postCode: parcelData.ReciverPostalCode,
+      receiverPostalCode: parcelData.ReciverPostalCode,
     });
     await receiverRecord.save();
 

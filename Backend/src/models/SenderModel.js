@@ -7,18 +7,20 @@ const senderSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    address: {
+    senderName:{type:String , required:true},
+    senderContactNumber:{type:Number , required:true},
+    senderAddress: {
       type: String,
       required: true,
     },
-    city: { type: String, required: true },
-    state: { type: String, required: true },
+    senderCity: { type: String, required: true },
+    senderState: { type: String, required: true },
     parcelsSent: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Parcel",
       required: true,
     },
-    postCode: { type: Number, required: true },
+    senderPostalCode: { type: Number, required: true },
   },
   { timestamps: true }
 );

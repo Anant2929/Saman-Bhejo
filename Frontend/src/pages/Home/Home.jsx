@@ -36,7 +36,7 @@ const Home = () => {
   const handleNotificationClick = () => {
     setShowNotification(false); // Hide modal after confirmation
     setDeletePendingMessage(true);
-    navigate("/home");
+    navigate("/home/receiverConfirm");
   };
 const CreateParcel =()=>{ 
   navigate("/parcel/details");

@@ -7,11 +7,14 @@ const receiverSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    address: { type: String, required: true },
+    receiverName:{type : String , required : true},
+    receiverContactNumber: { type: Number, required: true },
 
-    city: { type: String, required: true },
+    receiverAddress: { type: String, required: true },
 
-    state: { type: String, required: true },
+    receiverCity: { type: String, required: true },
+
+    receiverState: { type: String, required: true },
 
     parcelsReceived: {
       type: mongoose.Schema.Types.ObjectId,
@@ -19,7 +22,7 @@ const receiverSchema = new mongoose.Schema(
       required: true,
     },
 
-    postCode: { type: Number, required: true },
+    receiverPostalCode: { type: Number, required: true },
   },
   { timestamps: true }
 );
