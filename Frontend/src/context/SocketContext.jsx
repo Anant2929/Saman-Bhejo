@@ -36,7 +36,14 @@ export const SocketProvider = ({ children }) => {
 
     // Listen for new parcel notifications
     newSocket.on("newParcelNotification", (data) => {
-      setParcelNotification(data);
+      if(data){
+        const {parcelData , senderData, receiverData} = data;
+        setParcelData(parcelData);
+        setSenderData(senderData);
+        setReceiverData(receiverData);
+        
+        setParcelNotification(true);
+      }
       console.log("New parcel notification received:", data);
     });
 
