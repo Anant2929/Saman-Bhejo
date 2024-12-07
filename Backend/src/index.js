@@ -18,7 +18,7 @@ const app = express();
 const server = http.createServer(app); // Create server for socket.io
 const io = socketIo(server, {
   cors: {
-    origin: "http://localhost:3000", // Replace with your frontend URL
+    origin:"*", // Replace with your frontend URL
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -29,7 +29,7 @@ const port = process.env.PORT || 5000;
 
 // Middlewares
 app.use(cors({
-  origin: "http://localhost:3000", // Adjust according to your frontend's URL
+  origin:"*", // Adjust according to your frontend's URL
   credentials: true,
 }));
 app.use(express.json());
