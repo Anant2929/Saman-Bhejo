@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSocket } from "../context/SocketContext";
 
-function ParcelAcceptanceForm() {
+export default function ParcelAcceptanceForm() {
   // State for form fields
   const [fields, setFields] = useState({
     senderName: "",
@@ -33,20 +33,23 @@ function ParcelAcceptanceForm() {
     deliveryCharges: "",
   });
 
-  const { parcelData, senderData, receiverData } = useSocket();
+  const { parcelDataInfo, senderDataInfo, receiverDataInfo } = useSocket();
 
   useEffect(() => {
-    if (parcelData && senderData && receiverData) {
+    console.log("Parcel Data:", parcelDataInfo);
+    console.log("Sender Data:", senderDataInfo);
+    console.log("Receiver Data:", receiverDataInfo);
+    if (parcelDataInfo && senderDataInfo && receiverDataInfo) {
       setFields({
-        ...parcelData,
-        ...senderData,
-        ...receiverData,
+        ...parcelDataInfo,
+        ...senderDataInfo,
+        ...receiverDataInfo,
       });
     }
-  }, [parcelData, senderData, receiverData]);
+  }, [parcelDataInfo, senderDataInfo, receiverDataInfo]);
 
-  if (!parcelData || !senderData || !receiverData) {
-    return <div className="text-white">Loading parcel details...</div>;
+  if (!parcelDataInfo || !senderDataInfo || !receiverDataInfo) {
+    return <div className="text-black">Loading parcel details...</div>;
   }
 
   return (
@@ -103,5 +106,3 @@ function ParcelAcceptanceForm() {
     </div>
   );
 }
-
-export default ParcelAcceptanceForm;

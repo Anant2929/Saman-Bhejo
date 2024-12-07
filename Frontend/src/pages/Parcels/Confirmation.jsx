@@ -38,6 +38,10 @@ function SubmissionSummary() {
         setReceiverData(response.data.receiverRecord);
         setSenderData(response.data.senderRecord) ;
 
+        console.log("Updated Parcel Data:", response.data.parcel);
+        console.log("Updated Sender Data:", response.data.senderRecord);
+        console.log("Updated Receiver Data:", response.data.receiverRecord);
+
         setTimedMessage(response.data.message, "success");
 
         navigate("/home");

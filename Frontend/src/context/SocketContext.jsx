@@ -13,9 +13,12 @@ export const SocketProvider = ({ children }) => {
   const [id, setId] = useState(""); // State to hold userId
 
   const [parcelData, setParcelData] = useState({});
+  const [parcelDataInfo , setParcelDataInfo]= useState({}) ;
   const [senderData , setSenderData] = useState({}) ;
+  const [senderDataInfo , setSenderDataInfo] = useState({}) ;
   const [deletePendingMessage,setDeletePendingMessage] = useState(false)
   const [receiverData , setReceiverData] = useState({});
+  const [receiverDataInfo , setReceiverDataInfo] = useState({});
   const [parcelNotification, setParcelNotification] = useState(null); // State for parcel notification
   const [socket, setSocket] = useState(null);
 
@@ -36,7 +39,14 @@ export const SocketProvider = ({ children }) => {
 
     // Listen for new parcel notifications
     newSocket.on("newParcelNotification", (data) => {
-      setParcelNotification(data);
+      if(data){
+        let {parcelData , senderData, receiverData} = data;
+        setParcelDataInfo(parcelData);
+        setSenderDataInfo(senderData);
+        setReceiverDataInfo(receiverData);
+        
+        setParcelNotification(true);
+      }
       console.log("New parcel notification received:", data);
     });
 
@@ -52,7 +62,7 @@ export const SocketProvider = ({ children }) => {
       newSocket.disconnect();
       console.log("Socket connection closed");
     };
-  }, [id]); // Re-run when `id` changes
+  }, [id,parcelData,senderData,receiverData]); // Re-run when `id` changes
 
   // Emit parcel notification when `receiverid` or `parcelData` changes
   useEffect(() => {
@@ -67,7 +77,7 @@ export const SocketProvider = ({ children }) => {
         }
       );
     }
-  }, [socket, receiverData,senderData, parcelData]);// Watch for changes in `socket`, `receiverid`, and `parcelData`
+  }, [socket, receiverDataInfo,senderDataInfo, parcelDataInfo]);// Watch for changes in `socket`, `receiverid`, and `parcelData`
 
   useEffect(() => {
     if (socket && deletePendingMessage) {
@@ -89,7 +99,10 @@ export const SocketProvider = ({ children }) => {
         setReceiverData,
         setParcelData,
         setSenderData,
-        setDeletePendingMessage
+        setDeletePendingMessage,
+        parcelDataInfo,
+        senderDataInfo,
+        receiverDataInfo
       }}
     >
       {children}
