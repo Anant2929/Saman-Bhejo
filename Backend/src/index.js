@@ -18,7 +18,11 @@ const app = express();
 const server = http.createServer(app); // Create server for socket.io
 const io = socketIo(server, {
   cors: {
+<<<<<<< HEAD
     origin:"*", // Replace with your frontend URL
+=======
+    origin: "*", // Replace with your frontend URL only for development
+>>>>>>> 14e5f56a923cf0907fc951b0a4621cc70b286c3f
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -29,7 +33,11 @@ const port = process.env.PORT || 5000;
 
 // Middlewares
 app.use(cors({
+<<<<<<< HEAD
   origin:"*", // Adjust according to your frontend's URL
+=======
+  origin: "*", // Adjust according to your frontend's URL only for development
+>>>>>>> 14e5f56a923cf0907fc951b0a4621cc70b286c3f
   credentials: true,
 }));
 app.use(express.json());

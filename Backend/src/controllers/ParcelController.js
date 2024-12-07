@@ -224,7 +224,7 @@ const registerParcel = async (req, res) => {
     const receiverRecord = new Receiver({
       receiver: receiver._id,
       receiverName : receiver.name,
-      receivierContactNumber:receiver.contactNumber,
+      receiverContactNumber:receiver.contactNumber,
       receiverAddress: parcelData.ReciverAddress,
       receiverCity: parcelData.ReciverCity,
       receiverState: parcelData.ReciverState,
