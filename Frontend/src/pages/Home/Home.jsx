@@ -7,7 +7,7 @@ import { useSocket } from '../../context/SocketContext';
 
 const Home = () => {
   const navigate = useNavigate();
-  const {parcelNotification} = useSocket()
+  const {parcelNotification,setParcelNotification,setDeletePendingMessage} = useSocket()
   const [username, setUsername] = useState('');
   const { token } = useAuth();
   const [showNotification, setShowNotification] = useState(false); // State to control modal visibility
@@ -34,9 +34,13 @@ const Home = () => {
   }, [token,parcelNotification]);
 
   const handleNotificationClick = () => {
-    navigate("/parcel/details");
+    setShowNotification(false); // Hide modal after confirmation
+    setDeletePendingMessage(true);
+    navigate("/home");
   };
-
+const CreateParcel =()=>{ 
+  navigate("/parcel/details");
+}
   return (
     <div className="relative flex min-h-screen flex-col bg-[#181411] dark overflow-x-hidden" style={{ fontFamily: '"Poppins", sans-serif' }}>
       <div className="layout-container flex h-full grow flex-col">
@@ -92,7 +96,7 @@ const Home = () => {
             <h1 className="text-white text-[36px] font-semibold text-center py-6">Welcome {username}</h1>
             <h2 className="text-white text-[24px] font-semibold py-5">Manage Parcel</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-              <Card imageUrl="https://cdn.usegalileo.ai/sdxl10/b5f666c4-2f14-4001-b667-06435e9eefa3.png" title="Get Parcel" onClick={handleNotificationClick} />
+              <Card imageUrl="https://cdn.usegalileo.ai/sdxl10/b5f666c4-2f14-4001-b667-06435e9eefa3.png" title="Get Parcel" onClick={CreateParcel} />
               <Card imageUrl="https://cdn.usegalileo.ai/sdxl10/e72c4298-cc13-4e77-b114-7eee8427ce37.png" title="Carry Parcel" />
               <Card imageUrl="https://cdn.usegalileo.ai/stability/8d900686-5492-48b1-8b45-e5dca0e56001.png" title="User Profile" />
               <Card imageUrl="https://cdn.usegalileo.ai/sdxl10/17e1af90-d027-4c30-9667-d5df78ba3d72.png" title="Help and Support" />

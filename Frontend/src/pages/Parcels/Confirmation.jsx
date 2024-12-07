@@ -10,7 +10,7 @@ function SubmissionSummary() {
   const { formData, setCurrentState } = useParcelRegistration();
   const { setTimedMessage } = useMessage();
   const [showNotification, setShowNotification] = useState(false);
-  const { parcelNotification, setreceiverid, setParcelData } = useSocket();
+  const { parcelNotification, setReceiverData,setSenderData, setParcelData } = useSocket();
 
   useEffect(() => {
     // Check if parcelNotification has any data
@@ -35,7 +35,8 @@ function SubmissionSummary() {
         console.log("parcel response",response)
         
         setParcelData(response.data.parcel);
-        setreceiverid(response.data.receiverid);
+        setReceiverData(response.data.receiverRecord);
+        setSenderData(response.data.senderRecord) ;
 
         setTimedMessage(response.data.message, "success");
 

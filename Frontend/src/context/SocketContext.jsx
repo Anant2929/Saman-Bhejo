@@ -5,13 +5,17 @@ import { io } from "socket.io-client";
 const SocketContext = createContext();
 
 // Socket URL
-const SOCKET_SERVER_URL = "http://localhost:5000";
+// const SOCKET_SERVER_URL= "https://saman-bhejo-backend.onrender.com"
+ const SOCKET_SERVER_URL = "http://localhost:5000";
 
 // Create a provider component
 export const SocketProvider = ({ children }) => {
   const [id, setId] = useState(""); // State to hold userId
-  const [receiverid, setreceiverid] = useState("");
+
   const [parcelData, setParcelData] = useState({});
+  const [senderData , setSenderData] = useState({}) ;
+  const [deletePendingMessage,setDeletePendingMessage] = useState(false)
+  const [receiverData , setReceiverData] = useState({});
   const [parcelNotification, setParcelNotification] = useState(null); // State for parcel notification
   const [socket, setSocket] = useState(null);
 
@@ -37,9 +41,9 @@ export const SocketProvider = ({ children }) => {
     });
 
     // Handle disconnection
-    newSocket.on("disconnect", () => {
-      console.log("Disconnected from server");
-    });
+    // newSocket.on("disconnect", () => {
+    //   console.log("Disconnected from server");
+    // });
 
     setSocket(newSocket);
 
@@ -52,18 +56,28 @@ export const SocketProvider = ({ children }) => {
 
   // Emit parcel notification when `receiverid` or `parcelData` changes
   useEffect(() => {
-    if (socket && receiverid && Object.keys(parcelData).length > 0) {
-      console.log("Sending parcel notification:", { receiverid, parcelData });
+    if (socket &&Object.keys(senderData).length > 0 && Object.keys(parcelData).length > 0 && Object.keys(receiverData).length > 0 ) {
+      
+      console.log("Sending parcel notification:", {receiverData,senderData , parcelData });
       socket.emit(
         "sendParcelNotification",
-        { receiverid, parcelData },
+        {senderData,receiverData, parcelData },
         (response) => {
           console.log("Notification sent to server:", response);
         }
       );
     }
-  }, [socket, receiverid, parcelData]); // Watch for changes in `socket`, `receiverid`, and `parcelData`
+  }, [socket, receiverData,senderData, parcelData]);// Watch for changes in `socket`, `receiverid`, and `parcelData`
 
+  useEffect(() => {
+    if (socket && deletePendingMessage) {
+      console.log("I am in delete pending message");
+      socket.emit("deletePendingMessage",{id}, (response) => {
+        console.log("Server Response:", response);
+      });
+    }
+  }, [socket, deletePendingMessage]);
+  
   return (
     <SocketContext.Provider
       value={{
@@ -72,8 +86,10 @@ export const SocketProvider = ({ children }) => {
         setParcelNotification,
         id,
         setId,
-        setreceiverid,
+        setReceiverData,
         setParcelData,
+        setSenderData,
+        setDeletePendingMessage
       }}
     >
       {children}

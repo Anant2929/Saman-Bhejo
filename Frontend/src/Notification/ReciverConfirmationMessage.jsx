@@ -2,12 +2,14 @@ import React from 'react';
 import { useSocket } from '../context/SocketContext.jsx';
 
 const ParcelNotification = () => {
-  const { parcelNotification, setParcelNotification } = useSocket();
+  const { parcelNotification, setParcelNotification,setDeletePendingMessage } = useSocket();
 
-  const handleConfirm = () => {
+  const handleOpen = () => {
     // Code to confirm the parcel
     console.log("Parcel confirmed");
     setParcelNotification(null); // Hide modal after confirmation
+    setDeletePendingMessage(true);
+    
   };
 
   const handleDecline = () => {
@@ -26,7 +28,7 @@ const ParcelNotification = () => {
         <h3>Parcel Details:</h3>
         <pre>{JSON.stringify(parcelNotification.parcelData, null, 2)}</pre>
       </div>
-      <button onClick={handleConfirm}>Confirm</button>
+      <button onClick={handleOpen}>Confirm</button>
       <button onClick={handleDecline}>Decline</button>
     </div>
   );

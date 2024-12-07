@@ -211,6 +211,8 @@ const registerParcel = async (req, res) => {
     // Save sender and receiver records
     const senderRecord = new Sender({
       sender: sender._id,
+      senderName : sender.name,
+      senderContactNumber:sender.contactNumber,
       address: parcelData.senderAddress,
       city: parcelData.senderCity,
       state: parcelData.senderState,
@@ -221,6 +223,8 @@ const registerParcel = async (req, res) => {
 
     const receiverRecord = new Receiver({
       receiver: receiver._id,
+      receiverName : receiver.name,
+      receivierContactNumber:receiver.contactNumber,
       address: parcelData.ReciverAddress,
       city: parcelData.ReciverCity,
       state: parcelData.ReciverState,
@@ -230,10 +234,10 @@ const registerParcel = async (req, res) => {
     await receiverRecord.save();
 
     console.log("userid", sender._id, "receive", receiver._id);
-    let receiverid = receiver._id;
+   
     res
       .status(201)
-      .json({ message: "Parcel registered successfully", receiverid, parcel });
+      .json({ message: "Parcel registered successfully",receiverRecord,senderRecord, parcel });
   } catch (error) {
     console.error("Error in registerParcel:", error);
     res.status(500).json({ error: error.message });
