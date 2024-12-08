@@ -79,14 +79,7 @@ export const SocketProvider = ({ children }) => {
     }
   }, [socket]);// Watch for changes in `socket`, `receiverid`, and `parcelData`
 
-  useEffect(() => {
-    if (socket && deletePendingMessage) {
-      console.log("I am in delete pending message");
-      socket.emit("deletePendingMessage",{id,parcelDataInfo,receiverDataInfo,senderDataInfo}, (response) => {
-        console.log("Server Response:", response);
-      });
-    }
-  }, [socket, deletePendingMessage]);
+  
   
   return (
     <SocketContext.Provider

@@ -10,6 +10,8 @@ import ParcelAcceptanceForm from '../../Notification/ReciverConfirmationMessage.
 import { useAuth } from '../../context/AuthContext'; // Import the Auth context
 
 import ParcelNotification from '../../Notification/ReciverConfirmationMessage.jsx';
+import UserProfile from '../Profile/UserProfile.jsx';
+import Logout from '../Auth/Logout.jsx';
 
 export default function AppRoutes() {
   const { token, setToken } = useAuth();
@@ -35,6 +37,7 @@ export default function AppRoutes() {
         <Route path="/oAuth/auth/google" element={token ? <Navigate to="/home" /> : <Layout />} />
         <Route path="/parcel/details" element={ token ? <ParcelRegistration/> : <Navigate to="/home" />} />
         <Route path="/trackingStatus" element={token ? <ParcelTracking /> : <Layout /> } />
+        <Route path="/userProfile" element={token ? <UserProfile /> : <Layout /> } />
         <Route path="/home/receiverConfirm" element={ token ? <ParcelAcceptanceForm /> : <Layout /> } />
         <Route path="/home/parcel" element={token ? <ParcelNotification /> : <Navigate to="/home" /> } />
         <Route path="/home/parcel/CarriersList" element={token ? <CarriersList /> : <Navigate to="/home" /> } />

@@ -79,11 +79,11 @@ const setupOnEvents = () => {
           });
 
           await notification.save();
-          console.log("Notification saved:", notification);
 
           // Delete the pending message
           delete pendingMessages[id];
           console.log(`Pending messages for user ID ${id} successfully deleted.`);
+          console.log("pending id: " , pendingMessages[id]);
           return callback && callback({ success: true, message: "Pending messages successfully deleted!" });
         } catch (error) {
           console.error("Error saving notification:", error);

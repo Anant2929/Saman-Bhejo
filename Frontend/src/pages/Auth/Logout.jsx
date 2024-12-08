@@ -30,14 +30,11 @@ const {setFormData} = useParcelRegistration
   };
 
   return (
-    <div className="flex gap-2">
       <button
-        className="flex h-10 min-w-[84px] cursor-pointer items-center justify-center rounded-full px-4 bg-[#ec7113] text-white text-sm font-bold"
+        className="block w-full text-left px-4 py-2 text-white hover:bg-[#3C3F4A] transition"
         onClick={handleClick} // Call the handleClick function on click
       >
         Logout
       </button>
-    </div>
   );
 }
-

@@ -5,24 +5,19 @@ import { useMessage } from "../../context/MessageContext";
 import { useNavigate } from "react-router-dom";
 import { useSocket } from "../../context/SocketContext";
 
+
 function SubmissionSummary() {
   const navigate = useNavigate();
   const { formData, setCurrentState } = useParcelRegistration();
   const { setTimedMessage } = useMessage();
-  const [showNotification, setShowNotification] = useState(false);
-  const { parcelNotification, setReceiverData,setSenderData, setParcelData } = useSocket();
+  ;
+  const {setReceiverData,setSenderData, setParcelData } = useSocket();
 
-  useEffect(() => {
-    // Check if parcelNotification has any data
-    if (parcelNotification) {
-      setShowNotification(true);
-    } else {
-      setShowNotification(false);
-    }
-  }, [parcelNotification]);
+ 
 
-  const handleEditClick = (path) => {
-    navigate(path);
+  const handleEditClick = ( num ) => {
+    setCurrentState (num)
+    navigate("/parcel/details");
   };
 
   const handleConfirmClick = (e) => {
@@ -63,13 +58,6 @@ function SubmissionSummary() {
         Please review the information before proceeding
       </p>
 
-      {/* Show Notification if applicable */}
-      {showNotification && (
-        <div className="bg-green-600 p-4 rounded-lg mb-4">
-          <p className="text-white">Notification: {parcelNotification}</p>
-        </div>
-      )}
-
       {/* Sender's Details */}
       <div className="bg-gray-800 p-6 rounded-lg mb-6 flex justify-between items-center">
         <div>
@@ -77,7 +65,7 @@ function SubmissionSummary() {
           <p className="text-gray-300">Name: {formData.senderName}...</p>
         </div>
         <button
-          onClick={() => handleEditClick("/edit-sender")}
+          onClick={() => handleEditClick(2)}
           className="text-blue-400 hover:text-blue-300 underline font-medium"
         >
           Edit
@@ -91,7 +79,7 @@ function SubmissionSummary() {
           <p className="text-gray-300">Name: {formData.ReciverName}...</p>
         </div>
         <button
-          onClick={() => handleEditClick("/edit-receiver")}
+          onClick={() => handleEditClick(3)}
           className="text-blue-400 hover:text-blue-300 underline font-medium"
         >
           Edit
@@ -106,7 +94,7 @@ function SubmissionSummary() {
           <p className="text-gray-300">Weight: {formData.parcelWeight}kg</p>
         </div>
         <button
-          onClick={() => handleEditClick("/edit-parcel")}
+          onClick={() => handleEditClick(1)}
           className="text-blue-400 hover:text-blue-300 underline font-medium"
         >
           Edit
@@ -132,7 +120,7 @@ function SubmissionSummary() {
       {/* Action Buttons */}
       <div className="flex justify-between mt-8">
         <button
-          onClick={() => alert("Declined")}
+          onClick={() => {navigate("/home") , setCurrentState(1)}}
           className="bg-red-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-red-700 transition duration-200"
         >
           Decline
