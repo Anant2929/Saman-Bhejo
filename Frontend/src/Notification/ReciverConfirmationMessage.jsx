@@ -36,14 +36,25 @@ export default function ParcelAcceptanceForm() {
   const { parcelDataInfo, senderDataInfo, receiverDataInfo } = useSocket();
 
   useEffect(() => {
-    console.log("Parcel Data:", parcelDataInfo);
-    console.log("Sender Data:", senderDataInfo);
-    console.log("Receiver Data:", receiverDataInfo);
+  
     if (parcelDataInfo && senderDataInfo && receiverDataInfo) {
+      // Get keys from the initial `fields` state
+      const allowedKeys = Object.keys(fields);
+  
+      // Filter only allowed keys
+      const filterFields = (data) => {
+        return Object.keys(data)
+          .filter((key) => allowedKeys.includes(key))
+          .reduce((obj, key) => {
+            obj[key] = data[key];
+            return obj;
+          }, {});
+      };
+  
       setFields({
-        ...parcelDataInfo,
-        ...senderDataInfo,
-        ...receiverDataInfo,
+        ...filterFields(parcelDataInfo),
+        ...filterFields(senderDataInfo),
+        ...filterFields(receiverDataInfo),
       });
     }
   }, [parcelDataInfo, senderDataInfo, receiverDataInfo]);

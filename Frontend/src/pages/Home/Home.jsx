@@ -34,6 +34,7 @@ const Home = () => {
   }, [token,parcelNotification]);
 
   const handleNotificationClick = () => {
+    console.log("In notification click handler");
     setShowNotification(false); // Hide modal after confirmation
     setDeletePendingMessage(true);
     navigate("/home/receiverConfirm");

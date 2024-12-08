@@ -61,19 +61,21 @@ const setupOnEvents = () => {
     });
 
     // Handle deletePendingMessage event
-    socket.on("deletePendingMessage", async ({ id, parcelData, senderData, receiverData }, callback) => {
+    socket.on("deletePendingMessage", async ({ id, parcelDataInfo,  receiverDataInfo,senderDataInfo }, callback) => {
       if (!id) {
         console.error("Message ID is missing");
         return callback && callback({ success: false, message: "Message ID is missing" });
       }
 
+      
       if (pendingMessages[id]) {
         // Create notification for deleted message
+
         try {
           const notification = new Notification({
-            parcelId: parcelData._id,
-            senderId: senderData._id,
-            receiverId: receiverData._id,
+            parcelId:parcelDataInfo._id,
+            senderId: senderDataInfo._id,
+            receiverId: receiverDataInfo._id,
           });
 
           await notification.save();
