@@ -97,7 +97,7 @@ const DeliveryDetailsForm = () => {
 
   return (
     <div
-      className="relative flex size-full min-h-screen flex-col bg-[#131C24] dark group/design-root overflow-x-hidden"
+      className="relative flex size-full min-h-screen flex-col bg-[#000000] dark group/design-root overflow-x-hidden"
       style={{ fontFamily: 'Inter, "Noto Sans", sans-serif' }}
     >
       <div className="layout-container flex h-full grow flex-col">

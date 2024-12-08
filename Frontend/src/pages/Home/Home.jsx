@@ -45,7 +45,7 @@ const CreateParcel =()=>{
   navigate("/parcel/details");
 }
   return (
-    <div className="relative flex min-h-screen flex-col bg-[#181411] dark overflow-x-hidden" style={{ fontFamily: '"Poppins", sans-serif' }}>
+    <div className="relative flex min-h-screen flex-col bg-[#000000] dark overflow-x-hidden" style={{ fontFamily: '"Poppins", sans-serif' }}>
       <div className="layout-container flex h-full grow flex-col">
         {/* Header Section */}
         <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#392f28] px-10 py-3">

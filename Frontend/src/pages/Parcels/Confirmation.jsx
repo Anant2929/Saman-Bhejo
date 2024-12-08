@@ -55,7 +55,7 @@ function SubmissionSummary() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-8 bg-gray-900 text-white rounded-lg shadow-xl">
+    <div className="max-w-4xl mx-auto p-8 bg-[#000000]  text-white rounded-lg shadow-xl">
       <h2 className="text-center text-3xl font-bold mb-2">
         Form Submission Summary
       </h2>

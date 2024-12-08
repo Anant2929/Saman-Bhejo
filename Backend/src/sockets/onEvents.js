@@ -1,6 +1,6 @@
 const { getSocket } = require("./socketManager");
 const Notification = require("../models/NotificationModel.js");
-
+const ParcelSchema = require("../models/ParcelModel.js")
 const user = {}; // Stores userId -> socketId mapping
 const pendingMessages = {}; // Stores pending messages for offline users
 
@@ -95,6 +95,36 @@ const setupOnEvents = () => {
       }
     });
 
+
+
+    socket.on("updateParcelStatus", async (data, callback) => {
+      const { _id, action } = data;
+  
+      try {
+          // Dynamically set tracking status based on action
+          const trackingStatus = action === "Accept" ? "Confirmed" : "Rejected";
+  
+          // Update the tracking status in the database
+          const updatedParcel = await ParcelSchema.findOneAndUpdate(
+              { _id },
+              { trackingStatus },
+              { new: true } // Return the updated document
+          );
+  
+          console.log(`Parcel status updated to ${trackingStatus}:`, updatedParcel);
+  
+          // Emit confirmation to the specific client
+          callback({ success: true, parcelId: _id });
+  
+      } catch (error) {
+          console.error("Error updating parcel status:", error);
+  
+          // Emit error response
+          callback({ success: false, error: "Failed to update parcel status." });
+      }
+  });
+  
+
     // Handle user disconnection
     socket.on("disconnect", () => {
       console.log(`Client disconnected: ${socket.id}`);
@@ -104,6 +134,8 @@ const setupOnEvents = () => {
         console.log("Updated user mapping after disconnection:", user);
       }
     });
+
+   
   };
 
   return { handleUserRegistration, user };
