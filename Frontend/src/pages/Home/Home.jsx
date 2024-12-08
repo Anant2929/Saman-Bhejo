@@ -16,7 +16,9 @@ const Home = () => {
     const fetchUsername = async () => {
       try {
         const response = await axios.get('/api/user/getname', { withCredentials: true });
-        setUsername(response.data.name);
+        const user = response.data.name;
+        localStorage.setItem('username', user);
+        setUsername(user);
         if(parcelNotification){
           console.log("i am in notification box")
           setShowNotification(true)
