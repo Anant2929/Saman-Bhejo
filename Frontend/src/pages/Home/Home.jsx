@@ -136,7 +136,7 @@ const Home = () => {
                       className="block w-full text-left px-4 py-2 text-white hover:bg-[#3C3F4A] transition"
                       onClick={() =>
                         handleSidebarClick(
-                          `/${item.toLowerCase().replace(" ", "-")}`
+                          `/userProfile/${item.toLowerCase().replace(" ", "-")}`
                         )
                       }
                     >

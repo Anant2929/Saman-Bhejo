@@ -22,7 +22,6 @@ const generateToken = (user) => {
 // Middleware to verify token from cookies
 const verifyToken = (req, res, next) => {
   const token = req.cookies.token; // Retrieve the token from cookies
-
   if (!token) {
     return res.status(403).json({ message: "Token is required for access" });
   }

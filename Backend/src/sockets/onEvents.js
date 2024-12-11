@@ -8,7 +8,7 @@ const setupOnEvents = () => {
   const { socket, io } = getSocket();
 
   const handleUserRegistration = () => {
-    console.log("Welcome to registration");
+    // console.log("Welcome to registration");
 
     // Listen for the "registerUser" event
     socket.on("registerUser", ({ id }, callback) => {
@@ -127,11 +127,11 @@ const setupOnEvents = () => {
 
     // Handle user disconnection
     socket.on("disconnect", () => {
-      console.log(`Client disconnected: ${socket.id}`);
+      // console.log(`Client disconnected: ${socket.id}`);
       const userId = Object.keys(user).find((key) => user[key] === socket.id);
       if (userId) {
         delete user[userId];
-        console.log("Updated user mapping after disconnection:", user);
+        // console.log("Updated user mapping after disconnection:", user);
       }
     });
 

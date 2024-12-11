@@ -1,34 +1,63 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useParcelRegistration } from "../../context/ParcelContext";
 
 const UserParcels = () => {
-  const [filterRole, setFilterRole] = useState("All");
-  const [filterDate, setFilterDate] = useState("");
+  const { parcels, setParcels, selectedParcel, setSelectedParcel } = useParcelRegistration(); // Use extended context
+  const [filterRole, setFilterRole] = useState("All"); // "All", "Sender", "Receiver"
+  const [filterDate, setFilterDate] = useState(""); // For date filtering
   const [showSidebar, setShowSidebar] = useState(false);
+  const [userId, setUserId] = useState(""); // State to store logged-in user's ID
+  const navigate = useNavigate() ;
 
-  const parcels = [
-    {
-      id: 1,
-      name: "Important Document",
-      type: "Document",
-      photo: "📄",
-    },
-    {
-      id: 2,
-      name: "Gift Package",
-      type: "Package",
-      photo: "🎁",
-    },
-    {
-      id: 3,
-      name: "Electronics",
-      type: "Package",
-      photo: "📦",
-    },
-  ];
+  useEffect(() => {
+    // Fetch parcels from backend
+    const fetchParcels = async () => {
+      console.log("Fetching parcels from backend...");
+      try {
+        const response = await axios.get("/api/parcel/parcelsInfo", {
+          withCredentials: true,
+        });
+        setParcels(response.data.parcels); // Store fetched parcels
+        setUserId(response.data.userId); // Store logged-in user's ID
+      } catch (error) {
+        console.error(
+          "Error fetching parcels:",
+          error.response?.data || error.message
+        );
+      }
+    };
 
+    fetchParcels();
+  }, [setParcels]);
+
+  // Filter parcels based on role and date
   const filteredParcels = parcels.filter((parcel) => {
-    if (filterRole !== "All" && parcel.type !== filterRole) return false;
-    if (filterDate && filterDate !== "2024-12-09") return false; // Replace with actual date comparison logic
+    // Filter by role (Sender, Receiver, All)
+    if (filterRole !== "All") {
+      if (
+        filterRole === "Sender" &&
+        parcel.senderDetails.toString() !== userId
+      ) {
+        return false;
+      }
+      if (
+        filterRole === "Receiver" &&
+        parcel.receiverDetails.toString() !== userId.toString()
+      ) {
+        return false;
+      }
+    }
+
+    // Filter by date
+    if (filterDate) {
+      const parcelDate = new Date(parcel.createdAt).toISOString().split("T")[0];
+      if (parcelDate !== filterDate) {
+        return false;
+      }
+    }
+
     return true;
   });
 
@@ -41,13 +70,26 @@ const UserParcels = () => {
     setShowSidebar(false);
   };
 
+  const handleMoreInfo = (parcel) => {
+    setSelectedParcel(parcel); // Set the selected parcel in context
+    navigate("/userProfile/parcels/specificParcels"); // Navigate to the details page
+  };
+
+  const handleTracking = () =>{
+    navigate("/trackingStatus");
+  }
+
   return (
     <div className="bg-[#000000] min-h-screen text-white">
       {/* Header */}
       <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#392f28] px-10 py-3">
-        <div className="flex items-center gap-4 text-white animate-blink">
+        <div className="flex items-center gap-4 text-white">
           <div className="w-6 h-6">
-            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg
+              viewBox="0 0 48 48"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
               <path
                 fillRule="evenodd"
                 clipRule="evenodd"
@@ -63,15 +105,17 @@ const UserParcels = () => {
 
         <div className="flex flex-1 justify-end gap-8">
           <nav className="flex items-center gap-9">
-            {["Home", "About", "Notifications", "Pricing", "Contact"].map((item) => (
-              <a
-                key={item}
-                className="text-white text-sm font-medium transition duration-300 hover:text-[#607AFB]"
-                href="#"
-              >
-                {item}
-              </a>
-            ))}
+            {["Home", "About", "Notifications", "Pricing", "Contact"].map(
+              (item) => (
+                <a
+                  key={item}
+                  className="text-white text-sm font-medium transition duration-300 hover:text-[#607AFB]"
+                  href="#"
+                >
+                  {item}
+                </a>
+              )
+            )}
           </nav>
           <div className="relative">
             <div
@@ -91,19 +135,19 @@ const UserParcels = () => {
 
             {showSidebar && (
               <div className="absolute top-12 right-0 w-48 bg-[#2a2d36] rounded-lg shadow-lg py-4">
-                {["Edit Profile", "Add Address", "Parcels", "Payment Methods"].map((item, index) => (
-                  <button
-                    key={index}
-                    className="block w-full text-left px-4 py-2 text-white hover:bg-[#3C3F4A] transition"
-                    onClick={() =>
-                      handleSidebarClick(
-                        `/${item.toLowerCase().replace(" ", "-")}`
-                      )
-                    }
-                  >
-                    {item}
-                  </button>
-                ))}
+                {["Edit Profile", "Add Address", "Parcels", "Payment Methods"].map(
+                  (item, index) => (
+                    <button
+                      key={index}
+                      className="block w-full text-left px-4 py-2 text-white hover:bg-[#3C3F4A] transition"
+                      onClick={() =>
+                        handleSidebarClick(`/${item.toLowerCase().replace(" ", "-")}`)
+                      }
+                    >
+                      {item}
+                    </button>
+                  )
+                )}
               </div>
             )}
           </div>
@@ -117,9 +161,9 @@ const UserParcels = () => {
           onChange={(e) => setFilterRole(e.target.value)}
           className="bg-[#3C3F4A] text-white px-4 py-2 rounded-lg border-none outline-none"
         >
-          <option value="All">All Roles</option>
-          <option value="Document">As a Sender</option>
-          <option value="Package">As a Receiver</option>
+          <option value="All">All Parcels</option>
+          <option value="Sender">As Sender</option>
+          <option value="Receiver">As Receiver</option>
         </select>
 
         <input
@@ -132,28 +176,32 @@ const UserParcels = () => {
 
       {/* Parcel List */}
       <div className="px-10 space-y-4">
-        {filteredParcels.map((parcel) => (
-          <div
-            key={parcel.id}
-            className="flex items-center justify-between bg-[#3C3F4A] p-4 rounded-lg hover:scale-105 transition-transform duration-300"
-          >
-            <div className="flex items-center gap-4">
-              <div className="text-3xl">{parcel.photo}</div>
-              <div>
-                <h3 className="text-lg font-bold">{parcel.name}</h3>
-                <p className="text-sm text-gray-400">{parcel.type}</p>
+        {filteredParcels.length > 0 ? (
+          filteredParcels.map((parcel) => (
+            <div
+              key={parcel._id} // Using MongoDB `_id` field
+              className="flex items-center justify-between bg-[#3C3F4A] p-4 rounded-lg hover:scale-105 transition-transform duration-300"
+            >
+              <div className="flex items-center gap-4">
+                <div className="text-3xl">📦</div>
+                <div>
+                  <h3 className="text-lg font-bold">{parcel.parcelName}</h3>
+                  <p className="text-sm text-gray-400">{parcel.parcelType}</p>
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <button className="bg-[#607AFB] px-4 py-2 rounded-lg hover:bg-[#809CFF] transition" onClick={() => handleMoreInfo(parcel)} >
+                  More Info
+                </button>
+                <button className="bg-[#607AFB] px-4 py-2 rounded-lg hover:bg-[#809CFF] transition" onClick={handleTracking} >
+                  Track
+                </button>
               </div>
             </div>
-            <div className="flex gap-4">
-              <button className="bg-[#607AFB] px-4 py-2 rounded-lg hover:bg-[#809CFF] transition">
-                More Info
-              </button>
-              <button className="bg-[#607AFB] px-4 py-2 rounded-lg hover:bg-[#809CFF] transition">
-                Track
-              </button>
-            </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <p className="text-gray-400">No parcels found.</p>
+        )}
       </div>
     </div>
   );
