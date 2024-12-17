@@ -112,7 +112,10 @@ const findSenderReceiver = async (
   const receiver = await User.findOne({ contactNumber: RecivercontactNumber });
   if (!receiver) throw new Error("Receiver not found.");
 
-  return { sender, receiver };
+    if(receiver === sender){
+      throw new Error("Sender and receiver name and contact number should be different.")
+    }
+  return { sender, receiver } 
 };
 
 // Function to calculate price and distance
@@ -234,6 +237,7 @@ const registerParcel = async (req, res) => {
     await receiverRecord.save();
 
     console.log("userid", sender._id, "receive", receiver._id);
+
    
     res
       .status(201)

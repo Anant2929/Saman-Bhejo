@@ -11,7 +11,7 @@ function SubmissionSummary() {
   const { formData, setCurrentState } = useParcelRegistration();
   const { setTimedMessage } = useMessage();
   ;
-  const {setReceiverData,setSenderData, setParcelData } = useSocket();
+  const {setReceiverData,setSenderData, setParcelData,socket } = useSocket();
 
  
 
@@ -26,19 +26,36 @@ function SubmissionSummary() {
       try {
         const response = await axios.post("/api/parcel/register", formData); // Replace with your backend API URL
         console.log("Data sent successfully:", formData);
-
-        console.log("parcel response",response)
+  
+        console.log("Parcel response", response);
         
+        // Set data
         setParcelData(response.data.parcel);
         setReceiverData(response.data.receiverRecord);
-        setSenderData(response.data.senderRecord) ;
-
+        setSenderData(response.data.senderRecord);
+  
         console.log("Updated Parcel Data:", response.data.parcel);
         console.log("Updated Sender Data:", response.data.senderRecord);
         console.log("Updated Receiver Data:", response.data.receiverRecord);
-
+  
+        // Emit socket event for parcel notification
+        if (socket) {
+          const { senderRecord, receiverRecord, parcel } = response.data;
+          console.log("Sending parcel notification:", { senderRecord, receiverRecord, parcel });
+  
+          socket.emit(
+            "sendParcelNotification",
+            { senderData: senderRecord, receiverData: receiverRecord, parcelData: parcel },
+            (serverResponse) => {
+              console.log("Notification sent to server:", serverResponse);
+            }
+          );
+        }
+  
+        // Set success message
         setTimedMessage(response.data.message, "success");
-
+  
+        // Navigate and reset state
         navigate("/home");
         setCurrentState(1);
       } catch (error) {
@@ -48,6 +65,7 @@ function SubmissionSummary() {
     };
     submitDataToBackend();
   };
+  
 
   return (
     <div className="max-w-4xl mx-auto p-8 bg-[#000000]  text-white rounded-lg shadow-xl">

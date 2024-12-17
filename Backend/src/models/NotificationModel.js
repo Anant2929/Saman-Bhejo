@@ -16,19 +16,23 @@ const NotificationSchema = new mongoose.Schema({
     required: true,
     ref: "User", // Assuming you have a User model
   },
-  carrierId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Carrier", // Assuming you have a Carrier model
-  },
+  
   createdAt: {
     type: Date,
     default: Date.now,
   },
   status: {
     type: String,
-    enum: ["pending", "sent", "read"],
+    enum: ["pending", "read",],
     default: "pending",
   },
+  notificationType: {
+    type: String,
+    enum: ["response", "action"], // Added type for differentiation
+    required: true,
+  }
+  
+     
 });
 
 const Notification = mongoose.model("Notification", NotificationSchema);

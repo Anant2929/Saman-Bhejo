@@ -53,13 +53,13 @@ const SpecificParcelDetails = async(req, res) => {
 
     const sender = await Sender.findOne({ parcelsSent: parcelId });
     const receiver = await Receiver.findOne({ parcelsReceived: parcelId });
+    const parcel = await Parcel.findOne({_id :parcelId})
 
-
-    if (!sender && !receiver) {
-      console.warn("Sender or Receiver not found for Parcel ID:", parcelId); // Warning log
+    if (!sender && !receiver  && !parcel) {
+      console.warn("Sender , Receiver and Parcel not found for Parcel ID:", parcelId); // Warning log
       return res.status(404).json({ 
         success: false, 
-        message: "Sender or Receiver not found." 
+        message: "Sender, parcel, Receiver not found." 
       });
     }
 
@@ -67,6 +67,7 @@ const SpecificParcelDetails = async(req, res) => {
       success: true,
       sender,
       receiver,
+      parcel ,
     });
   } catch (error) {
     console.error("Error fetching specific parcel details:", error); // Error log

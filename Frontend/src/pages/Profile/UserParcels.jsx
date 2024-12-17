@@ -2,15 +2,16 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useParcelRegistration } from "../../context/ParcelContext";
+import { useSocket } from "../../context/SocketContext";
 
 const UserParcels = () => {
-  const { parcels, setParcels, selectedParcel, setSelectedParcel } = useParcelRegistration(); // Use extended context
+  const { parcels, setParcels} = useParcelRegistration(); // Use extended context
   const [filterRole, setFilterRole] = useState("All"); // "All", "Sender", "Receiver"
   const [filterDate, setFilterDate] = useState(""); // For date filtering
   const [showSidebar, setShowSidebar] = useState(false);
   const [userId, setUserId] = useState(""); // State to store logged-in user's ID
   const navigate = useNavigate() ;
-
+  const {setParcelId} = useSocket();
   useEffect(() => {
     // Fetch parcels from backend
     const fetchParcels = async () => {
@@ -71,8 +72,12 @@ const UserParcels = () => {
   };
 
   const handleMoreInfo = (parcel) => {
-    setSelectedParcel(parcel); // Set the selected parcel in context
-    navigate("/userProfile/parcels/specificParcels"); // Navigate to the details page
+ 
+    if(parcel){
+    console.log("parcel is after",parcel)
+    setParcelId(parcel._id); // Set the selected parcel in context
+    navigate("/userProfile/parcels/specificParcels");
+  } // Navigate to the details page
   };
 
   const handleTracking = () =>{

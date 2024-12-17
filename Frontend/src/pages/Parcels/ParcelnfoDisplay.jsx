@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useParcelRegistration } from "../../context/ParcelContext";
 import axios from "axios";
-
+import  {useSocket} from "../../context/SocketContext"
 export default function ParcelInfoDisplay() {
-  const { selectedParcel } = useParcelRegistration();
+ 
   const navigate = useNavigate();
+  const { parcelId ,socketId} = useSocket();
 
   // Define only the required fields
   const initialFields = {
@@ -36,35 +37,34 @@ export default function ParcelInfoDisplay() {
     distance: "",
     expectedDeliveryDate: "",
     deliveryCharges: "",
+ 
+
   };
 
   const [fields, setFields] = useState(initialFields);
-  const [currentParcel, setCurrentParcel] = useState(
-    selectedParcel || JSON.parse(localStorage.getItem("selectedParcel"))
-  );
-
+  
+ 
   useEffect(() => {
-    // Save selectedParcel to localStorage if it changes
-    if (selectedParcel) {
-      localStorage.setItem("selectedParcel", JSON.stringify(selectedParcel));
-      setCurrentParcel(selectedParcel); // Update local state
-    }
-  }, [selectedParcel]);
-
-  useEffect(() => {
+    console.log(" i am in console baby")
     const fetchParcelDetails = async () => {
+
+      console.log(" i am in fetchParcelDeatails baby")
       try {
-        const parcelId = currentParcel?._id;
+
         if (!parcelId) {
-          console.error("No parcel ID available.");
+          console.log("No parcel ID available.");
           return;
         }
-
+          else{
         const { data } = await axios.get(`/api/parcel/parcelsInfo/Specific/${parcelId}`);
 
         if (data.success) {
-          const { sender, receiver } = data;
+          console.log(" i am in data sucuces baby")
+          const { sender, receiver ,parcel } = data;
 
+
+         
+          console.log("sender,data,rceiver",parcel,sender,receiver)
           // Construct fields object with only the required keys
           const updatedFields = {
             ...initialFields, // Start with blank values
@@ -82,25 +82,44 @@ export default function ParcelInfoDisplay() {
               receiverState: receiver.receiverState || "",
               receiverPostalCode: receiver.receiverPostalCode || "",
             }),
-            ...Object.fromEntries(
-              Object.entries(currentParcel || {}).filter(([key]) =>
-                Object.keys(initialFields).includes(key)
-              )
-            ), // Add only relevant fields from selectedParcel
+            ...(parcel && {
+              parcelName: parcel?.parcelName || "",
+              parcelWeight: parcel?.parcelWeight || "",
+              parcelType: parcel?.parcelType || "",
+              volume: parcel?.volume || "",
+              parcelDescription: parcel?.parcelDescription || "",
+              parcelPhotoUrl: parcel?.parcelPhotoUrl || "",
+              distance: parcel?.distance || "",
+              expectedDeliveryDate: parcel?.expectedDeliveryDate || "",
+              deliveryCharges: parcel?.deliveryCharges || "",
+              paymentStatus: parcel?.paymentStatus || "",
+              fromCity: parcel?.fromCity ||"",
+              fromState: parcel?.fromState ||"",
+              fromPincode:parcel?.fromPincode || "",
+              toCity:parcel?.toCity || "",
+              toState: parcel?.toState||"",
+              toPincode: parcel?.toPincode ||"",
+            }
+
+            )
+           
+             // Add only relevant fields from selectedParcel
           };
 
           setFields(updatedFields);
-        }
+        
+        }}
       } catch (error) {
         console.error("Error fetching parcel details:", error);
       }
     };
-
+    console.log(" i am in fendings baby")
     fetchParcelDetails();
-  }, [currentParcel]);
+  }, [parcelId]);
 
   // Check if data is loading
   if (!fields.senderName && !fields.receiverName) {
+
     return <div className="text-black">Loading parcel details...</div>;
   }
 

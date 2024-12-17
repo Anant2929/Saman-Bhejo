@@ -37,8 +37,19 @@ const parcelSchema = new mongoose.Schema({
   distance: { type: Number, required: true },
   trackingStatus: {
     type: String,
-    enum: ["Booked", "Picked Up", "In Transit", "Delivered", "Canceled"],
-    default: "Booked",
+    enum: [
+      "",                 // Placeholder for empty value
+      "Sender Created",   // Jab sender ne parcel list kiya
+      "Receiver Accepted", // Receiver ne parcel accept kiya
+      "Receiver Rejected", // Receiver ne parcel reject kiya
+      "Carried",          // Accept hone ke baad parcel carried hai
+      "Picked Up",        // Parcel pickup hua
+      "In Transit",       // Transit me hai
+      "Delivered",        // Successfully delivered
+      "Canceled"          // Parcel cancel hua
+    ],
+    default: "Sender Created",
+    
   },
   paymentStatus: {
     type: String,

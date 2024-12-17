@@ -40,6 +40,7 @@ export default function Login() {
       console.log("Login successful:", res.data);
 
       // Store user ID from response in SocketContext
+      localStorage.setItem("userId", res.data.id)
       setId(res.data.id); // Assuming `userId` is part of the response data
 
       // Display success message
