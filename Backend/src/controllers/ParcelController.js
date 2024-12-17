@@ -206,7 +206,7 @@ const registerParcel = async (req, res) => {
       expectedDeliveryDate: parcelData.expectedDeliveryDate,
       deliveryCharges: estimatedPrice,
       paymentStatus: "Pending",
-      trackingStatus: "Booked",
+      trackingStatus: "Sender Created",
     });
 
     await parcel.save();

@@ -51,7 +51,9 @@ const Home = () => {
   }, [token, parcelNotification]);
 
   const handleNotificationClick = (notificationType) => {
+    console.log(" i am in notification")
     if (notificationType === "parcel") {
+      console.log(" i am type parcel notification")
       setShowNotification(false); // Hide modal after confirmation
       setParcelNotification(false);
   
@@ -60,7 +62,8 @@ const Home = () => {
         { id, notificationType },
         (response) => { 
           setFetching(false);
-          navigate("/home/receiverConfirm");
+          navigate("/home/notifications");  // Perform your navigation or any other action after response
+          
         }
       );
     }
@@ -195,7 +198,7 @@ const Home = () => {
                 You got a new parcel
               </p>
               <button
-                onClick={()=>handleNotificationClick ("action")}
+                onClick={()=>handleNotificationClick ("parcel")}
                 className="flex items-center justify-center h-10 px-5 bg-[#607AFB] text-white font-bold rounded-full transition transform duration-300 hover:scale-110 shadow-md"
               >
                 Open

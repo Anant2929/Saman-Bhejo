@@ -37,8 +37,7 @@ const parcelSchema = new mongoose.Schema({
   distance: { type: Number, required: true },
   trackingStatus: {
     type: String,
-    enum: [
-      "",                 // Placeholder for empty value
+    enum: [                 // Placeholder for empty value
       "Sender Created",   // Jab sender ne parcel list kiya
       "Receiver Accepted", // Receiver ne parcel accept kiya
       "Receiver Rejected", // Receiver ne parcel reject kiya

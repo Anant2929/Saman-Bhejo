@@ -30,7 +30,7 @@ const NotificationsPage = () => {
   }, [id, socket]);
 
   const handleClick = (notification) => {
-    if (notification.notificationType === "response" && notification.status === "pending") {
+    if (notification.notificationType === "action" && notification.status === "pending") {
       setParcelId(notification.parcelId);
       if (socket) {
         socket.emit("changeNotificationStatus", { notificationId: notification._id }, (response) => {
@@ -42,7 +42,7 @@ const NotificationsPage = () => {
         });
       }
       navigate("/home/receiverConfirm");
-    } else if(notification.notificationType === "action" && notification.status === "pending"){
+    } else if(notification.notificationType === "response" && notification.status === "pending"){
       setParcelId(notification.parcelId);
       if (socket) {
         socket.emit("changeNotificationStatus", { notificationId: notification._id }, (response) => {
@@ -55,13 +55,13 @@ const NotificationsPage = () => {
       }
       setFetching(true);
     
-      navigate("/userProfile/parcels/parcelInfoDisplay");
+      navigate("/userProfile/parcels/specificParcels");
     }
     
     else {
       setFetching(true);
       setParcelId(notification.parcelId);
-      navigate("/userProfile/parcels/parcelInfoDisplay");
+      navigate("/userProfile/parcels/specificParcels");
     }
   };
 
