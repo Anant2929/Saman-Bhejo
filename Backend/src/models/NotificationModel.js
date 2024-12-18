@@ -26,6 +26,12 @@ const NotificationSchema = new mongoose.Schema({
     enum: ["pending", "read",],
     default: "pending",
   },
+  handlingStatus: {
+    type: Boolean, // Defines the type as Boolean
+    default: false, // Sets the default value to false
+  }
+  ,
+
   notificationType: {
     type: String,
     enum: ["response", "action"], // Added type for differentiation

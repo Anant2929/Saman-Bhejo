@@ -40,14 +40,15 @@ export default function ParcelAcceptanceForm() {
   const [fields, setFields] = useState(initialFields);  
   const { parcelDataInfo, senderDataInfo, receiverDataInfo, socket,setParcelId,parcelId,socketId ,setParcelDataInfo,setReceiverDataInfo,setSenderDataInfo} = useSocket();
   const [loading, setLoading] = useState(true);
-  const {fetching} = useParcelRegistration()
+  const {fetching,notificationId} = useParcelRegistration()
 
 
   useEffect(() => {
     console.log("i am in useEffect for socket data");
     
-    if (parcelId && fetching) {
+    if (parcelId && fetching && socket) {
       console.log("i am in socket condition");
+      console.log("notificaationid",notificationId)
   
       socket.emit("fetchParcelData", { parcelId }, (response) => {
         console.log("Response from server:", response);
@@ -137,11 +138,12 @@ export default function ParcelAcceptanceForm() {
 
   const handleParcelAction = (action) => {
     let { _id } = parcelDataInfo;
+    let pID = _id
     let {sender} = senderDataInfo
-  
+    console.log("notificationid inn",notificationId)
 
     // Emit a single event with action type
-    socket.emit("updateParcelStatus", { _id,sender, action }, (response) => {
+    socket.emit("updateParcelStatus", { pID, action, notificationId }, (response) => {
         if (response.success) {
             console.log(`Parcel ${action.toLowerCase()} successful:`, response);
         } else {
@@ -152,7 +154,7 @@ export default function ParcelAcceptanceForm() {
         localStorage.removeItem("senderDataInfo")
         localStorage.removeItem("receiverDataInfo")
     console.log(`Parcel ${action.toLowerCase()} requested for:`, _id);
-    navigate("/home");
+      navigate("/home");
 };
 
 // Usage for Accept

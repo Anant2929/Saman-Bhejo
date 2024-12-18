@@ -14,12 +14,21 @@ export const ParcelRegistrationProvider = ({ children }) => {
   // Add new states for fetched parcels and the selected parcel
   const [parcels, setParcels] = useState([]);
   const [selectedParcel, setSelectedParcel] = useState(null);
- 
+ const [notificationId,setNotificationId] = useState(null ||localStorage.getItem("notificationId"))
 
   useEffect(() => {
     localStorage.setItem("fetching", JSON.stringify(fetching));
   }, [fetching]);
 
+  
+  useEffect(() => {
+    if (notificationId) {localStorage.setItem("notificationId",notificationId)
+   
+      setNotificationId(localStorage.getItem("notificationId"))
+        console.log("Notification",notificationId)
+    };
+
+  }, [notificationId]);
   return (
     <ParcelContext.Provider
       value={{
@@ -32,7 +41,9 @@ export const ParcelRegistrationProvider = ({ children }) => {
         selectedParcel, // Add selected parcel state
         setSelectedParcel,
         fetching,
-        setFetching
+        setFetching,
+        notificationId,
+        setNotificationId
       }}
     >
       {children}

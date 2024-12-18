@@ -64,6 +64,7 @@ const setupOnEvents = () => {
           receiverId: receiver,
           status: "pending",
           notificationType : "action",
+          handlingStatus: false
         });
 
         await notification.save();
@@ -126,53 +127,66 @@ const setupOnEvents = () => {
       }
     });
     
-
-    socket.on("updateParcelStatus", async (data, callback) => {
-      const { _id, action } = data;
-    
+    socket.on("updateParcelStatus", async ({ pID, action, notificationId }, callback) => {
       try {
+        console.log("notificationId", notificationId);
+    
         // Dynamically set tracking status based on action
         const trackingStatus = action === "Accept" ? "Receiver Accepted" : "Receiver Rejected";
     
         // Update the tracking status in the database
         const updatedParcel = await ParcelSchema.findOneAndUpdate(
-          { _id },
+          { _id: pID },
           { trackingStatus },
           { new: true } // Return the updated document
         );
+    
+        const notificationDocument = await Notification.findById(notificationId);
+        console.log("Notification document found:", notificationDocument);
+    
+        if (notificationDocument) {
+          const updateHandlingStatus = await Notification.findOneAndUpdate(
+            { _id: notificationId },
+            { handlingStatus: true },
+            { new: true }
+          );
+          console.log("Updated Handling Status:", updateHandlingStatus);
+        } else {
+          console.log("No document found with notificationId:", notificationId);
+        }
+    
         let sender = updatedParcel.receiverDetails;
         let receiver = updatedParcel.senderDetails;
         const responseNotification = new Notification({
-          parcelId: _id,
+          parcelId: pID, // Corrected _id to pID
           senderId: sender,
           receiverId: receiver,
           status: "pending",
-          notificationType : "response",
+          notificationType: "response",
+          handlingStatus: true,
         });
         await responseNotification.save();
     
-        console.log(`Parcel status updated to ${trackingStatus}:`, updatedParcel);
-    
         // Notify the sender about the receiver's decision
-        if (user[sender]) {
+        if (user[receiver]) {
           // Sender is online, send real-time notification
-          io.to(user[sender]).emit("receiverUpdateParcelStatus", {
-           notification : responseNotification
+          io.to(user[receiver]).emit("receiverUpdateParcelStatus", {
+            notification: responseNotification,
           });
           console.log(`Notification sent to sender (online): ${sender}`);
         } else {
           // Sender is offline, save the notification in senderMessages array
-          if (!senderMessages[sender]) {
-            senderMessages[sender] = [];
+          if (!senderMessages[receiver]) {
+            senderMessages[receiver] = [];
           }
-          senderMessages[sender].push({
-           notification: responseNotification
+          senderMessages[receiver].push({
+            notification: responseNotification,
           });
-          console.log(`Notification saved for sender (offline): ${sender}`);
+          console.log(`Notification saved for receiver (offline): ${receiver}`);
         }
     
         // Emit confirmation to the client who triggered the status update
-        callback({ success: true, parcelId: _id });
+        callback({ success: true, parcelId: pID });
       } catch (error) {
         console.error("Error updating parcel status:", error);
     
@@ -180,6 +194,8 @@ const setupOnEvents = () => {
         callback({ success: false, error: "Failed to update parcel status." });
       }
     });
+    
+    
 
 
 
@@ -189,9 +205,7 @@ const setupOnEvents = () => {
         // Fetch notifications where the user is either a sender or a receiver
         const notifications = await Notification.find({
             receiverId: id 
-          
         });
-
 
         // Respond with the notifications array
         callback({

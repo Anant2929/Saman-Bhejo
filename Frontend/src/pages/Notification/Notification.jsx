@@ -7,7 +7,7 @@ const NotificationsPage = () => {
   const [notifications, setNotifications] = useState([]);
   const { id, socket, setParcelId } = useSocket();
   const navigate = useNavigate();
-  const { setFetching } = useParcelRegistration();
+  const { setFetching,setNotificationId } = useParcelRegistration();
 
   useEffect(() => {
     if (socket) {
@@ -30,8 +30,11 @@ const NotificationsPage = () => {
   }, [id, socket]);
 
   const handleClick = (notification) => {
-    if (notification.notificationType === "action" && notification.status === "pending") {
+    if (notification.notificationType === "action" && notification.status === "pending" ) {
+
+      console.log("notification id",notification._id)
       setParcelId(notification.parcelId);
+      setNotificationId(notification._id)
       if (socket) {
         socket.emit("changeNotificationStatus", { notificationId: notification._id }, (response) => {
           if (response.success) {
@@ -40,10 +43,12 @@ const NotificationsPage = () => {
             console.error("Failed to update notification status:", response.error);
           }
         });
-      }
+      }   setFetching(true);
       navigate("/home/receiverConfirm");
     } else if(notification.notificationType === "response" && notification.status === "pending"){
+     
       setParcelId(notification.parcelId);
+      setNotificationId(notification._id)
       if (socket) {
         socket.emit("changeNotificationStatus", { notificationId: notification._id }, (response) => {
           if (response.success) {
@@ -53,13 +58,19 @@ const NotificationsPage = () => {
           }
         });
       }
-      setFetching(true);
+   
     
       navigate("/userProfile/parcels/specificParcels");
     }
+    else if(notification.notificationType === "action" && notification.handlingStatus === false ){
+      setNotificationId(notification._id);
+      setParcelId(notification.parcelId);
+      setFetching(true);
+      navigate("/home/receiverConfirm");
+    }
     
     else {
-      setFetching(true);
+      setNotificationId(notification._id)
       setParcelId(notification.parcelId);
       navigate("/userProfile/parcels/specificParcels");
     }
