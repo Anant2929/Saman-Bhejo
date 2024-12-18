@@ -101,7 +101,7 @@ const setupOnEvents = () => {
     
       try {
         // Check the notification type and handle accordingly
-        if (notificationType === "action") {
+        if (notificationType === "parcel") {
           if (pendingMessages[id]) {
             delete pendingMessages[id];
             console.log(`Pending messages for user ID ${id} successfully deleted.`);

@@ -51,7 +51,8 @@ const Home = () => {
   }, [token, parcelNotification]);
 
   const handleNotificationClick = (notificationType) => {
-    console.log(" i am in notification")
+    console.log(" i am in a handlenortification home")
+
     if (notificationType === "parcel") {
       console.log(" i am type parcel notification")
       setShowNotification(false); // Hide modal after confirmation
