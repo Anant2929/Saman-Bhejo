@@ -12,6 +12,8 @@ import UserProfile from '../Profile/UserProfile.jsx';
 import AllNotification from '../Notification/Notification.jsx'
 import UserParcels from '../Profile/UserParcels.jsx';
 import ParcelInfoDisplay from '../Parcels/ParcelnfoDisplay.jsx';
+import CarrierDetails from '../Carrier/CarrierDetails.jsx';
+import TravelDetails from '../Carrier/TravelDetails.jsx';
 export default function AppRoutes() {
   const { token, setToken } = useAuth();
 
@@ -37,6 +39,8 @@ export default function AppRoutes() {
         <Route path="/parcel/details" element={ token ? <ParcelRegistration/> : <Navigate to="/home" />} />
         <Route path="/trackingStatus" element={token ? <ParcelTracking /> : <Layout /> } />
         <Route path="/userProfile" element={token ? <UserProfile /> : <Layout /> } />
+        <Route path="/home/carrierDetails" element={token ? <CarrierDetails /> : <Layout /> } />
+        <Route path="/home/travelDetails" element={token ? <TravelDetails /> : <Layout /> } />
         <Route path="/home/receiverConfirm" element={ token ? <ParcelAcceptanceForm /> : <Layout /> } />
         <Route path="/home/parcel/CarriersList" element={token ? <CarriersList /> : <Navigate to="/home" /> } />
         <Route path ="/home/notifications" element = {token ? <AllNotification/> : <Layout />}/>
