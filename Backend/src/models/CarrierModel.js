@@ -7,43 +7,43 @@ const carrierSchema = new mongoose.Schema({
         ref: 'User', // Reference to User schema
         required: true
     },
-    Address: {
+    carrierAddress: {
         type: String,
         required: true
     },
-    City: {
+    carrierCity: {
         type: String,
         required: true
     },
-    State: {
+    carrierState: {
         type: String,
         required: true
     },
-    PostCode: {
+    carrierPostCode: {
         type: Number,
         required: true,
         length: 6
     },
-    carrierPhoto: {
+    carriercarrierPhoto: {
         type: String // URL or path to carrier's photo
     },
     carrierDeliveryMode: {
         type: String,
-        enum: ['Bike', 'Car', 'Bus', 'Train', 'Plane'], // Modes of travel
+        enum: ['Bike', 'Car', 'Bus', 'Train', 'Plane','Boat,'], // Modes of travel
         required: true
     },
     carrierVehicle: {
         type: String, // Vehicle details (optional)
     },
-    travelDate: {
+    carriertravelDate: {
         type: Date, // Date of travel
         required: true
     },
-    travelFromCity: {
+    carriertravelFromCity: {
         type: String, // Starting city
         required: true
     },
-    travelToCity: {
+    carriertravelToCity: {
         type: String, // Destination city
         required: true
     }

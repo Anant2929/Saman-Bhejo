@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Logout from "../Auth/Logout";
 import { useCarrierRegistration } from "../../context/CarrierContext";
@@ -16,28 +16,56 @@ const TravelOptionsEnum = {
 };
 
 const TravelDetails = () => {
-  const [travelMode, setTravelMode] = useState("");
-  const [otherMode, setOtherMode] = useState("");
-  const [travelingFrom, setTravelingFrom] = useState("");
-  const [goingTo, setGoingTo] = useState("");
-  const [travelDate, setTravelDate] = useState("");
-  const [vehicleModel, setVehicleModel] = useState("");
-  const [licensePlate, setLicensePlate] = useState("");
-  const [ticketPhoto, setTicketPhoto] = useState(null);
+
+  const [formData, setFormData] = useState({
+    travelMode: "",
+    otherMode: "",
+    travelingFrom: "",
+    goingTo: "",
+    travelDate: "",
+    vehicleModel: "",
+    licensePlate: "",
+    ticketPhoto: null,
+  });
+  const [errors, setErrors] = useState({});
   const [showSidebar, setShowSidebar] = useState(false);
   const { setCarrierCurrentState ,setCarrierFormData} = useCarrierRegistration();
 
+
+    // Load saved data from localStorage
+    useEffect(() => {
+      const savedData = JSON.parse(localStorage.getItem("travelFormData"));
+      if (savedData) {
+        setFormData((prevData) => ({
+          ...prevData,
+          ...savedData,
+        }));
+      }
+    }, [])
   const handleTravelModeChange = (e) => {
     const value = e.target.value;
-    setTravelMode(value);
-    if (value !== TravelOptionsEnum.OTHER) setOtherMode("");
-    setVehicleModel("");
-    setLicensePlate("");
-    setTicketPhoto(null);
+    setFormData((prevData) => ({
+      ...prevData,
+      travelMode: value,
+    }));
+    if (value !== TravelOptionsEnum.OTHER) setFormData((prevData) => ({ ...prevData, otherMode: "" }));
   };
 
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+
   const handleTicketPhotoChange = (e) => {
-    setTicketPhoto(e.target.files[0]);
+    setFormData((prevData) => ({
+      ...prevData,
+      ticketPhoto: e.target.files[0],
+    }));
   };
 
   const toggleSidebar = () => {
@@ -52,6 +80,44 @@ const TravelDetails = () => {
   const handlePrevious = () =>{
     setCarrierCurrentState(1);
   }
+  const validateForm = () => {
+    const newErrors = {};
+  
+    // General validations
+    if (!formData.travelMode) newErrors.travelMode = "This field is required";
+    if (!formData.travelingFrom) newErrors.travelingFrom = "This field is required";
+    if (!formData.goingTo) newErrors.goingTo = "This field is required";
+    if (!formData.travelDate) newErrors.travelDate = "This field is required";
+  
+    // Check for vehicle details if car or bicycle is selected
+    if (["Car", "Bicycle", "Motorcycle"].includes(formData.travelMode)) {
+      if (!formData.vehicleModel) newErrors.vehicleModel = "Vehicle model is required";
+      if (!formData.licensePlate) newErrors.licensePlate = "License plate is required";
+    }
+  
+    // Check for ticket details if airplane, train, bus, or boat is selected
+    if (["Airplane", "Train", "Bus", "Boat"].includes(formData.travelMode)) {
+      if (!formData.ticketPhoto) newErrors.ticketPhoto = "Ticket photo is required";
+    }
+  
+    // Check for other mode if selected
+    if (formData.travelMode === TravelOptionsEnum.OTHER && !formData.otherMode) {
+      newErrors.otherDetails = "Please specify the other mode of travel";
+    }
+  
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+  const handleNext = () => {
+    if (validateForm()) {
+      const updatedFormData = { ...formData };
+      localStorage.setItem("travelFormData", JSON.stringify(updatedFormData));
+      setCarrierFormData(updatedFormData);
+      // Redirect or update state here
+    }
+  };
+
+
 
   return (
     <div
@@ -145,21 +211,29 @@ const TravelDetails = () => {
             </label>
             <input
               type="text"
-              value={travelingFrom}
-              onChange={(e) => setTravelingFrom(e.target.value)}
+              name ="travelingFrom"
+              value={formData.travelingFrom}
+              onChange={handleInputChange}
               placeholder="Enter location"
               className="w-full bg-gray-900 border border-gray-700 rounded-lg py-2 px-3 focus:outline-none"
             />
+            {errors.travelingFrom && (
+              <p className="text-red-500 text-sm">{errors.travelingFrom}</p>
+            )}
           </div>
           <div className="mb-4">
             <label className="block text-sm font-medium mb-1">Going To</label>
             <input
               type="text"
-              value={goingTo}
-              onChange={(e) => setGoingTo(e.target.value)}
+              name = "goingTo"
+              value={formData.goingTo}
+              onChange={handleInputChange}
               placeholder="Enter destination"
               className="w-full bg-gray-900 border border-gray-700 rounded-lg py-2 px-3 focus:outline-none"
             />
+            {errors.goingTo && (
+              <p className="text-red-500 text-sm">{errors.goingTo}</p>
+            )}
           </div>
           <div className="mb-4">
             <label className="block text-sm font-medium mb-1">
@@ -167,10 +241,14 @@ const TravelDetails = () => {
             </label>
             <input
               type="date"
-              value={travelDate}
-              onChange={(e) => setTravelDate(e.target.value)}
+              name = "travelDate"
+              value={formData.travelDate}
+               onChange={handleInputChange}
               className="w-full bg-gray-900 border border-gray-700 rounded-lg py-2 px-3 focus:outline-none"
             />
+             {errors.travelDate && (
+              <p className="text-red-500 text-sm">{errors.travelDate}</p>
+            )}
           </div>
           <div className="mb-4">
             <label className="block text-sm font-medium mb-1">
@@ -181,7 +259,7 @@ const TravelDetails = () => {
                 <label
                   key={option}
                   className={`flex items-center px-4 py-2 border rounded-lg transition-all hover:scale-105 ${
-                    travelMode === option
+                    formData.travelMode === option
                       ? "bg-blue-600 border-blue-500"
                       : "bg-gray-900 border-gray-700"
                   } cursor-pointer`}
@@ -190,25 +268,34 @@ const TravelDetails = () => {
                     type="radio"
                     name="travelMode"
                     value={option}
-                    checked={travelMode === option}
+                    checked={formData.travelMode === option}
                     onChange={handleTravelModeChange}
                     className="hidden"
                   />
                   {option}
                 </label>
+                
               ))}
+               {errors.travelMode && (
+              <p className="text-red-500 text-sm">{errors.travelMode}</p>
+            )}
+
             </div>
-            {travelMode === TravelOptionsEnum.OTHER && (
+            {formData.travelMode === TravelOptionsEnum.OTHER && (
               <input
                 type="text"
+                name="othermode"
                 placeholder="Specify other mode"
-                value={otherMode}
-                onChange={(e) => setOtherMode(e.target.value)}
+                value={formData.otherMode}
+                
                 className="mt-2 w-full bg-gray-900 border border-gray-700 rounded-lg py-2 px-3 focus:outline-none"
               />
             )}
+             {formData.travelMode === "otherMode"&& errors.otherDetails &&(
+              <p className="text-red-500 text-sm">{errors.otherMode}</p>
+            )}
           </div>
-          {["Car", "Bicycle", "Motorcycle"].includes(travelMode) && (
+          {["Car", "Bicycle", "Motorcycle"].includes(formData.travelMode) && (
             <div className="mb-4 animate-fadeIn">
               <h3 className="text-lg font-medium mb-2">Vehicle Details</h3>
               <div className="mb-4">
@@ -217,11 +304,14 @@ const TravelDetails = () => {
                 </label>
                 <input
                   type="text"
-                  value={vehicleModel}
-                  onChange={(e) => setVehicleModel(e.target.value)}
+                  name = "vehicleModel"
+                  value={formData.vehicleModel}
+                  onChange={handleInputChange}
                   placeholder="Enter vehicle model"
                   className="w-full bg-gray-900 border border-gray-700 rounded-lg py-2 px-3 focus:outline-none"
                 />
+                  
+              
               </div>
               <div className="mb-4">
                 <label className="block text-sm font-medium mb-1">
@@ -229,15 +319,16 @@ const TravelDetails = () => {
                 </label>
                 <input
                   type="text"
-                  value={licensePlate}
-                  onChange={(e) => setLicensePlate(e.target.value)}
+                  name="licensePlate"
+                  value={formData.licensePlate}
+                  onChange={handleInputChange}
                   placeholder="Enter license plate number"
                   className="w-full bg-gray-900 border border-gray-700 rounded-lg py-2 px-3 focus:outline-none"
                 />
               </div>
             </div>
           )}
-          {["Airplane", "Train", "Bus", "Boat"].includes(travelMode) && (
+          {["Airplane", "Train", "Bus", "Boat"].includes(formData.travelMode) && (
             <div className="mb-4 animate-fadeIn">
               <h3 className="text-lg font-medium mb-2">Ticket Details</h3>
               <label className="block text-sm font-medium mb-1">
@@ -245,6 +336,7 @@ const TravelDetails = () => {
               </label>
               <input
                 type="file"
+                name ="file"
                 accept="image/*"
                 onChange={handleTicketPhotoChange}
                 className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-500"
@@ -257,8 +349,8 @@ const TravelDetails = () => {
         <button className="bg-blue-600 px-6 py-2 rounded-lg font-bold hover:bg-blue-700 hover:scale-105 transition-all" onClick={() => handlePrevious()}>
           Previous
         </button>
-        <button className="bg-blue-600 px-6 py-2 rounded-lg font-bold hover:bg-blue-700 hover:scale-105 transition-all">
-          Next
+        <button className="bg-blue-600 px-6 py-2 rounded-lg font-bold hover:bg-blue-700 hover:scale-105 transition-all"  onClick={() => handleNext()}>
+          Continue
         </button>
       </footer>
     </div>

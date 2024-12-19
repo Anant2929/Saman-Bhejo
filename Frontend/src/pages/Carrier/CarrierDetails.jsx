@@ -27,8 +27,6 @@ const CarrierDetails = () => {
   }, []);
 
 
-
-
   const handleInputChange = (e) => {
     const updatedData = { ...formData, [e.target.name]: e.target.value };
     setFormData(updatedData);
