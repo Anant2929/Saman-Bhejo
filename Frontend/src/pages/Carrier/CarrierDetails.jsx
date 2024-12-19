@@ -1,6 +1,64 @@
-import React from "react";
+import React, { useState, useEffect } from 'react';
+import { useCarrierRegistration } from "../../context/CarrierContext";
 
 const CarrierDetails = () => {
+  const [formData, setFormData] = useState({
+    carrierName: "",
+    contactNumber: "",
+    city: "",
+    state: "",
+    zipcode: "",
+  });
+
+  const [errors, setErrors] = useState({});
+
+  const { setCarrierCurrentState, setCarrierFormData, CarrierFormData } =
+  useCarrierRegistration();
+
+
+  useEffect(() => {
+    const savedData = JSON.parse(localStorage.getItem("carrierFormData"));
+    if (savedData) {
+      setFormData((prevData) => ({
+        ...prevData,
+        ...savedData,
+      }));
+    }
+  }, []);
+
+
+
+
+  const handleInputChange = (e) => {
+    const updatedData = { ...formData, [e.target.name]: e.target.value };
+    setFormData(updatedData);
+    setCarrierFormData(updatedData);
+  };
+
+
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.carrierName) newErrors.carrierName = "This field is required";
+    if (!formData.contactNumber) newErrors.contactNumber = "This field is required";
+    if (!formData.city) newErrors.city = "This field is required";
+    if (!formData.state) newErrors.state = "This field is required";
+    if (!formData.zipcode) newErrors.zipcode = "This field is required";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleNext = () => {
+    if (validateForm()) {
+      const updatedFormData = { ...CarrierFormData, ...formData };
+      localStorage.setItem("carrierFormData", JSON.stringify(updatedFormData));
+      setCarrierCurrentState(2);
+    }
+  };
+
+
+
   return (
     <div
       className="relative flex min-h-screen flex-col bg-black overflow-hidden"
@@ -41,39 +99,78 @@ const CarrierDetails = () => {
             <h1 className="text-xl font-bold text-white py-4">Carrier Information</h1>
 
             <div className="flex flex-col gap-4">
-              <input
-                placeholder="Carrier Name"
-                className="form-input rounded-lg bg-gray-800 text-white placeholder-gray-500 px-4 py-3 focus:outline-none text-base"
-              />
-              <input
-                placeholder="Contact Number"
-                className="form-input rounded-lg bg-gray-800 text-white placeholder-gray-500 px-4 py-3 focus:outline-none text-base"
-              />
+              <div>
+                <input
+                  name="carrierName"
+                  placeholder="Carrier Name"
+                  value={formData.carrierName}
+                  onChange={handleInputChange}
+                  className="form-input rounded-lg bg-gray-800 text-white placeholder-gray-500 px-4 py-3 focus:outline-none text-base"
+                />
+                {errors.carrierName && (
+                  <p className="text-red-500 text-sm mt-1">{errors.carrierName}</p>
+                )}
+              </div>
+              <div>
+                <input
+                  name="contactNumber"
+                  placeholder="Contact Number"
+                  value={formData.contactNumber}
+                  onChange={handleInputChange}
+                  className="form-input rounded-lg bg-gray-800 text-white placeholder-gray-500 px-4 py-3 focus:outline-none text-base"
+                />
+                {errors.contactNumber && (
+                  <p className="text-red-500 text-sm mt-1">{errors.contactNumber}</p>
+                )}
+              </div>
             </div>
 
             <h3 className="text-lg font-bold text-white py-4">Address</h3>
 
             <div className="flex gap-4">
-              <input
-                placeholder="City"
-                className="form-input flex-1 rounded-lg bg-gray-800 text-white placeholder-gray-500 px-4 py-3 focus:outline-none text-base"
-              />
-              <input
-                placeholder="State"
-                className="form-input flex-1 rounded-lg bg-gray-800 text-white placeholder-gray-500 px-4 py-3 focus:outline-none text-base"
-              />
+              <div>
+                <input
+                  name="city"
+                  placeholder="City"
+                  value={formData.city}
+                  onChange={handleInputChange}
+                  className="form-input flex-1 rounded-lg bg-gray-800 text-white placeholder-gray-500 px-4 py-3 focus:outline-none text-base"
+                />
+                {errors.city && <p className="text-red-500 text-sm mt-1">{errors.city}</p>}
+              </div>
+              <div>
+                <input
+                  name="state"
+                  placeholder="State"
+                  value={formData.state}
+                  onChange={handleInputChange}
+                  className="form-input flex-1 rounded-lg bg-gray-800 text-white placeholder-gray-500 px-4 py-3 focus:outline-none text-base"
+                />
+                {errors.state && <p className="text-red-500 text-sm mt-1">{errors.state}</p>}
+              </div>
             </div>
 
             <div className="flex gap-4 py-4">
-              <input
-                placeholder="Zipcode"
-                className="form-input flex-1 rounded-lg bg-gray-800 text-white placeholder-gray-500 px-4 py-3 focus:outline-none text-base"
-              />
+              <div>
+                <input
+                  name="zipcode"
+                  placeholder="Zipcode"
+                  value={formData.zipcode}
+                  onChange={handleInputChange}
+                  className="form-input flex-1 rounded-lg bg-gray-800 text-white placeholder-gray-500 px-4 py-3 focus:outline-none text-base"
+                />
+                {errors.zipcode && (
+                  <p className="text-red-500 text-sm mt-1">{errors.zipcode}</p>
+                )}
+              </div>
             </div>
 
             <div className="flex justify-end pt-4">
-              <button className="flex items-center justify-center rounded-lg bg-blue-500 text-white px-6 py-3 font-bold text-base hover:bg-blue-600">
-                Continue
+              <button
+                onClick={handleNext}
+                className="flex items-center justify-center rounded-lg bg-blue-500 text-white px-6 py-3 font-bold text-base hover:bg-blue-600"
+              >
+                Next
               </button>
             </div>
           </div>

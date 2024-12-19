@@ -77,7 +77,7 @@ const Home = () => {
         "deletePendingMessage",
         { id, notificationType },  // Add the missing comma here
         (response) => { 
-          navigate("/home/notifications");  // Perform your navigation or any other action after response
+          navigate("/home/notifications"); 
         }
       );
     }
@@ -86,6 +86,10 @@ const Home = () => {
   const CreateParcel = () => {
     navigate("/parcel/details");
   };
+
+  const CarryParcel =()=>{
+    navigate("/home/carrierDetails");
+  }
 
   const toggleSidebar = () => {
     setShowSidebar(!showSidebar);
@@ -248,12 +252,13 @@ const Home = () => {
             <div className="grid grid-cols-2 sm:grid-cols-2 gap-4">
               <Card
                 imageUrl="https://cdn.usegalileo.ai/sdxl10/b5f666c4-2f14-4001-b667-06435e9eefa3.png"
-                title="Get Parcel"
+                title="Create Parcel"
                 onClick={CreateParcel}
               />
               <Card
                 imageUrl="https://cdn.usegalileo.ai/sdxl10/e72c4298-cc13-4e77-b114-7eee8427ce37.png"
                 title="Carry Parcel"
+                onClick={CarryParcel}
               />
             </div>
           </div>

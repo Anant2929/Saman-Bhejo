@@ -5,12 +5,14 @@ import { UserLoginProvider } from "./context/userLoginContext";
 import { MessageProvider, useMessage } from "./context/MessageContext";
 import { AuthProvider } from "./context/AuthContext";
 import { ParcelRegistrationProvider } from "./context/ParcelContext";
+import {CarrierContextProvider} from "./context/CarrierContext";
 import { SocketProvider } from "./context/SocketContext"
 export default function App() {
 
   return (
     <div>
       <UserLoginProvider>
+      <CarrierContextProvider>
         <ParcelRegistrationProvider>
           <MessageProvider>
             <AuthProvider>
@@ -21,6 +23,7 @@ export default function App() {
             <AlertMessage />
           </MessageProvider>
         </ParcelRegistrationProvider>
+        </CarrierContextProvider>
       </UserLoginProvider>
     </div>
   );
