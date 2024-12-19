@@ -17,14 +17,15 @@ const TravelOptionsEnum = {
 
 const TravelDetails = () => {
   const [formData, setFormData] = useState({
-    travelMode: "",
+    carriercarrierTravelMode: "",
     otherMode: "",
     travelingFrom: "",
     goingTo: "",
-    travelDate: "",
-    vehicleModel: "",
-    licensePlate: "",
-    ticketPhoto: null,
+    carriertravelDate: "",
+    carrierVehicleModel: "",
+    carrierLicensePlate: "",
+    carrierTicketPhoto: null,
+    carrierFromState:""
   });
   const [errors, setErrors] = useState({});
   const [showSidebar, setShowSidebar] = useState(false);
@@ -44,7 +45,7 @@ const TravelDetails = () => {
     const value = e.target.value;
     setFormData((prevData) => ({
       ...prevData,
-      travelMode: value,
+      carrierTravelMode: value,
     }));
     if (value !== TravelOptionsEnum.OTHER) {
       setFormData((prevData) => ({ ...prevData, otherMode: "" }));
@@ -82,21 +83,21 @@ const TravelDetails = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.travelMode) newErrors.travelMode = "This field is required";
+    if (!formData.carrierTravelMode) newErrors.carrierTravelMode = "This field is required";
     if (!formData.travelingFrom) newErrors.travelingFrom = "This field is required";
     if (!formData.goingTo) newErrors.goingTo = "This field is required";
-    if (!formData.travelDate) newErrors.travelDate = "This field is required";
+    if (!formData. carriertravelDate) newErrors. carriertravelDate = "This field is required";
 
-    if (["Car", "Bicycle", "Motorcycle"].includes(formData.travelMode)) {
-      if (!formData.vehicleModel) newErrors.vehicleModel = "Vehicle model is required";
-      if (!formData.licensePlate) newErrors.licensePlate = "License plate is required";
+    if (["Car", "Bicycle", "Motorcycle"].includes(formData.carrierTravelMode)) {
+      if (!formData.carrierVehicleModel) newErrors.carrierVehicleModel = "Vehicle model is required";
+      if (!formData. carrierLicensePlate) newErrors. carrierLicensePlate = "License plate is required";
     }
 
-    if (["Airplane", "Train", "Bus", "Boat"].includes(formData.travelMode)) {
+    if (["Airplane", "Train", "Bus", "Boat"].includes(formData.carrierTravelMode)) {
       if (!formData.ticketPhoto) newErrors.ticketPhoto = "Ticket photo is required";
     }
 
-    if (formData.travelMode === TravelOptionsEnum.OTHER && !formData.otherMode) {
+    if (formData.carrierTravelMode === TravelOptionsEnum.OTHER && !formData.otherMode) {
       newErrors.otherMode = "Please specify the other mode of travel";
     }
 
@@ -201,12 +202,12 @@ const TravelDetails = () => {
             <label className="block text-sm font-medium mb-1">Date of Traveling</label>
             <input
               type="date"
-              name="travelDate"
-              value={formData.travelDate}
+              name=" carriertravelDate"
+              value={formData. carriertravelDate}
               onChange={handleInputChange}
               className="w-full bg-gray-900 border border-gray-700 rounded-lg py-2 px-3"
             />
-            {errors.travelDate && <p className="text-red-500 text-sm">{errors.travelDate}</p>}
+            {errors. carriertravelDate && <p className="text-red-500 text-sm">{errors. carriertravelDate}</p>}
           </div>
           <div className="mb-4">
             <label className="block text-sm font-medium mb-1">Mode of Travel</label>
@@ -215,16 +216,16 @@ const TravelDetails = () => {
                 <label
                   key={option}
                   className={`flex items-center px-4 py-2 border rounded-lg cursor-pointer ${
-                    formData.travelMode === option
+                    formData.carrierTravelMode === option
                       ? "bg-blue-600 border-blue-500"
                       : "bg-gray-900 border-gray-700"
                   }`}
                 >
                   <input
                     type="radio"
-                    name="travelMode"
+                    name="carrierTravelMode"
                     value={option}
-                    checked={formData.travelMode === option}
+                    checked={formData.carrierTravelMode === option}
                     onChange={handleTravelModeChange}
                     className="hidden"
                   />
@@ -232,8 +233,8 @@ const TravelDetails = () => {
                 </label>
               ))}
             </div>
-            {errors.travelMode && <p className="text-red-500 text-sm">{errors.travelMode}</p>}
-            {formData.travelMode === TravelOptionsEnum.OTHER && (
+            {errors.carrierTravelMode && <p className="text-red-500 text-sm">{errors.carrierTravelMode}</p>}
+            {formData.carrierTravelMode === TravelOptionsEnum.OTHER && (
               <input
                 type="text"
                 name="otherMode"
@@ -245,39 +246,39 @@ const TravelDetails = () => {
             )}
             {errors.otherMode && <p className="text-red-500 text-sm">{errors.otherMode}</p>}
           </div>
-          {["Car", "Bicycle", "Motorcycle"].includes(formData.travelMode) && (
+          {["Car", "Bicycle", "Motorcycle"].includes(formData.carrierTravelMode) && (
             <div className="mb-4">
               <label className="block text-sm font-medium mb-1">Vehicle Details</label>
               <input
                 type="text"
-                name="vehicleModel"
-                value={formData.vehicleModel}
+                name="carrierVehicleModel"
+                value={formData.carrierVehicleModel}
                 onChange={handleInputChange}
                 placeholder="Vehicle Model"
                 className="w-full bg-gray-900 border border-gray-700 rounded-lg py-2 px-3 mb-2"
               />
-              {errors.vehicleModel && <p className="text-red-500 text-sm">{errors.vehicleModel}</p>}
+              {errors.carrierVehicleModel && <p className="text-red-500 text-sm">{errors.carrierVehicleModel}</p>}
               <input
                 type="text"
-                name="licensePlate"
-                value={formData.licensePlate}
+                name=" carrierLicensePlate"
+                value={formData. carrierLicensePlate}
                 onChange={handleInputChange}
                 placeholder="License Plate"
                 className="w-full bg-gray-900 border border-gray-700 rounded-lg py-2 px-3"
               />
-              {errors.licensePlate && <p className="text-red-500 text-sm">{errors.licensePlate}</p>}
+              {errors. carrierLicensePlate && <p className="text-red-500 text-sm">{errors. carrierLicensePlate}</p>}
             </div>
           )}
-          {["Airplane", "Train", "Bus", "Boat"].includes(formData.travelMode) && (
+          {["Airplane", "Train", "Bus", "Boat"].includes(formData.carrierTravelMode) && (
             <div className="mb-4">
               <label className="block text-sm font-medium mb-1">Upload Ticket Photo</label>
               <input
                 type="file"
-                name="ticketPhoto"
+                name="carrierTicketPhoto"
                 onChange={handleTicketPhotoChange}
                 className="w-full bg-gray-900 border border-gray-700 rounded-lg py-2 px-3"
               />
-              {errors.ticketPhoto && <p className="text-red-500 text-sm">{errors.ticketPhoto}</p>}
+              {errors.carrierTicketPhoto && <p className="text-red-500 text-sm">{errors.carrierTicketPhoto}</p>}
             </div>
           )}
         </div>

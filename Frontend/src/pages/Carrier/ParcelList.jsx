@@ -31,7 +31,7 @@ const ParcelList = () => {
               </svg>
             </div>
             <h2 className="text-[#FFFFFF] text-lg font-bold leading-tight tracking-[-0.015em]">
-              Delivr
+              Saman Bhejo
             </h2>
           </div>
           <div className="flex flex-1 justify-end gap-8">
@@ -106,17 +106,62 @@ const ParcelList = () => {
             </div>
             <div className="flex gap-3 p-3 flex-wrap pr-4">
               {/* Filters */}
-              {["Price Range: $0 - $500", "Delivery Date: 1/1/2023", "Sort By: Price (Lowest First)", "Filter by Parcel Size", "Filter by Parcel Weight", "Filter by Parcel Type"].map((filter, index) => (
-                <div key={index} className="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-[#333333] pl-4 pr-4">
-                  <p className="text-[#FFFFFF] text-sm font-medium leading-normal">{filter}</p>
+              {[
+                "Price Range: $0 - $500",
+                "Delivery Date: 1/1/2023",
+                "Sort By: Price (Lowest First)",
+                "Filter by Parcel Size",
+                "Filter by Parcel Weight",
+                "Filter by Parcel Type",
+              ].map((filter, index) => (
+                <div
+                  key={index}
+                  className="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-[#333333] pl-4 pr-4"
+                >
+                  <p className="text-[#FFFFFF] text-sm font-medium leading-normal">
+                    {filter}
+                  </p>
                 </div>
               ))}
             </div>
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(158px,1fr))] gap-3 p-4">
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-3 p-4">
               {/* Parcels */}
               {[
-                { img: "https://cdn.usegalileo.ai/sdxl10/89714ec0-0c15-4f26-aeca-fd33eef939fa.png", title: "Pickup: 1234 Main St, San Francisco", price: "$100" },
-                { img: "https://cdn.usegalileo.ai/sdxl10/1504e1f8-6574-4daf-8dca-7cb5b6724e10.png", title: "Dropoff: 5678 Elm St, Los Angeles", date: "Pickup by 12/31/2022" },
+                {
+                  img: "https://cdn.usegalileo.ai/sdxl10/89714ec0-0c15-4f26-aeca-fd33eef939fa.png",
+                  title: "Pickup: 1234 Main St, San Francisco",
+                  price: "$100",
+                },
+                {
+                  img: "https://cdn.usegalileo.ai/sdxl10/1504e1f8-6574-4daf-8dca-7cb5b6724e10.png",
+                  title: "Dropoff: 5678 Elm St, Los Angeles",
+                  date: "Pickup by 12/31/2022",
+                },
+                {
+                  img: "https://cdn.usegalileo.ai/sdxl10/1504e1f8-6574-4daf-8dca-7cb5b6724e10.png",
+                  title: "Dropoff: 5678 Elm St, Los Angeles",
+                  date: "Pickup by 12/31/2022",
+                },
+                {
+                  img: "https://cdn.usegalileo.ai/sdxl10/1504e1f8-6574-4daf-8dca-7cb5b6724e10.png",
+                  title: "Dropoff: 5678 Elm St, Los Angeles",
+                  date: "Pickup by 12/31/2022",
+                },
+                {
+                  img: "https://cdn.usegalileo.ai/sdxl10/1504e1f8-6574-4daf-8dca-7cb5b6724e10.png",
+                  title: "Dropoff: 5678 Elm St, Los Angeles",
+                  date: "Pickup by 12/31/2022",
+                },
+                {
+                  img: "https://cdn.usegalileo.ai/sdxl10/1504e1f8-6574-4daf-8dca-7cb5b6724e10.png",
+                  title: "Dropoff: 5678 Elm St, Los Angeles",
+                  date: "Pickup by 12/31/2022",
+                },
+                {
+                  img: "https://cdn.usegalileo.ai/sdxl10/1504e1f8-6574-4daf-8dca-7cb5b6724e10.png",
+                  title: "Dropoff: 5678 Elm St, Los Angeles",
+                  date: "Pickup by 12/31/2022",
+                },
                 // Add other parcels here...
               ].map((parcel, index) => (
                 <div key={index} className="flex flex-col gap-3 pb-3">
@@ -125,9 +170,19 @@ const ParcelList = () => {
                     style={{ backgroundImage: `url(${parcel.img})` }}
                   ></div>
                   <div>
-                    <p className="text-[#FFFFFF] text-base font-medium leading-normal">{parcel.title}</p>
-                    {parcel.price && <p className="text-[#CBCBCB] text-sm font-normal leading-normal">{parcel.price}</p>}
-                    {parcel.date && <p className="text-[#CBCBCB] text-sm font-normal leading-normal">{parcel.date}</p>}
+                    <p className="text-[#FFFFFF] text-base font-medium leading-normal">
+                      {parcel.title}
+                    </p>
+                    {parcel.price && (
+                      <p className="text-[#CBCBCB] text-sm font-normal leading-normal">
+                        {parcel.price}
+                      </p>
+                    )}
+                    {parcel.date && (
+                      <p className="text-[#CBCBCB] text-sm font-normal leading-normal">
+                        {parcel.date}
+                      </p>
+                    )}
                   </div>
                 </div>
               ))}

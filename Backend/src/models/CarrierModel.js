@@ -7,33 +7,33 @@ const carrierSchema = new mongoose.Schema({
         ref: 'User', // Reference to User schema
         required: true
     },
-    carrierAddress: {
+    carrierCity:{
         type: String,
-        required: true
+        required : true,
     },
-    carrierCity: {
+    carrierState :{
         type: String,
-        required: true
+        required : true,
     },
-    carrierState: {
-        type: String,
-        required: true
-    },
-    carrierPostCode: {
+    carrierZipCode:{
         type: Number,
-        required: true,
-        length: 6
-    },
-    carriercarrierPhoto: {
-        type: String // URL or path to carrier's photo
-    },
-    carrierDeliveryMode: {
+        required : true,
+    }
+,
+    carrierTravelMode : {
         type: String,
-        enum: ['Bike', 'Car', 'Bus', 'Train', 'Plane','Boat,'], // Modes of travel
-        required: true
+        enum: ['Airplane', 'Train', 'Car', 'Bicycle', 'Motorcycle', 'Boat', 'Bus', 'Other'],
+        required: true,
     },
-    carrierVehicle: {
+    otherMode: {
+        type: String, // If "Other" is selected, specify mode 
+    },
+
+    carrierVehicleModel: {
         type: String, // Vehicle details (optional)
+    },
+    carrierLicensePlate: {
+        type: String, // License plate details (optional)
     },
     carriertravelDate: {
         type: Date, // Date of travel
@@ -43,9 +43,27 @@ const carrierSchema = new mongoose.Schema({
         type: String, // Starting city
         required: true
     },
+    carriertravelFromState : {
+        type: String, // Starting city
+        required: true
+    },
+    carrierFromCityPostalCode: { type: Number, required: true }, 
+       
+    carriertravelToState : {
+        type: String, // Destination city
+        required: true
+    },
     carriertravelToCity: {
         type: String, // Destination city
         required: true
+    },
+  carrierToCityPostalCode: { type: Number, required: true },
+    parcelId:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Parcel', // Reference to User schema
+    },
+    carrierTicketPhoto: {
+        type: String // Path or URL to ticket photo
     }
 }, { timestamps: true });
 

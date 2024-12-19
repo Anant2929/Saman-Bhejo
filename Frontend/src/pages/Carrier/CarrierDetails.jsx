@@ -5,9 +5,9 @@ const CarrierDetails = () => {
   const [formData, setFormData] = useState({
     carrierName: "",
     contactNumber: "",
-    city: "",
-    state: "",
-    zipcode: "",
+    carrierCity: "",
+    carrierState: "",
+    carrierZipcode: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -39,9 +39,9 @@ const CarrierDetails = () => {
     const newErrors = {};
     if (!formData.carrierName) newErrors.carrierName = "This field is required";
     if (!formData.contactNumber) newErrors.contactNumber = "This field is required";
-    if (!formData.city) newErrors.city = "This field is required";
-    if (!formData.state) newErrors.state = "This field is required";
-    if (!formData.zipcode) newErrors.zipcode = "This field is required";
+    if (!formData.carrierCity) newErrors.carrierCity = "This field is required";
+    if (!formData.carrierState) newErrors.carrierState = "This field is required";
+    if (!formData.carrierZipcode) newErrors.carrierZipcode = "This field is required";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -128,37 +128,37 @@ const CarrierDetails = () => {
             <div className="flex gap-4">
               <div>
                 <input
-                  name="city"
-                  placeholder="City"
-                  value={formData.city}
+                  name="carrierCity"
+                  placeholder="carrierCity"
+                  value={formData.carrierCity}
                   onChange={handleInputChange}
                   className="form-input flex-1 rounded-lg bg-gray-800 text-white placeholder-gray-500 px-4 py-3 focus:outline-none text-base"
                 />
-                {errors.city && <p className="text-red-500 text-sm mt-1">{errors.city}</p>}
+                {errors.carrierCity && <p className="text-red-500 text-sm mt-1">{errors.carrierCity}</p>}
               </div>
               <div>
                 <input
-                  name="state"
-                  placeholder="State"
-                  value={formData.state}
+                  name="carrierState"
+                  placeholder="carrierState"
+                  value={formData.carrierState}
                   onChange={handleInputChange}
                   className="form-input flex-1 rounded-lg bg-gray-800 text-white placeholder-gray-500 px-4 py-3 focus:outline-none text-base"
                 />
-                {errors.state && <p className="text-red-500 text-sm mt-1">{errors.state}</p>}
+                {errors.carrierState && <p className="text-red-500 text-sm mt-1">{errors.carrierState}</p>}
               </div>
             </div>
 
             <div className="flex gap-4 py-4">
               <div>
                 <input
-                  name="zipcode"
-                  placeholder="Zipcode"
-                  value={formData.zipcode}
+                  name="carrierZipcode"
+                  placeholder="carrierZipcode"
+                  value={formData.carrierZipcode}
                   onChange={handleInputChange}
                   className="form-input flex-1 rounded-lg bg-gray-800 text-white placeholder-gray-500 px-4 py-3 focus:outline-none text-base"
                 />
-                {errors.zipcode && (
-                  <p className="text-red-500 text-sm mt-1">{errors.zipcode}</p>
+                {errors.carrierZipcode && (
+                  <p className="text-red-500 text-sm mt-1">{errors.carrierZipcode}</p>
                 )}
               </div>
             </div>
