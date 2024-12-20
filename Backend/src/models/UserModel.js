@@ -31,7 +31,6 @@ const userSchema = new mongoose.Schema({
 });
 
 // Create the User model based on the schema
-tri
 const User = mongoose.model('User', userSchema);
 
 // Export the User model

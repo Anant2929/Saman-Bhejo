@@ -4,10 +4,10 @@ import { useCarrierRegistration } from "../../context/CarrierContext";
 const CarrierDetails = () => {
   const [formData, setFormData] = useState({
     carrierName: "",
-    contactNumber: "",
+    carrierContactNumber: "",
     carrierCity: "",
     carrierState: "",
-    carrierZipcode: "",
+    carrierZipCode: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -18,11 +18,13 @@ const CarrierDetails = () => {
 
   useEffect(() => {
     const savedData = JSON.parse(localStorage.getItem("carrierFormData"));
+    console.log("Saved Data: " ,savedData );
     if (savedData) {
       setFormData((prevData) => ({
         ...prevData,
         ...savedData,
       }));
+     
     }
   }, []);
 
@@ -30,7 +32,6 @@ const CarrierDetails = () => {
   const handleInputChange = (e) => {
     const updatedData = { ...formData, [e.target.name]: e.target.value };
     setFormData(updatedData);
-    setCarrierFormData(updatedData);
   };
 
 
@@ -38,10 +39,10 @@ const CarrierDetails = () => {
   const validateForm = () => {
     const newErrors = {};
     if (!formData.carrierName) newErrors.carrierName = "This field is required";
-    if (!formData.contactNumber) newErrors.contactNumber = "This field is required";
+    if (!formData.carrierContactNumber) newErrors.contactNumber = "This field is required";
     if (!formData.carrierCity) newErrors.carrierCity = "This field is required";
     if (!formData.carrierState) newErrors.carrierState = "This field is required";
-    if (!formData.carrierZipcode) newErrors.carrierZipcode = "This field is required";
+    if (!formData.carrierZipCode) newErrors.carrierZipCode = "This field is required";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -50,6 +51,8 @@ const CarrierDetails = () => {
   const handleNext = () => {
     if (validateForm()) {
       const updatedFormData = { ...CarrierFormData, ...formData };
+      console.log("updatedFromData: " , updatedFormData);
+      setCarrierFormData(updatedFormData) ;
       localStorage.setItem("carrierFormData", JSON.stringify(updatedFormData));
       setCarrierCurrentState(2);
     }
@@ -111,14 +114,14 @@ const CarrierDetails = () => {
               </div>
               <div>
                 <input
-                  name="contactNumber"
+                  name="carrierContactNumber"
                   placeholder="Contact Number"
-                  value={formData.contactNumber}
+                  value={formData.carrierContactNumber}
                   onChange={handleInputChange}
                   className="form-input rounded-lg bg-gray-800 text-white placeholder-gray-500 px-4 py-3 focus:outline-none text-base"
                 />
-                {errors.contactNumber && (
-                  <p className="text-red-500 text-sm mt-1">{errors.contactNumber}</p>
+                {errors.CarrierContactNumber && (
+                  <p className="text-red-500 text-sm mt-1">{errors.CarrierContactNumber}</p>
                 )}
               </div>
             </div>
@@ -129,7 +132,7 @@ const CarrierDetails = () => {
               <div>
                 <input
                   name="carrierCity"
-                  placeholder="carrierCity"
+                  placeholder="City"
                   value={formData.carrierCity}
                   onChange={handleInputChange}
                   className="form-input flex-1 rounded-lg bg-gray-800 text-white placeholder-gray-500 px-4 py-3 focus:outline-none text-base"
@@ -151,14 +154,14 @@ const CarrierDetails = () => {
             <div className="flex gap-4 py-4">
               <div>
                 <input
-                  name="carrierZipcode"
-                  placeholder="carrierZipcode"
-                  value={formData.carrierZipcode}
+                  name="carrierZipCode"
+                  placeholder="carrierZipCode"
+                  value={formData.carrierZipCode}
                   onChange={handleInputChange}
                   className="form-input flex-1 rounded-lg bg-gray-800 text-white placeholder-gray-500 px-4 py-3 focus:outline-none text-base"
                 />
-                {errors.carrierZipcode && (
-                  <p className="text-red-500 text-sm mt-1">{errors.carrierZipcode}</p>
+                {errors.carrierZipCode && (
+                  <p className="text-red-500 text-sm mt-1">{errors.carrierZipCode}</p>
                 )}
               </div>
             </div>

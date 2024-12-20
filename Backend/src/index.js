@@ -7,6 +7,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const oAuthRoutes = require('./routes/oAuthRoute');
 const parcelRoutes = require('./routes/ParcelRoute');
+const CarrierRoutes = require('./routes/CarrierRoute');
 const http = require("http");
 const socketIo = require("socket.io");
 const passport = require('passport');
@@ -61,9 +62,11 @@ app.get('/home', (req, res) => {
     res.redirect('/login');
   }
 });
+
 app.use('/oAuth', oAuthRoutes);
 app.use("/user", userRoutes);
 app.use("/parcel", parcelRoutes);
+app.use("/carrier" , CarrierRoutes);
 
 // Start the server using `server.listen` to enable socket.io
 server.listen(port, () => {

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Logout from "../Auth/Logout";
 import { useCarrierRegistration } from "../../context/CarrierContext";
-import "./Style.css";
+
 
 const TravelOptionsEnum = {
   AIRPLANE: "Airplane",
@@ -16,23 +16,30 @@ const TravelOptionsEnum = {
 };
 
 const TravelDetails = () => {
-  const [formData, setFormData] = useState({
-    carriercarrierTravelMode: "",
-    otherMode: "",
-    travelingFrom: "",
-    goingTo: "",
-    carriertravelDate: "",
-    carrierVehicleModel: "",
-    carrierLicensePlate: "",
-    carrierTicketPhoto: null,
-    carrierFromState:""
-  });
+
   const [errors, setErrors] = useState({});
   const [showSidebar, setShowSidebar] = useState(false);
   const { setCarrierCurrentState, setCarrierFormData } = useCarrierRegistration();
 
+  const [formData, setFormData] = useState({
+    carrierTravelMode: "",
+    otherMode: "",
+    carriertravelFromCity: "",
+    carriertravelFromState: "",
+    carrierFromCityPostalCode: "", 
+    carriertravelToState :"",
+    carriertravelToCity:"",
+    carrierToCityPostalCode: "",
+    carriertravelDate: "",
+    carrierVehicleModel: "",
+    carrierLicensePlate: "",
+    carrierTicketPhoto: "",
+    
+  });
+  
+
   useEffect(() => {
-    const savedData = JSON.parse(localStorage.getItem("travelFormData"));
+    const savedData = JSON.parse(localStorage.getItem("carrierFormData"));
     if (savedData) {
       setFormData((prevData) => ({
         ...prevData,
@@ -77,6 +84,7 @@ const TravelDetails = () => {
   };
 
   const handlePrevious = () => {
+    setCarrierFormData(updatedFormData);
     setCarrierCurrentState(1);
   };
 
@@ -84,9 +92,13 @@ const TravelDetails = () => {
     const newErrors = {};
 
     if (!formData.carrierTravelMode) newErrors.carrierTravelMode = "This field is required";
-    if (!formData.travelingFrom) newErrors.travelingFrom = "This field is required";
-    if (!formData.goingTo) newErrors.goingTo = "This field is required";
-    if (!formData. carriertravelDate) newErrors. carriertravelDate = "This field is required";
+    if (!formData.carriertravelFromCity) newErrors.carriertravelFromCity = "This field is required";
+    if (!formData.carriertravelFromState) newErrors.carriertravelFromState = "This field is required";
+    if (!formData.carrierFromCityPostalCode ) newErrors.carrierFromCityPostalCode  = "This field is required";
+    if (!formData.carriertravelToState) newErrors.carriertravelToState = "This field is required";
+    if (!formData.carriertravelToCity) newErrors.carriertravelToCity = "This field is required";
+    if (!formData.carrierToCityPostalCode) newErrors.carrierToCityPostalCode = "This field is required";
+    if (!formData.carriertravelDate) newErrors. carriertravelDate = "This field is required";
 
     if (["Car", "Bicycle", "Motorcycle"].includes(formData.carrierTravelMode)) {
       if (!formData.carrierVehicleModel) newErrors.carrierVehicleModel = "Vehicle model is required";
@@ -107,9 +119,10 @@ const TravelDetails = () => {
 
   const handleNext = () => {
     if (validateForm()) {
-      const updatedFormData = { ...formData };
-      localStorage.setItem("travelFormData", JSON.stringify(updatedFormData));
+      const updatedFormData = {...formData };
+      localStorage.setItem("carrierFormData", JSON.stringify(updatedFormData));
       setCarrierFormData(updatedFormData);
+      console.log("Data sent successfully:",updatedFormData);
       setCarrierCurrentState(3) 
     }
   };
@@ -173,41 +186,94 @@ const TravelDetails = () => {
       </header>
       <main className="flex flex-1 flex-col items-center justify-center px-10">
         <div className="max-w-lg w-full">
-          <h1 className="text-2xl font-bold mb-6">New Delivery</h1>
+          <h1 className="text-2xl font-bold mb-6">Travel Details</h1>
+          <h2 className="text-1xl font-bold mb-6">Travel From </h2>
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">Traveling From</label>
+            <label className="block text-sm font-medium mb-1">City</label>
             <input
               type="text"
-              name="travelingFrom"
-              value={formData.travelingFrom}
+              name="carriertravelFromCity"
+              value={formData. carriertravelFromCity}
               onChange={handleInputChange}
               placeholder="Enter location"
               className="w-full bg-gray-900 border border-gray-700 rounded-lg py-2 px-3"
             />
-            {errors.travelingFrom && <p className="text-red-500 text-sm">{errors.travelingFrom}</p>}
+            {errors.carriertravelFromCity && <p className="text-red-500 text-sm">{errors.carriertravelFromCity}</p>}
           </div>
+
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">Going To</label>
+            <label className="block text-sm font-medium mb-1">State</label>
             <input
               type="text"
-              name="goingTo"
-              value={formData.goingTo}
+              name="carriertravelFromState"
+              value={formData.carriertravelFromState}
+              onChange={handleInputChange}
+              placeholder="Enter State "
+              className="w-full bg-gray-900 border border-gray-700 rounded-lg py-2 px-3"
+            />
+            {errors.carriertravelFromState && <p className="text-red-500 text-sm">{errors.carriertravelFromState}</p>}
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-1">Postal Code</label>
+            <input
+              type="text"
+              name="carrierFromCityPostalCode"
+              value={formData.carrierFromCityPostalCode}
+              onChange={handleInputChange}
+              placeholder="Enter ZIPCODE"
+              className="w-full bg-gray-900 border border-gray-700 rounded-lg py-2 px-3"
+            />
+            {errors.carrierFromCityPostalCode && <p className="text-red-500 text-sm">{errors.carrierFromCityPostalCode}</p>}
+          </div>
+
+          <h2 className="text-1xl font-bold mb-6">Going To</h2>
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-1">City</label>
+            <input
+              type="text"
+              name="carriertravelToCity"
+              value={formData.carriertravelToCity}
+              onChange={handleInputChange}
+              placeholder="Enter destination City"
+              className="w-full bg-gray-900 border border-gray-700 rounded-lg py-2 px-3"
+            />
+            {errors.carriertravelToCity && <p className="text-red-500 text-sm">{errors.carriertravelToCity}</p>}
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-1">State</label>
+            <input
+              type="text"
+              name="carriertravelToState"
+              value={formData.carriertravelToState}
+              onChange={handleInputChange}
+              placeholder="Enter destination State"
+              className="w-full bg-gray-900 border border-gray-700 rounded-lg py-2 px-3"
+            />
+            {errors.carriertravelToState && <p className="text-red-500 text-sm">{errors.carriertravelToState}</p>}
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-1">Postal Code</label>
+            <input
+              type="text"
+              name="carrierToCityPostalCode"
+              value={formData.carrierToCityPostalCode}
               onChange={handleInputChange}
               placeholder="Enter destination"
               className="w-full bg-gray-900 border border-gray-700 rounded-lg py-2 px-3"
             />
-            {errors.goingTo && <p className="text-red-500 text-sm">{errors.goingTo}</p>}
+            {errors.carrierToCityPostalCode && <p className="text-red-500 text-sm">{errors.carrierToCityPostalCode}</p>}
           </div>
+
           <div className="mb-4">
             <label className="block text-sm font-medium mb-1">Date of Traveling</label>
             <input
               type="date"
-              name=" carriertravelDate"
-              value={formData. carriertravelDate}
+              name="carriertravelDate"
+              value={formData.carriertravelDate}
               onChange={handleInputChange}
               className="w-full bg-gray-900 border border-gray-700 rounded-lg py-2 px-3"
             />
-            {errors. carriertravelDate && <p className="text-red-500 text-sm">{errors. carriertravelDate}</p>}
+            {errors.carriertravelDate && <p className="text-red-500 text-sm">{errors.carriertravelDate}</p>}
           </div>
           <div className="mb-4">
             <label className="block text-sm font-medium mb-1">Mode of Travel</label>
@@ -260,13 +326,13 @@ const TravelDetails = () => {
               {errors.carrierVehicleModel && <p className="text-red-500 text-sm">{errors.carrierVehicleModel}</p>}
               <input
                 type="text"
-                name=" carrierLicensePlate"
+                name="carrierLicensePlate"
                 value={formData. carrierLicensePlate}
                 onChange={handleInputChange}
                 placeholder="License Plate"
                 className="w-full bg-gray-900 border border-gray-700 rounded-lg py-2 px-3"
               />
-              {errors. carrierLicensePlate && <p className="text-red-500 text-sm">{errors. carrierLicensePlate}</p>}
+              {errors.carrierLicensePlate && <p className="text-red-500 text-sm">{errors.carrierLicensePlate}</p>}
             </div>
           )}
           {["Airplane", "Train", "Bus", "Boat"].includes(formData.carrierTravelMode) && (

@@ -9,6 +9,7 @@ const senderMessages = {} ;
 
 
 const setupOnEvents = () => {
+
   const { socket, io } = getSocket();
 
   const handleUserRegistration = () => {
@@ -21,7 +22,7 @@ const setupOnEvents = () => {
 
       // Register user and map their socket ID
       user[id] = socket.id;
-      console.log("Updated user mapping:", user);
+      // console.log("Updated user mapping:", user);
 
       // Send pending messages if available
       if (pendingMessages[id]) {
@@ -299,7 +300,7 @@ const setupOnEvents = () => {
       const userId = Object.keys(user).find((key) => user[key] === socket.id);
       if (userId) {
         delete user[userId];
-        console.log("Updated user mapping after disconnection:", user);
+        // console.log("Updated user mapping after disconnection:", user);
       }
     });
   };
