@@ -18,7 +18,7 @@ function SubmissionSummary() {
     e.preventDefault();
     const submitDataToBackend = async () => {
       try {
-        const response = await axios.post("/api/carrier/carrierRegistration",CarrierFormData); // Replace with your backend API URL
+        const response = await axios.post("/api/carrier/carrierRegistration",CarrierFormData); 
         console.log("Data sent successfully:", CarrierFormData);
         console.log("Carrier response", response);
 
@@ -26,7 +26,7 @@ function SubmissionSummary() {
         setTimedMessage(response.data.message, "success");
 
         // Navigate and reset state
-        navigate("/home");
+        navigate("/home/carrierDetails/parcelList");
         setCarrierCurrentState(1);
       } catch (error) {
         console.error("Error submitting data:", error);

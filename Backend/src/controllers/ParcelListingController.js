@@ -1,14 +1,14 @@
 const Parcel = require("../models/ParcelModel");
-const Carrier = require("../models/CarrierModel"); // Make sure this is included
+const Carrier = require("../models/CarrierModel"); // Ensure the model is imported
 
 const normalizeDate = (date) => {
-  const d = new Date(date);
-  d.setHours(0, 0, 0, 0); // Set the time to 00:00:00 to ignore time
-  return d.toISOString().split("T")[0]; // Return only the date part (YYYY-MM-DD)
+  const d = new Date(date); // Input date
+  return new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()+1)
+    .toISOString()
+    .split("T")[0]; // Sirf date part le lo
 };
-
 const ParcelListing = async (req, res) => {
-  console.log("in parcelListing");
+  console.log("ParcelListing API triggered");
   try {
     const userId = req.user.id;
 
@@ -16,50 +16,41 @@ const ParcelListing = async (req, res) => {
     const latestCarrier = await Carrier.findOne({ carrier: userId }).sort({
       createdAt: -1,
     });
-    console.log("in Latestbefore");
+
     if (!latestCarrier) {
-      return res
-        .status(404)
-        .json({ message: "No carrier data found for this user" });
+      return res.status(404).json({ message: "No carrier data found for this user" });
     }
 
-    console.log("in Latest After");
-
-    const {
-      carrierFromCityPostalCode,
-      carrierToCityPostalCode,
-      carriertravelDate,
-    } = latestCarrier;
-
+    const { carriertravelFromCity, carriertravelToCity, carriertravelDate } = latestCarrier;
     const normalizedCarrierTravelDate = normalizeDate(carriertravelDate);
-    console.log("in before parcels");
-    // Find parcels matching the criteria with expectedDate >= carriertravelDate
+
+    // Find parcels matching the criteria with expectedDeliveryDate >= carriertravelDate
     const parcels = await Parcel.find({
-      fromPincode: carrierFromCityPostalCode,
-      toPincode: carrierToCityPostalCode,
-      expectedDeliveryDate: { $eq: normalizedCarrierTravelDate }, // Compare only the date part
+      fromCity: carriertravelFromCity,
+      toCity: carriertravelToCity,
+      expectedDeliveryDate: { $gte: normalizedCarrierTravelDate },
     });
 
-    console.log("in After parcels", parcels);
-
-    // console.log("parcels: " , parcels);
-    // Check if no parcels are found
     if (!parcels || parcels.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No parcels found for this Date" });
+      return res.status(404).json({ message: "No parcels found for this Date" });
     }
 
-    console.log("Parcels found");
+    // Normalize the expectedDeliveryDate for each parcel
+    const normalizedParcels = parcels.map((parcel) => ({
+       ...parcel._doc,
+       expectedDeliveryDate: normalizeDate(parcel.expectedDeliveryDate),
+    }));
 
-    res.status(200).json({
+    // console.log(`Found ${normalizedParcels.length} parcels matching the criteria.`);
+
+    return res.status(200).json({
       message: "Parcels found successfully",
-      parcels,
+       parcels: normalizedParcels,
+      //parcels,
     });
   } catch (error) {
-    // Handle any errors
-    console.log(error.message);
-    res.status(500).json({
+    console.error("Error in ParcelListing:", error.message);
+    return res.status(500).json({
       message: "An error occurred while listing the parcels",
       error: error.message,
     });

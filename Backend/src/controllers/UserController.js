@@ -115,4 +115,20 @@ const getname = async (req, res) => {
   }
 };
 
-module.exports = { signup, login, logout, getname };
+const CarrierStatus = async (req,res) => {
+  //This function is checking that user is Carrier active or inactive 
+    try {
+      const userId = req.user.id;
+      const userRole = await user.findById(userId).select("CarrierStatus");
+
+      if(!userRole){
+        return res.status(404).json({ message: "User not found" });
+      }
+      res.json({ CarrierStatus: userRole.CarrierStatus });
+    } catch (error) {
+      console.error("Error fetching username:", error);
+    res.status(500).json({ message: "Server error" });
+    }
+}
+
+module.exports = { signup, login, logout, getname , CarrierStatus};

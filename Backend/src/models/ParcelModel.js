@@ -66,4 +66,6 @@ parcelSchema.pre("save", function (next) {
   next();
 });
 
-module.exports = mongoose.model("Parcel", parcelSchema);
+const Parcel = mongoose.model("Parcel", parcelSchema);
+
+module.exports = Parcel;

@@ -88,7 +88,24 @@ const Home = () => {
   };
 
   const CarryParcel =()=>{
-    navigate("/home/carrierDetails");
+    const fetchCarrierStatus = async() =>{
+      console.log("fetching Carrier Status");
+      try {
+        const response = await axios.get('/api/user/carrierStatus' , {withCredentials : true});
+        const CarrierStatus = response.data.CarrierStatus;
+        console.log("CarrierStatus:", CarrierStatus);
+
+        if(CarrierStatus == true){
+          navigate("/home/carrierDetails/parcelList");
+        }
+        else{
+          navigate("/home/carrierDetails");
+        }
+      } catch (error) {
+        console.error("Error fetching Status: ", error);
+      }
+    }
+    fetchCarrierStatus();
   }
 
   const toggleSidebar = () => {

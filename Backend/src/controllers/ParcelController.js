@@ -40,6 +40,13 @@ const extractParcelData = (req) => {
     ReciverPostalCode,
     RecivercontactNumber,
     expectedDeliveryDate,
+    fromCity,
+    fromState,
+    fromZip,
+    toCity,
+    toState,
+    toZip,
+
   } = req.body;
 
   // List of required fields and their values
@@ -60,6 +67,13 @@ const extractParcelData = (req) => {
     ReciverPostalCode,
     RecivercontactNumber,
     expectedDeliveryDate,
+    fromCity,
+    fromState,
+    fromZip,
+    toCity,
+    toState,
+    toZip,
+
   };
 
   // Check for any missing fields
@@ -98,6 +112,12 @@ const extractParcelData = (req) => {
     ReciverPostalCode,
     RecivercontactNumber,
     expectedDeliveryDate,
+    fromCity,
+    fromState,
+    fromZip,
+    toCity,
+    toState,
+    toZip,
   };
 };
 
@@ -195,12 +215,12 @@ const registerParcel = async (req, res) => {
       parcelPhotoUrl,
       senderDetails: sender._id,
       receiverDetails: receiver._id,
-      fromCity: parcelData.senderCity,
-      fromState: parcelData.senderState,
-      fromPincode: parcelData.senderPostalCode,
-      toCity: parcelData.ReciverCity,
-      toState: parcelData.ReciverState,
-      toPincode: parcelData.ReciverPostalCode,
+      fromCity: parcelData.fromCity,
+      fromState: parcelData.fromState,
+      fromPincode: parcelData.fromZip,
+      toCity: parcelData.toCity,
+      toState: parcelData.toState,
+      toPincode: parcelData.toZip,
       distance,
       volume: parcelData.volume,
       expectedDeliveryDate: parcelData.expectedDeliveryDate,

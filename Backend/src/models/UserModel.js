@@ -27,6 +27,10 @@ const userSchema = new mongoose.Schema({
   },
   socketId: {
     type : String, 
+  },
+  CarrierStatus: {
+    type:Boolean,
+    default:false
   }
 });
 

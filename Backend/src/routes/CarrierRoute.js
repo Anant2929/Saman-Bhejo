@@ -6,6 +6,6 @@ const { CarrierRegister } = require('../controllers/CarrierController');
 const { ParcelListing } = require('../controllers/ParcelListingController')
 
 router.post('/carrierRegistration' , verifyToken , CarrierRegister);
-router.get('/parcelList', verifyToken , ParcelListing);
+router.get('/parcelList' ,verifyToken, ParcelListing);
 
 module.exports = router;
