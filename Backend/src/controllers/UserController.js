@@ -2,6 +2,7 @@ const user = require("../models/UserModel.js");
 const bcrypt = require("bcryptjs");
 const { generateToken } = require("../utils/jwtutils.js");
 
+
 const signup = async (req, res) => {
   let { email, password, name, contactNumber } = req.body;
   console.log("req.body", req.body);
@@ -16,12 +17,14 @@ const signup = async (req, res) => {
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    const otp = Math.floor(1000 + Math.random() * 9000); 
     // Create a new user instance
     const newUser = new user({
       email,
       password: hashedPassword,
       name,
       contactNumber,
+      otp,
     });
 
     // Save the new user to the database

@@ -64,7 +64,8 @@ const carrierSchema = new mongoose.Schema({
     },
     carrierTicketPhoto: {
         type: String // Path or URL to ticket photo
-    }
+    },
+   
 }, { timestamps: true });
 
 // Creating the carrier model

@@ -15,11 +15,11 @@ const findCarrier = async (carrierContactNumber) => {
 };
 
 // Function to update the carrier's status
-const updateCarrierStatus = async (userId) => {
+const updateCarrierStatus = async (userId, status) => {
   try {
     const updatedUser = await User.findByIdAndUpdate(
       userId,
-      { CarrierStatus: true }, // Update the CarrierStatus field
+      { CarrierStatus: status }, // Explicitly update the CarrierStatus field
       { new: true } // Return the updated document
     );
 
@@ -100,7 +100,7 @@ const CarrierRegister = async (req, res) => {
     await carrier.save();
 
     // Update carrier status for the user
-    await updateCarrierStatus(userId);
+    await updateCarrierStatus(userId , true);
 
     // Send a success response
     res.status(201).json({
@@ -117,4 +117,33 @@ const CarrierRegister = async (req, res) => {
   }
 };
 
-module.exports = { CarrierRegister };
+const CarrierDelete = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // Delete the carrier associated with the user
+    const deletedCarrier = await Carrier.findOneAndDelete({ carrier: userId });
+
+    if (!deletedCarrier) {
+      return res.status(404).json({ message: "Carrier not found." });
+    }
+
+    // Update carrier status to false
+    await updateCarrierStatus(userId, false);
+
+    // Send a success response
+    res.status(200).json({
+      message: "Carrier deleted successfully.",
+    });
+  } catch (error) {
+    console.error("Error in CarrierDelete:", error.message);
+
+    // Send an error response
+    res.status(500).json({
+      message: "An error occurred while deleting the carrier.",
+      error: error.message,
+    });
+  }
+};
+
+module.exports = { CarrierRegister , CarrierDelete};

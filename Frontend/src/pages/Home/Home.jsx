@@ -51,7 +51,7 @@ const Home = () => {
   }, [token, parcelNotification]);
 
   const handleNotificationClick = (notificationType) => {
-    console.log(" i am in a handlenortification home")
+    console.log(" i am in a handle notification home")
 
     if (notificationType === "parcel") {
       console.log(" i am type parcel notification")

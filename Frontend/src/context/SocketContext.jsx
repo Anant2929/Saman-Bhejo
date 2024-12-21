@@ -17,7 +17,7 @@ export const SocketProvider = ({ children }) => {
    // State to hold userId
 
   const [parcelData, setParcelData] = useState({});
-  const [senderDataInfo, setSenderDataInfo] = useState(
+  const [senderDataInfo, setSenderDataInfo] = useState( 
     JSON.parse(localStorage.getItem("senderDataInfo")) || {}
   );
   const [receiverDataInfo, setReceiverDataInfo] = useState(
@@ -34,6 +34,7 @@ export const SocketProvider = ({ children }) => {
   const [reload , setReload] = useState(false) ;
   const [socket, setSocket] = useState(null);
   const [responseNotification,setResponseNotification] = useState(null)
+  const [carrierNotification , setCarrierNotification] = useState(null)
   const [socketId,setSocketId] =useState("");
   // Initialize socket connection
   useEffect(() => {
@@ -82,6 +83,7 @@ export const SocketProvider = ({ children }) => {
         console.error("Received data is missing notification:", data);
       }
     });
+
     
     setSocket(newSocket);
 
@@ -160,4 +162,3 @@ export const useSocket = () => {
   return useContext(SocketContext);
 }; 
 
-//"675d232771008adf0f4c621e

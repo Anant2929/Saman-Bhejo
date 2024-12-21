@@ -28,6 +28,10 @@ const parcelSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
+  carrierDetails:{
+   type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
   fromCity: { type: String, required: true },
   fromState: { type: String, required: true },
   fromPincode: { type: Number, required: true },
@@ -41,6 +45,7 @@ const parcelSchema = new mongoose.Schema({
       "Sender Created",   // Jab sender ne parcel list kiya
       "Receiver Accepted", // Receiver ne parcel accept kiya
       "Receiver Rejected", // Receiver ne parcel reject kiya
+      "Carrier Accepted Parcel",
       "Carried",          // Accept hone ke baad parcel carried hai
       "Picked Up",        // Parcel pickup hua
       "In Transit",       // Transit me hai
@@ -59,6 +64,7 @@ const parcelSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
   expectedDeliveryDate: { type: Date, required: true },
+
 });
 
 parcelSchema.pre("save", function (next) {

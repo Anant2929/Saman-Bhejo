@@ -31,8 +31,17 @@ const userSchema = new mongoose.Schema({
   CarrierStatus: {
     type:Boolean,
     default:false
+  },
+
+  
+  otp: {
+    type: Number,
+    required: true, // Set true if OTP is mandatory
+    default: null, // Default value for OTP
   }
-});
+  
+
+})
 
 // Create the User model based on the schema
 const User = mongoose.model('User', userSchema);

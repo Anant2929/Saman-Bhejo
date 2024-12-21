@@ -3,10 +3,12 @@ const Notification = require("../models/NotificationModel.js");
 const ParcelSchema = require("../models/ParcelModel.js");
 const SenderSchema = require("../models/SenderModel.js");
 const ReceiverSchema = require("../models/ReceiverModel.js");
+const CarrierSchema= require("../models/CarrierModel.js");
+const User = require("../models/UserModel.js")
 const user = {}; // Stores userId -> socketId mapping
 const pendingMessages = {}; // Stores pending messages for offline users
 const senderMessages = {} ; 
-
+const otpMessages = {}
 
 const setupOnEvents = () => {
 
@@ -39,7 +41,19 @@ const setupOnEvents = () => {
           });
         });
       }
-
+     
+      if(otpMessages[id]){
+        otpMessages[id].forEach(({parcelId, carrierId, otp}) =>{
+          console.log("Sending otp message to ")
+          io.to(user[id]).emit("CarrierParcelAcceptionNotification", {
+            success: true,
+            parcelId,
+            carrierId: id,
+            message: "A carrier has accepted the parcel being sent to you.",
+          });
+        
+      })
+    }
       // Acknowledge successful registration
       callback({ success: true, message: "User registered successfully!" });
     });
@@ -292,8 +306,81 @@ const setupOnEvents = () => {
         callback({ success: false, error: "Failed to update notification status." });
       }
     });
-    
 
+/// otp sending code
+    
+    socket.on("carrierConfirmedParcel", async ({ parcelId, id }) => {
+      try {
+        // Find the parcel by its ID
+        const parcel = await ParcelSchema.findById(parcelId);
+    
+        if (!parcel) {
+          console.log("Parcel not found");
+          return;
+        }
+    
+        // Update the parcel's carrier details and tracking status
+        parcel.carrierDetails = id;
+        parcel.trackingStatus = "Carrier Accepted Parcel";
+        await parcel.save();
+    
+        console.log("Parcel updated successfully with carrier ID:", id);
+    
+        // Find the carrier and update their parcel details
+        const carrier = await CarrierSchema.findById(id);
+        if (!carrier) {
+          console.log("Carrier not found");
+          return;
+        }
+    
+        carrier.parcelId = parcelId;
+        await carrier.save();
+        const senderOtp = await User.findOne({ _id :senderDetails}).select('otp');
+        const receiverOtp =  await User.findOne({  _id : receiverDetails }).select('otp');
+        // Notify the sender
+        if(parcel.senderDetails && user[parcel.senderDetails]) {
+       io.to(user[parcel.senderDetails]).emit("CarrierParcelAcceptionNotification", {
+            success: true,
+            parcelId,
+            carrierId: id,
+            otp:senderOtp,
+            message: "Your parcel has been accepted by a carrier.",
+          });
+        } else {
+          if (!otpMessages[parcel.senderDetails]) {
+            otpMessages[parcel.senderDetails] = [];
+          }
+          otpMessages[parcel.senderDetails].push({ parcelId, carrierId: id });
+          console.log("Pending message saved for offline sender:", parcel.senderDetails);
+        }
+    
+        // Notify the receiver
+        if (parcel.receiverDetails && user[parcel.receiverDetails]) {
+          io.to(user[parcel.receiverDetails]).emit("CarrierParcelAcceptionNotification", {
+            success: true,
+            parcelId,
+            carrierId: id,
+            message: "A carrier has accepted the parcel being sent to you.",
+          });
+        } else {
+          if (!otpMessages[parcel.receiverDetails]) {
+            otpMessages[parcel.receiverDetails] = [];
+          }
+          otpMessages[parcel.receiverDetails].push({ parcelId, carrierId: id });
+          console.log("Pending message saved for offline receiver:", parcel.receiverDetails);
+        }
+    
+       
+    
+      } catch(error) {
+        console.error("Error updating parcel with carrier ID:", error);
+      }
+        // Emit error event back to the client
+        
+      
+    });
+    
+ 
 
     // Handle user disconnection
     socket.on("disconnect", () => {
