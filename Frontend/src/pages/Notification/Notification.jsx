@@ -122,14 +122,8 @@ const NotificationsPage = () => {
         <div className="mt-6 space-y-4">
           {notifications.map((notification, index) => {
             const key = notification._id || index;
-            let message = "";
-            if (notification.notificationType === "response") {
-              message = "Receiver sent response";
-            } else if (notification.notificationType === "action") {
-              message = "You got a new parcel";
-            }
-
-            const notificationStyle =
+            let message = notification.message;
+             const notificationStyle =
               notification.status === "pending" ? "bg-[#3C3F4A] animate-pulse" : "bg-[#1E2027]";
             const statusText = notification.status === "pending" ? "Unseen" : "Seen";
 

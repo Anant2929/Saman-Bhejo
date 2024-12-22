@@ -34,7 +34,7 @@ export const SocketProvider = ({ children }) => {
   const [reload , setReload] = useState(false) ;
   const [socket, setSocket] = useState(null);
   const [responseNotification,setResponseNotification] = useState(null)
-  const [carrierNotification , setCarrierNotification] = useState(null)
+  const [otp , setOtp] = useState(null)
   const [socketId,setSocketId] =useState("");
   // Initialize socket connection
   useEffect(() => {
@@ -84,6 +84,15 @@ export const SocketProvider = ({ children }) => {
       }
     });
 
+    newSocket.on("CarrierParcelAcceptionNotificationl",async (data)=>{
+      if (data ){
+        console.log("New carrier  updates:", data.message);
+        setOtp(data) ;
+      }
+     else {
+        console.error("Received data is missing ", data);
+      }
+    })
     
     setSocket(newSocket);
 
@@ -149,7 +158,9 @@ export const SocketProvider = ({ children }) => {
         setParcelId,
         socketId,
         responseNotification,
-        setResponseNotification
+        setResponseNotification,
+        otp,
+        setOtp
       }}
     >
       {children}

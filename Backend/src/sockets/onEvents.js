@@ -43,12 +43,11 @@ const setupOnEvents = () => {
       }
      
       if(otpMessages[id]){
-        otpMessages[id].forEach(({parcelId, carrierId, otp}) =>{
+        otpMessages[id].forEach(({ otp}) =>{
           console.log("Sending otp message to ")
           io.to(user[id]).emit("CarrierParcelAcceptionNotification", {
             success: true,
-            parcelId,
-            carrierId: id,
+            otp ,
             message: "A carrier has accepted the parcel being sent to you.",
           });
         
@@ -79,7 +78,8 @@ const setupOnEvents = () => {
           receiverId: receiver,
           status: "pending",
           notificationType : "action",
-          handlingStatus: false
+          handlingStatus: false,
+          message :"You got a new Parcel"
         });
 
         await notification.save();
@@ -129,7 +129,6 @@ const setupOnEvents = () => {
           // If notificationType is "response", send a response message
           console.log(`Sending response message for user ID ${id}`);
           // Example response notification
-          io.to(user[id]).emit("responseMessage", { message: "Your response has been processed!" });
     
           return callback && callback({ success: true, message: "Response message sent!" });
         } else {
@@ -179,6 +178,7 @@ const setupOnEvents = () => {
           status: "pending",
           notificationType: "response",
           handlingStatus: true,
+          message : "Receiver Confirmed the parcel"
         });
         await responseNotification.save();
     
@@ -308,77 +308,108 @@ const setupOnEvents = () => {
     });
 
 /// otp sending code
-    
-    socket.on("carrierConfirmedParcel", async ({ parcelId, id }) => {
-      try {
-        // Find the parcel by its ID
-        const parcel = await ParcelSchema.findById(parcelId);
-    
-        if (!parcel) {
-          console.log("Parcel not found");
-          return;
-        }
-    
-        // Update the parcel's carrier details and tracking status
-        parcel.carrierDetails = id;
-        parcel.trackingStatus = "Carrier Accepted Parcel";
-        await parcel.save();
-    
-        console.log("Parcel updated successfully with carrier ID:", id);
-    
-        // Find the carrier and update their parcel details
-        const carrier = await CarrierSchema.findById(id);
-        if (!carrier) {
-          console.log("Carrier not found");
-          return;
-        }
-    
-        carrier.parcelId = parcelId;
-        await carrier.save();
-        const senderOtp = await User.findOne({ _id :senderDetails}).select('otp');
-        const receiverOtp =  await User.findOne({  _id : receiverDetails }).select('otp');
-        // Notify the sender
-        if(parcel.senderDetails && user[parcel.senderDetails]) {
-       io.to(user[parcel.senderDetails]).emit("CarrierParcelAcceptionNotification", {
-            success: true,
-            parcelId,
-            carrierId: id,
-            otp:senderOtp,
-            message: "Your parcel has been accepted by a carrier.",
-          });
-        } else {
-          if (!otpMessages[parcel.senderDetails]) {
-            otpMessages[parcel.senderDetails] = [];
-          }
-          otpMessages[parcel.senderDetails].push({ parcelId, carrierId: id });
-          console.log("Pending message saved for offline sender:", parcel.senderDetails);
-        }
-    
-        // Notify the receiver
-        if (parcel.receiverDetails && user[parcel.receiverDetails]) {
-          io.to(user[parcel.receiverDetails]).emit("CarrierParcelAcceptionNotification", {
-            success: true,
-            parcelId,
-            carrierId: id,
-            message: "A carrier has accepted the parcel being sent to you.",
-          });
-        } else {
-          if (!otpMessages[parcel.receiverDetails]) {
-            otpMessages[parcel.receiverDetails] = [];
-          }
-          otpMessages[parcel.receiverDetails].push({ parcelId, carrierId: id });
-          console.log("Pending message saved for offline receiver:", parcel.receiverDetails);
-        }
-    
-       
-    
-      } catch(error) {
-        console.error("Error updating parcel with carrier ID:", error);
-      }
-        // Emit error event back to the client
-        
-      
+socket.on("carrierConfirmedParcel", async ({ parcelId, id }) => {
+  try {
+    // Find the parcel by its ID
+    const parcel = await ParcelSchema.findById(parcelId);
+
+    if (!parcel) {
+      console.log("Parcel not found");
+      return;
+    }
+
+    // Update the parcel's carrier details and tracking status
+    parcel.carrierDetails = id;
+    parcel.trackingStatus = "Carrier Accepted Parcel";
+    await parcel.save();
+
+    console.log("Parcel updated successfully with carrier ID:", id);
+
+    // Find the carrier and update their parcel details
+    const carrier = await CarrierSchema.findById(id);
+    if (!carrier) {
+      console.log("Carrier not found");
+      return;
+    }
+
+    carrier.parcelId = parcelId;
+    await carrier.save();
+
+    // Fetch sender and receiver OTPs
+    const senderOtp = await User.findOne({ _id: parcel.senderDetails }).select('otp');
+    const receiverOtp = await User.findOne({ _id: parcel.receiverDetails }).select('otp');
+
+    // Notify the sender
+    const responseNotification = new Notification({
+      parcelId: parcelId,
+      senderId: id,
+      receiverId: parcel.senderDetails,
+      status: "pending",
+      notificationType: "carrier response",
+      handlingStatus: true,
     });
+    await responseNotification.save();
+
+    if (parcel.senderDetails && user[parcel.senderDetails]) {
+      io.to(user[parcel.senderDetails]).emit("CarrierParcelAcceptionNotification", {
+        success: true,
+        otp: senderOtp,
+        message: "Your parcel has been accepted by a carrier.",
+      });
+
+      io.to(user[parcel.senderDetails]).emit("receiverUpdateParcelStatus", {
+        notification: responseNotification,
+      });
+    } else {
+      if (!otpMessages[parcel.senderDetails]) {
+        otpMessages[parcel.senderDetails] = [];
+      }
+      otpMessages[parcel.senderDetails].push({ senderOtp });
+      if (!senderMessages[parcel.senderDetails]) {
+        senderMessages[parcel.senderDetails] = [];
+      }
+      senderMessages[parcel.senderDetails].push({ notification: responseNotification });
+      console.log("Pending message saved for offline sender:", parcel.senderDetails);
+    }
+
+    // Notify the receiver
+    const receiverNotification = new Notification({
+      parcelId: parcelId,
+      senderId: id,
+      receiverId: parcel.receiverDetails,
+      status: "pending",
+      notificationType: "carrier response",
+      handlingStatus: true,
+    });
+    await receiverNotification.save();
+
+    if (parcel.receiverDetails && user[parcel.receiverDetails]) {
+      io.to(user[parcel.receiverDetails]).emit("CarrierParcelAcceptionNotification", {
+        success: true,
+        otp: receiverOtp,
+        message: "A carrier has accepted the parcel being sent to you.",
+      });
+
+      io.to(user[parcel.receiverDetails]).emit("receiverUpdateParcelStatus", {
+        notification: receiverNotification,
+      });
+    } else {
+      if (!otpMessages[parcel.receiverDetails]) {
+        otpMessages[parcel.receiverDetails] = [];
+      }
+      otpMessages[parcel.receiverDetails].push({ receiverOtp });
+      if (!senderMessages[parcel.receiverDetails]) {
+        senderMessages[parcel.receiverDetails] = [];
+      }
+      senderMessages[parcel.receiverDetails].push({ notification: receiverNotification });
+      console.log("Pending message saved for offline receiver:", parcel.receiverDetails);
+    }
+
+  } catch (error) {
+    console.error("Error updating parcel with carrier ID:", error);
+  }
+});
+
     
  
 

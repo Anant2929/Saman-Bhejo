@@ -7,18 +7,18 @@ import Logout from "../Auth/Logout";
 import { useParcelRegistration } from "../../context/ParcelContext";
 
 
+
 const Home = () => {
   const navigate = useNavigate();
   const {
     parcelNotification,
     id,
-    parcelDataInfo,
-    receiverDataInfo,
-    senderDataInfo,
     socket,
     setParcelNotification,
     responseNotification,
     setResponseNotification,
+    otp,
+    setOtp
   } = useSocket();
   const [username, setUsername] = useState("");
   const { token } = useAuth();
@@ -42,13 +42,14 @@ const Home = () => {
         if(responseNotification){
           setShowResponseNotification(true)
         }
+      
       } catch (error) {
         console.error("Error fetching username:", error);
       }
     };
 
     fetchUsername();
-  }, [token, parcelNotification]);
+  }, [token, parcelNotification,responseNotification]);
 
   const handleNotificationClick = (notificationType) => {
     console.log(" i am in a handle notification home")
@@ -200,9 +201,9 @@ const Home = () => {
             </div>
           </div>
         </header>
-
+                      
         {/* Notification Modal */}
-        {showNotification && (
+        {(showNotification) && (
           <div className="fixed top-[6rem] left-0 w-full flex justify-center z-20">
             <div className="flex items-center gap-4 bg-[#2a2d36] px-6 py-4 rounded-lg shadow-lg transition transform duration-300 hover:scale-105 hover:shadow-2xl animate-fade-slide-in">
               <div className="text-[#F9FAFA] flex items-center justify-center rounded-full bg-[#3C3F4A] shrink-0 w-10 h-10 shadow-xl">
@@ -230,7 +231,6 @@ const Home = () => {
         )}
 
 
-
 {showResponseNotification && (
           <div className="fixed top-[6rem] left-0 w-full flex justify-center z-20">
             <div className="flex items-center gap-4 bg-[#2a2d36] px-6 py-4 rounded-lg shadow-lg transition transform duration-300 hover:scale-105 hover:shadow-2xl animate-fade-slide-in">
@@ -256,6 +256,19 @@ const Home = () => {
               </button>
             </div>
           </div>
+        )}
+
+
+                {/* Notification Modal */}
+                {(otp) && (
+          <div className="fixed top-[6rem] left-0 w-full flex  z-20">
+         
+              <p className="text-[#F9FAFA] text-lg font-semibold flex-1">
+                You otp is  : {otp}
+              </p>
+             
+            </div>
+          
         )}
         {/* Main Content Section */}
         <div className="px-10 md:px-40 flex flex-1 justify-center py-5">

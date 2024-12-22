@@ -132,6 +132,54 @@ const CarrierStatus = async (req,res) => {
       console.error("Error fetching username:", error);
     res.status(500).json({ message: "Server error" });
     }
+};
+
+const UserDetails = async (req,res) =>{
+  try {
+    const userId = req.user.id;
+    const userDetails = await user.findById(userId);
+
+    if(!userDetails){
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(userDetails);
+  } catch (error) {
+    console.error('Error fetching User Details:' , error);
+    res.status(500).json({message:"Server error"});
+  }
 }
 
-module.exports = { signup, login, logout, getname , CarrierStatus};
+const UpdateUserDetails = async(req,res) =>{
+  try {
+    const userId = req.user.id;
+    const { email, aadhaar } = req.body;
+
+    // Validate input
+    if (!email && !aadhaar) {
+      return res.status(400).json({ error: "No data provided for update." });
+    }
+
+    // Find user by ID
+    const User = await user.findById(userId);
+    if (!User) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    // Update user details
+    if (email) User.email = email;
+    if (aadhaar) User.aadhaar = aadhaar;
+
+    // Save updated user data
+    await User.save();
+
+    return res.status(200).json({ message: "User details updated successfully." });
+  } catch (error) {
+    console.error("Error updating user details:", error);
+    return res.status(500).json({ error: "Internal server error." });
+  }
+}
+
+
+
+module.exports = { signup, login, logout, getname , CarrierStatus , UserDetails , UpdateUserDetails};

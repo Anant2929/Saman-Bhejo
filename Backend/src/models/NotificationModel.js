@@ -34,10 +34,13 @@ const NotificationSchema = new mongoose.Schema({
 
   notificationType: {
     type: String,
-    enum: ["response", "action"], // Added type for differentiation
+    enum: ["response", "action","carrier response"], // Added type for differentiation
     required: true,
-  }
-  
+  },
+  message: {
+    type: String,
+    required: false,
+  },
      
 });
 
