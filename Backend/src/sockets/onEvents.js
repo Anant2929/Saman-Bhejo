@@ -126,6 +126,10 @@ const setupOnEvents = () => {
             return callback && callback({ success: false, message: "No pending messages found for the provided ID." });
           }
         } else if (notificationType === "response") {
+            if(senderMessages[id]){
+              delete senderMessages[id]
+              console.log(`Pending messages for user ID ${id} successfully deleted.`);
+            } 
           // If notificationType is "response", send a response message
           console.log(`Sending response message for user ID ${id}`);
           // Example response notification

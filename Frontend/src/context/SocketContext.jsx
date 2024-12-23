@@ -86,8 +86,8 @@ export const SocketProvider = ({ children }) => {
 
     newSocket.on("CarrierParcelAcceptionNotificationl",async (data)=>{
       if (data ){
-        console.log("New carrier  updates:", data.message);
-        setOtp(data) ;
+        console.log("New carrier  updates:", data);
+        setOtp(data.otp) ;
       }
      else {
         console.error("Received data is missing ", data);

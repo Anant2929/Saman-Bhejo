@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate ,Link} from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import { useSocket } from "../../context/SocketContext";
 import Logout from "../Auth/Logout";
 import { useParcelRegistration } from "../../context/ParcelContext";
-
-
 
 const Home = () => {
   const navigate = useNavigate();
@@ -18,14 +16,15 @@ const Home = () => {
     responseNotification,
     setResponseNotification,
     otp,
-    setOtp
+    setOtp,
   } = useSocket();
   const [username, setUsername] = useState("");
   const { token } = useAuth();
   const [showNotification, setShowNotification] = useState(false);
-  const [showResponseNotification,setShowResponseNotification ] = useState(false);
+  const [showResponseNotification, setShowResponseNotification] =
+    useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
-  const  {setFetching} = useParcelRegistration()
+  const { setFetching } = useParcelRegistration();
 
   useEffect(() => {
     const fetchUsername = async () => {
@@ -39,75 +38,74 @@ const Home = () => {
         if (parcelNotification) {
           setShowNotification(true);
         }
-        if(responseNotification){
-          setShowResponseNotification(true)
+        if (responseNotification) {
+          setShowResponseNotification(true);
         }
-      
       } catch (error) {
         console.error("Error fetching username:", error);
       }
     };
 
     fetchUsername();
-  }, [token, parcelNotification,responseNotification]);
+  }, [token, parcelNotification, responseNotification]);
 
   const handleNotificationClick = (notificationType) => {
-    console.log(" i am in a handle notification home")
+    console.log(" i am in a handle notification home");
 
     if (notificationType === "parcel") {
-      console.log(" i am type parcel notification")
+      console.log(" i am type parcel notification");
       setShowNotification(false); // Hide modal after confirmation
       setParcelNotification(false);
-  
+
       socket.emit(
         "deletePendingMessage",
         { id, notificationType },
-        (response) => { 
+        (response) => {
           setFetching(false);
-          navigate("/home/notifications");  // Perform your navigation or any other action after response
-          
-        }
-      );
-    }
-  
-    if (notificationType === "response") {
-      setShowResponseNotification(false); // Hide modal after confirmation
-      setResponseNotification(false);
-  
-      socket.emit(
-        "deletePendingMessage",
-        { id, notificationType },  // Add the missing comma here
-        (response) => { 
           navigate("/home/notifications"); 
         }
       );
     }
+
+    if (notificationType === "response") {
+      setShowResponseNotification(false); 
+      setResponseNotification(false);
+
+      socket.emit(
+        "deletePendingMessage",
+        { id, notificationType }, 
+        (response) => {
+          navigate("/home/notifications");
+        }
+      );
+    }
   };
-  
+
   const CreateParcel = () => {
     navigate("/parcel/details");
   };
 
-  const CarryParcel =()=>{
-    const fetchCarrierStatus = async() =>{
+  const CarryParcel = () => {
+    const fetchCarrierStatus = async () => {
       console.log("fetching Carrier Status");
       try {
-        const response = await axios.get('/api/user/carrierStatus' , {withCredentials : true});
+        const response = await axios.get("/api/user/carrierStatus", {
+          withCredentials: true,
+        });
         const CarrierStatus = response.data.CarrierStatus;
         console.log("CarrierStatus:", CarrierStatus);
 
-        if(CarrierStatus == true){
+        if (CarrierStatus == true) {
           navigate("/home/carrierDetails/parcelList");
-        }
-        else{
+        } else {
           navigate("/home/carrierDetails");
         }
       } catch (error) {
         console.error("Error fetching Status: ", error);
       }
-    }
+    };
     fetchCarrierStatus();
-  }
+  };
 
   const toggleSidebar = () => {
     setShowSidebar(!showSidebar);
@@ -147,17 +145,19 @@ const Home = () => {
           </div>
 
           <div className="flex flex-1 justify-end gap-8">
-          <nav className="flex items-center gap-9">
-  {["Home", "About", "Notifications", "Pricing", "Contact"].map((item) => (
-    <Link
-      key={item}
-      to={`/home/${item.toLowerCase()}`} // Automatically generates the correct path
-      className="text-white text-sm font-medium transition duration-300 hover:text-[#607AFB]"
-    >
-      {item}
-    </Link>
-  ))}
-</nav> 
+            <nav className="flex items-center gap-9">
+              {["Home", "About", "Notifications", "Pricing", "Contact"].map(
+                (item) => (
+                  <Link
+                    key={item}
+                    to={`/home/${item.toLowerCase()}`} // Automatically generates the correct path
+                    className="text-white text-sm font-medium transition duration-300 hover:text-[#607AFB]"
+                  >
+                    {item}
+                  </Link>
+                )
+              )}
+            </nav>
             <div className="relative">
               <div
                 className="w-10 h-10 bg-[#607AFB] rounded-full flex items-center justify-center cursor-pointer transition transform duration-300 hover:scale-110"
@@ -201,9 +201,9 @@ const Home = () => {
             </div>
           </div>
         </header>
-                      
+
         {/* Notification Modal */}
-        {(showNotification) && (
+        {showNotification && (
           <div className="fixed top-[6rem] left-0 w-full flex justify-center z-20">
             <div className="flex items-center gap-4 bg-[#2a2d36] px-6 py-4 rounded-lg shadow-lg transition transform duration-300 hover:scale-105 hover:shadow-2xl animate-fade-slide-in">
               <div className="text-[#F9FAFA] flex items-center justify-center rounded-full bg-[#3C3F4A] shrink-0 w-10 h-10 shadow-xl">
@@ -221,7 +221,7 @@ const Home = () => {
                 You got a new parcel
               </p>
               <button
-                onClick={()=>handleNotificationClick ("parcel")}
+                onClick={() => handleNotificationClick("parcel")}
                 className="flex items-center justify-center h-10 px-5 bg-[#607AFB] text-white font-bold rounded-full transition transform duration-300 hover:scale-110 shadow-md"
               >
                 Open
@@ -230,8 +230,7 @@ const Home = () => {
           </div>
         )}
 
-
-{showResponseNotification && (
+        {showResponseNotification && (
           <div className="fixed top-[6rem] left-0 w-full flex justify-center z-20">
             <div className="flex items-center gap-4 bg-[#2a2d36] px-6 py-4 rounded-lg shadow-lg transition transform duration-300 hover:scale-105 hover:shadow-2xl animate-fade-slide-in">
               <div className="text-[#F9FAFA] flex items-center justify-center rounded-full bg-[#3C3F4A] shrink-0 w-10 h-10 shadow-xl">
@@ -249,7 +248,7 @@ const Home = () => {
                 You got a new Notification
               </p>
               <button
-                onClick={()=>handleNotificationClick ("response")}
+                onClick={() => handleNotificationClick("response")}
                 className="flex items-center justify-center h-10 px-5 bg-[#607AFB] text-white font-bold rounded-full transition transform duration-300 hover:scale-110 shadow-md"
               >
                 Open
@@ -258,17 +257,13 @@ const Home = () => {
           </div>
         )}
 
-
-                {/* Notification Modal */}
-                {(otp) && (
+        {/* Notification Modal */}
+        {otp && (
           <div className="fixed top-[6rem] left-0 w-full flex  z-20">
-         
-              <p className="text-[#F9FAFA] text-lg font-semibold flex-1">
-                You otp is  : {otp}
-              </p>
-             
-            </div>
-          
+            <p className="text-[#F9FAFA] text-lg font-semibold flex-1">
+              You otp is : {otp}
+            </p>
+          </div>
         )}
         {/* Main Content Section */}
         <div className="px-10 md:px-40 flex flex-1 justify-center py-5">

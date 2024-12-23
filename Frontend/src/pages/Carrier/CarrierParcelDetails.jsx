@@ -6,7 +6,7 @@ import  {useSocket} from "../../context/SocketContext"
 export default function ParcelInfoDisplay() {
  
   const navigate = useNavigate();
-  const { parcelId ,socketId,id} = useSocket();
+  const { parcelId ,socketId,id , socket} = useSocket();
 
   // Define only the required fields
   const initialFields = {
@@ -119,9 +119,11 @@ export default function ParcelInfoDisplay() {
 
 
   const handleConfirmation = ()=>{
-      // socket.emit("carrierConfirmedParcel",{parcelId,id},callback{
-
-      // })
+    socket.emit("carrierConfirmedParcel", { parcelId, id }, (response) => {
+      // Handle the response from the server here
+      console.log(response);
+  });
+  navigate("/home/carrierDetails/parcelList")
   }
 
   // Check if data is loading
