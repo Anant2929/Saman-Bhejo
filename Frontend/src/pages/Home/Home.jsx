@@ -261,7 +261,7 @@ const Home = () => {
         {otp && (
           <div className="fixed top-[6rem] left-0 w-full flex  z-20">
             <p className="text-[#F9FAFA] text-lg font-semibold flex-1">
-              You otp is : {otp}
+              You otp is : {otp.otp}
             </p>
           </div>
         )}

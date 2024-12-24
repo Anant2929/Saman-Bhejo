@@ -43,11 +43,11 @@ const setupOnEvents = () => {
       }
      
       if(otpMessages[id]){
-        otpMessages[id].forEach(({ otp}) =>{
+        otpMessages[id].forEach(({otp}) =>{
           console.log("Sending otp message to ")
           io.to(user[id]).emit("CarrierParcelAcceptionNotification", {
             success: true,
-            otp ,
+            otp,
             message: "A carrier has accepted the parcel being sent to you.",
           });
         
@@ -245,7 +245,7 @@ const setupOnEvents = () => {
       console.log(" i am feych parceldata")
       try {
         // Fetch parcel data
-        const parcelData = await ParcelSchema.findById(parcelId);
+        const parcelData = await ParcelSchema.findOne(parcelId);
         const receiverData = await ReceiverSchema.findOne({ parcelsReceived: parcelId });
         const senderData= await SenderSchema.findOne({ parcelsSent: parcelId });
     
@@ -311,6 +311,13 @@ const setupOnEvents = () => {
       }
     });
 
+
+    const normalizeDate = (date) => {
+      const d = new Date(date); // Input date
+      return new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())
+        .toISOString()
+        .split("T")[0]; // Sirf date part le lo
+    };
 /// otp sending code
 socket.on("carrierConfirmedParcel", async ({ parcelId, id }) => {
   try {
@@ -330,7 +337,16 @@ socket.on("carrierConfirmedParcel", async ({ parcelId, id }) => {
     console.log("Parcel updated successfully with carrier ID:", id);
 
     // Find the carrier and update their parcel details
-    const carrier = await CarrierSchema.findById(id);
+    let {fromCity , toCity , expectedDeliveryDate} = parcel ;
+        const normalizedate = normalizeDate(expectedDeliveryDate);
+
+    const carrier = await CarrierSchema.findOne({
+      _id : id,
+      carriertravelFromCity:fromCity,
+      carriertravelToCity: toCity,
+      carriertravelDate : {$lte :normalizedate },
+      
+    });
     if (!carrier) {
       console.log("Carrier not found");
       return;
@@ -338,11 +354,16 @@ socket.on("carrierConfirmedParcel", async ({ parcelId, id }) => {
 
     carrier.parcelId = parcelId;
     await carrier.save();
+    console.log("carrier is,",carrier)
+    console.log(" parcl is", parcel)
+
+
 
     // Fetch sender and receiver OTPs
     const senderOtp = await User.findOne({ _id: parcel.senderDetails }).select('otp');
     const receiverOtp = await User.findOne({ _id: parcel.receiverDetails }).select('otp');
 
+    console.log("otp is sender , receiver", senderOtp,receiverOtp)
     // Notify the sender
     const responseNotification = new Notification({
       parcelId: parcelId,
@@ -350,6 +371,7 @@ socket.on("carrierConfirmedParcel", async ({ parcelId, id }) => {
       receiverId: parcel.senderDetails,
       status: "pending",
       notificationType: "carrier response",
+      message : "A carrier has accepted the parcel being sent to you",
       handlingStatus: true,
     });
     await responseNotification.save();
@@ -368,7 +390,7 @@ socket.on("carrierConfirmedParcel", async ({ parcelId, id }) => {
       if (!otpMessages[parcel.senderDetails]) {
         otpMessages[parcel.senderDetails] = [];
       }
-      otpMessages[parcel.senderDetails].push({ senderOtp });
+      otpMessages[parcel.senderDetails].push({otp : senderOtp });
       if (!senderMessages[parcel.senderDetails]) {
         senderMessages[parcel.senderDetails] = [];
       }
@@ -384,6 +406,7 @@ socket.on("carrierConfirmedParcel", async ({ parcelId, id }) => {
       status: "pending",
       notificationType: "carrier response",
       handlingStatus: true,
+      message : "A carrier has accepted the parcel being sent to you"
     });
     await receiverNotification.save();
 
@@ -401,7 +424,7 @@ socket.on("carrierConfirmedParcel", async ({ parcelId, id }) => {
       if (!otpMessages[parcel.receiverDetails]) {
         otpMessages[parcel.receiverDetails] = [];
       }
-      otpMessages[parcel.receiverDetails].push({ receiverOtp });
+      otpMessages[parcel.receiverDetails].push({ otp : receiverOtp });
       if (!senderMessages[parcel.receiverDetails]) {
         senderMessages[parcel.receiverDetails] = [];
       }
@@ -414,8 +437,92 @@ socket.on("carrierConfirmedParcel", async ({ parcelId, id }) => {
   }
 });
 
-    
- 
+// Parcel Picked Up Event
+socket.on("Parcel Picked Up", async ({ otp, parcelId }) => {
+  try {
+    // Fetch the parcel details using parcel ID
+    const parcel = await ParcelSchema.findById(parcelId);
+    if (!parcel) {
+      return socket.emit("Error", { message: "Parcel not found" });
+    }
+
+    // Fetch sender details using sender ID from the parcel
+    const sender = await User.findById(parcel.senderId);
+    if (!sender) {
+      return socket.emit("Error", { message: "Sender not found" });
+    }
+
+    // Verify the OTP provided
+    if (sender.otp === otp) {
+      // Update the parcel status to "Picked Up"
+      parcel.status = "Parcel Picked Up";
+      await parcel.save();
+
+      // Notify the sender about the status update
+      if (user[sender._id]) {
+        io.to(user[sender._id]).emit("Status Updated", {
+          message: "Parcel status updated to 'Parcel Picked Up'",
+        });
+      }
+    } else {
+      // Emit error for invalid OTP
+      socket.emit("Error", { message: "Invalid OTP" });
+    }
+  } catch (error) {
+    console.error("Error updating parcel status:", error);
+    socket.emit("Error", { message: "An error occurred while updating the parcel status" });
+  }
+});
+
+// Parcel Delivered Event
+socket.on("Parcel Delivered", async ({ otp, parcelId }) => {
+  try {
+    // Fetch the parcel details using parcel ID
+    const parcel = await ParcelSchema.findById(parcelId);
+    if (!parcel) {
+      return socket.emit("Error", { message: "Parcel not found" });
+    }
+
+    // Fetch receiver details using receiver ID from the parcel
+    const receiver = await User.findById(parcel.receiverDetails);
+    if (!receiver) {
+      return socket.emit("Error", { message: "Receiver not found" });
+    }
+
+    // Verify the OTP provided
+    if (receiver.otp === otp) {
+      // Update the parcel status to "Delivered"
+      parcel.status = "Parcel Delivered";
+      await parcel.save();
+
+      // Create a notification for the receiver
+      const receiverNotification = new Notification({
+        parcelId,
+        senderId: parcel.senderId,
+        receiverId: parcel.receiverDetails,
+        status: "pending",
+        notificationType: "carrier response",
+        handlingStatus: true,
+        message: "A carrier has accepted the parcel being sent to you",
+      });
+      await receiverNotification.save();
+
+      // Notify the receiver about the status update
+      if (user[receiver._id]) {
+        io.to(user[receiver._id]).emit("Status Updated", {
+          message: "Parcel status updated to 'Parcel Delivered'",
+        });
+      }
+    } else {
+      // Emit error for invalid OTP
+      socket.emit("Error", { message: "Invalid OTP" });
+    }
+  } catch (error) {
+    console.error("Error updating parcel status:", error);
+    socket.emit("Error", { message: "An error occurred while updating the parcel status" });
+  }
+});
+
 
     // Handle user disconnection
     socket.on("disconnect", () => {

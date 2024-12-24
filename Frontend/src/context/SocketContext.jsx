@@ -84,7 +84,7 @@ export const SocketProvider = ({ children }) => {
       }
     });
 
-    newSocket.on("CarrierParcelAcceptionNotificationl",async (data)=>{
+    newSocket.on("CarrierParcelAcceptionNotification",async (data)=>{
       if (data ){
         console.log("New carrier  updates:", data);
         setOtp(data.otp) ;

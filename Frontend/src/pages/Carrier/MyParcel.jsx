@@ -48,7 +48,7 @@ const ParcelList = () => {
     try {
       if (id) {
         setParcelId(id);
-        navigate("/home/carrierDetails/parcelList/specificParcelDetails");
+        navigate("/home/carrierDetails/myParcel/allDetailsOfparcel");
       }
     } catch (error) {
       alert(error.message);
@@ -58,7 +58,7 @@ const ParcelList = () => {
   useEffect(() => {
     const fetchParcels = async () => {
       try {
-        const response = await axios.get("/api/carrier/parcelList", {
+        const response = await axios.get("/api/carrier/myParcel", {
           withCredentials: true,
         });
         setParcels(response.data.parcels);
@@ -245,17 +245,18 @@ const ParcelList = () => {
         >
           Cancel this journey
         </button>
+
         <button
           className="bg-blue-600 text-white w-1/5 px-2 py-2 rounded-lg hover:bg-red-700 transition mr-auto"
-          onClick={() => navigate("/home/carrierDetails/parcelList/myParcel")}
+          onClick={() => navigate("/home/carrierDetails/parcelList/")}
         >
-        My Parcels
+         All Parcels
         </button>
         <div className="px-40 flex flex-1 justify-center py-5">
           <div className="layout-content-container flex flex-col max-w-[960px] flex-1">
             <div className="flex flex-wrap justify-between gap-3 p-4">
               <p className="text-[#FFFFFF] tracking-light text-[32px] font-bold leading-tight min-w-72">
-                Available Parcels to Carry
+               My Parcels
               </p>
             </div>
 

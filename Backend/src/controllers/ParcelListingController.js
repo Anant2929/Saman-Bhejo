@@ -57,4 +57,33 @@ const ParcelListing = async (req, res) => {
   }
 };
 
-module.exports = { ParcelListing };
+const MyParcel = async (req, res) => {
+  try {
+    const userId = req.user.id; // Extracting the user ID
+    const parcels = await Parcel.find({
+      carrierDetails: userId, // Filtering parcels by the carrier's ID
+      trackingStatus: {
+        $in: [ // Matching one of the specified tracking statuses
+          "Carrier Accepted Parcel",
+          "Carried",
+          "Picked Up",
+          "In Transit"
+        ]
+      }
+    });
+    console.log("parcel",parcels)
+    res.status(200).json({
+      success: true,
+      parcels, // Sending parcels in the response
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while fetching parcels.",
+    });
+  }
+};
+
+
+module.exports = { ParcelListing ,MyParcel};

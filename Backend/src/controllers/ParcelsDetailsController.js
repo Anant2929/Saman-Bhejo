@@ -1,7 +1,7 @@
 const Parcel = require("../models/ParcelModel");
 const Sender = require("../models/SenderModel");
 const Receiver = require("../models/ReceiverModel");
-
+const Carrier= require("../models/CarrierModel");
 
 // Fetch parcels for a user
 const parcelsDetails = async (req, res) => {
@@ -50,10 +50,11 @@ const SpecificParcelDetails = async(req, res) => {
         message: "Parcel ID is required." 
       });
     }
-
+    
     const sender = await Sender.findOne({ parcelsSent: parcelId });
     const receiver = await Receiver.findOne({ parcelsReceived: parcelId });
     const parcel = await Parcel.findOne({_id :parcelId})
+    const carrier = await Carrier.findOne({parcelId : parcelId}) ;
 
     if (!sender && !receiver  && !parcel) {
       console.warn("Sender , Receiver and Parcel not found for Parcel ID:", parcelId); // Warning log
@@ -62,13 +63,23 @@ const SpecificParcelDetails = async(req, res) => {
         message: "Sender, parcel, Receiver not found." 
       });
     }
-
+    if(!carrier){
+      console.log("carrier not found") ;
+      res.status(200).json({
+        success: true,
+        sender,
+        receiver,
+        parcel ,
+      });
+    }
+else{
     res.status(200).json({
       success: true,
       sender,
       receiver,
       parcel ,
-    });
+      carrier
+    });}
   } catch (error) {
     console.error("Error fetching specific parcel details:", error); // Error log
     res.status(500).json({

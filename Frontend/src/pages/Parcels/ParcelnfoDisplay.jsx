@@ -61,6 +61,9 @@ export default function ParcelInfoDisplay() {
         if (data.success) {
           console.log(" i am in data sucuces baby")
           const { sender, receiver ,parcel } = data;
+          if(data.carrier){
+            
+          }
 
 
          
