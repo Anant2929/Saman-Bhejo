@@ -95,7 +95,7 @@ export default function SignUp() {
             alt="Person Icon"
             className="absolute left-3 top-1/2 transform -translate-y-1/2 w-6 h-6"
           />
-          {errors.name && <span className="absolute left-0 top-full text-red-500 text-sm mb-1">{errors.name}</span>}
+          {errors.name && <span className="absolute left-0 top-full text-[#ff1111] text-sm mb-1">{errors.name}</span>}
         </div>
 
         {/* Email Input */}
@@ -114,7 +114,7 @@ export default function SignUp() {
             alt="Email Icon"
             className="absolute left-3 top-1/2 transform -translate-y-1/2 w-6 h-6"
           />
-          {errors.email && <span className="absolute left-0 top-full text-red-500 text-sm mb-1">{errors.email}</span>}
+          {errors.email && <span className="absolute left-0 top-full text-[#ff1111] text-sm mb-1">{errors.email}</span>}
         </div>
 
         {/* Password Input */}
@@ -133,7 +133,7 @@ export default function SignUp() {
             alt="Lock Icon"
             className="absolute left-3 top-1/2 transform -translate-y-1/2 w-6 h-6"
           />
-          {errors.password && <span className="absolute left-0 top-full text-red-500 text-sm  mb-1">{errors.password}</span>}
+          {errors.password && <span className="absolute left-0 top-full text-[#ff1111] text-sm  mb-1">{errors.password}</span>}
         </div>
 
         {/* Contact No Input */}
@@ -153,7 +153,7 @@ export default function SignUp() {
             className="absolute left-3 top-1/2 transform -translate-y-1/2 w-6 h-6"
           />
           {errors.contactNumber && (
-            <span className="absolute left-0 top-full text-red-500 text-sm mb-1">
+            <span className="absolute left-0 top-full text-[#ff1111] text-sm mb-1">
               {errors.contactNumber}
             </span>
           )}

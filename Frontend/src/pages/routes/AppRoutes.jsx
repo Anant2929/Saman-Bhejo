@@ -17,7 +17,7 @@ import CarrierParcelDetails from "../Carrier/CarrierParcelDetails"
 import EditProfile from '../Profile/EditProfile.jsx';
 import MyParcel from '../Carrier/MyParcel.jsx';
 import MyParcelAllDetails from '../Carrier/MyParcelAllDetails.jsx';
-
+// import Header from "../"
 export default function AppRoutes() {
   const { token, setToken } = useAuth();
 
@@ -35,6 +35,7 @@ export default function AppRoutes() {
   }, [token, setToken]);
   return (
     <BrowserRouter>
+    {/* <Header/> */}
       <Routes>
         <Route path="/" element={token ? <Navigate to="/home" /> : <Layout />} />
         <Route path="/home" element={token ? <Home /> : <Navigate to="/user/login" />} />

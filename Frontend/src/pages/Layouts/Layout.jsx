@@ -1,7 +1,7 @@
 import React from 'react';
 import Left from './Left'; // Adjust path if needed
 import Right from './Right'; // Adjust path if needed
-import bgImage from '../../assets/images/Saman bhejo.jpg'; 
+import bgImage from '../../assets/images/IMG MOUNT.png'; 
 
 export default function App() {
   return (

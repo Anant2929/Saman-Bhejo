@@ -12,8 +12,8 @@ import { useSocket } from "../../context/SocketContext"; // Import the SocketCon
 export default function Login() {
   const { setUserLogin } = useUserLogin();
   const { setTimedMessage } = useMessage();
-  const { setToken } = useAuth(); // Destructure setToken from context
-  const { setId } = useSocket(); // Access the setid function from SocketContext
+  const { setToken } = useAuth(); 
+  const { setId } = useSocket(); 
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -92,7 +92,7 @@ export default function Login() {
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="appearance-none rounded-lg bg-[rgba(62,60,60,0.5)] text-[#E0E0E0] p-3 pl-10 pr-10 w-full
+            className="appearance-none rounded-lg bg-[rgba(62,60,60,0.5)] text-[#E0E] p-3 pl-10 pr-10 w-full
               border-2 border-transparent transition duration-300 hover:border-[#5E3CF6] focus:border-[#5E3CF6] focus:outline-none"
           />
           <img
@@ -101,7 +101,7 @@ export default function Login() {
             className="absolute left-3 top-1/2 transform -translate-y-1/2 w-6 h-6"
           />
           {errors.email && (
-            <span className="absolute left-0 top-full text-red-500 text-sm mb-1">
+            <span className="absolute left-0 top-full text-[#ff1111] text-sm mb-1">
               {errors.email}
             </span>
           )}
@@ -123,14 +123,14 @@ export default function Login() {
             className="absolute left-3 top-1/2 transform -translate-y-1/2 w-6 h-6"
           />
           {errors.password && (
-            <span className="absolute left-0 top-full text-red-500 text-sm mb-1">
+            <span className="absolute left-0 top-full text-[#ff1111] text-sm mb-1">
               {errors.password}
             </span>
           )}
 
           {/* General Error Message */}
           {errors.general && (
-            <span className="absolute left-0 top-full text-red-500 text-sm mb-1">{errors.general}</span>
+            <span className="absolute left-0 top-full text-[#ff1111] text-sm mb-1">{errors.general}</span>
           )}
         </div>
 
@@ -149,8 +149,8 @@ export default function Login() {
         {/* Login Button */}
         <button
           type="submit"
-          className="text-white bg-[#398bc5] p-3 rounded-lg w-full 
-            hover:bg-[#30699f] transition duration-300 hover:scale-105 font-semibold"
+          className="text-white bg-[#2c70a0] p-3 rounded-lg w-full 
+            hover:bg-[#1d4366] transition duration-300 hover:scale-105 font-semibold"
         >
           Login
         </button>
