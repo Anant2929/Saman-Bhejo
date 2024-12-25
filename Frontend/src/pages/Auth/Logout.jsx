@@ -31,10 +31,9 @@ const {setFormData} = useParcelRegistration
 
   return (
       <button
-        className="block w-full text-left px-4 py-2 hover:bg-red-700 transition duration-300 relative"
+        className="block w-full text-red-500 text-left px-4 py-2 hover:bg-[#3C3F4A] transition duration-300 relative"
         onClick={handleClick} // Call the handleClick function on click
-      >
-        <span className="text-transparent bg-gradient-to-r from-[#ff6600] via-[#ff8c00] to-[#ffb84d] bg-clip-text">Logout</span>
+      >Logout
        
       </button>
   );

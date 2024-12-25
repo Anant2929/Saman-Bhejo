@@ -5,24 +5,25 @@ import { UserLoginProvider } from "./context/userLoginContext";
 import { MessageProvider, useMessage } from "./context/MessageContext";
 import { AuthProvider } from "./context/AuthContext";
 import { ParcelRegistrationProvider } from "./context/ParcelContext";
-import {CarrierContextProvider} from "./context/CarrierContext";
-import { SocketProvider } from "./context/SocketContext"
-export default function App() {
+import { CarrierContextProvider } from "./context/CarrierContext";
+import { SocketProvider } from "./context/SocketContext";
 
+export default function App() {
   return (
     <div>
       <UserLoginProvider>
-      <CarrierContextProvider>
-        <ParcelRegistrationProvider>
-          <MessageProvider>
-            <AuthProvider>
-            <SocketProvider>
-              <AppRoutes />
-              </SocketProvider>
-            </AuthProvider>
-            <AlertMessage />
-          </MessageProvider>
-        </ParcelRegistrationProvider>
+        <CarrierContextProvider>
+          <ParcelRegistrationProvider>
+            <MessageProvider>
+              <AuthProvider>
+                <SocketProvider>
+                
+                  <AppRoutes />
+                </SocketProvider>
+              </AuthProvider>
+              <AlertMessage />
+            </MessageProvider>
+          </ParcelRegistrationProvider>
         </CarrierContextProvider>
       </UserLoginProvider>
     </div>
@@ -40,7 +41,7 @@ function AlertMessage() {
             ? "bg-green-500 border border-green-600"
             : "bg-red-500 border border-red-600"
         }`}
-        style={{ zIndex: 9999 }}  // Ensures alert is always on top
+        style={{ zIndex: 9999 }} // Ensures alert is always on top
       >
         {message}
       </div>

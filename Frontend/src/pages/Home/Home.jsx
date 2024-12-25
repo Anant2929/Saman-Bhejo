@@ -126,6 +126,7 @@ const Home = () => {
     >
       <div className="layout-container flex h-full grow flex-col">
         {/* Header Section */}
+
         <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#392f28] px-10 py-3">
           <div className="flex items-center gap-4 text-white animate-blink">
             <div className="w-6 h-6">
@@ -153,7 +154,7 @@ const Home = () => {
                 (item) => (
                   <Link
                     key={item}
-                    to={`/home/${item.toLowerCase()}`} // Automatically generates the correct path
+                    to={`/${item.toLowerCase()}`} // Automatically generates the correct path
                     className="text-white text-sm font-medium transition duration-300 hover:text-[#607AFB]"
                   >
                     {item}
@@ -178,7 +179,7 @@ const Home = () => {
               </div>
 
               {showSidebar && (
-                <div className="absolute top-12 right-0 w-48 bg-[#2a2d36] rounded-lg shadow-lg py-4">
+                <div className="absolute top-12 right-0 w-48 bg-[#111216] border rounded-xl shadow-lg py-4">
                   {[
                     "Edit Profile",
                     "Add Address",
@@ -194,7 +195,7 @@ const Home = () => {
                         )
                       }
                     >
-                        {item}
+                      {item}
                     </button>
                   ))}
                   {/* Use the Logout component here */}
@@ -263,15 +264,10 @@ const Home = () => {
         {/* Main Content Section */}
         <div className="px-10 md:px-40 flex flex-1 justify-center py-5">
           <div className="layout-content-container flex flex-col max-w-[960px] flex-1">
-            <h1
-              className="text-white text-[36px] font-semibold text-center py-4"
-            >
+            <h1 className="text-white text-[36px] font-semibold text-center py-4">
               Welcome {username} {otp && `, Your otp is : ${otp.otp}`}
             </h1>
-            <h2
-             
-              className="text-white text-[24px] font-semibold text-center py-5"
-            >
+            <h2 className="text-white text-[24px] font-semibold text-center py-5">
               Manage Parcel
             </h2>
             <div className="grid grid-cols-2 sm:grid-cols-2 gap-4">
@@ -302,10 +298,21 @@ const Card = ({ imageUrl, title, onClick }) => (
     onClick={onClick}
   >
     <div
-      className="w-full aspect-square bg-center bg-cover rounded-xl"
+      className="w-full aspect-square bg-center bg-cover rounded-3xl"
       style={{ backgroundImage: `url(${imageUrl})` }}
     ></div>
-    <p className="text-white text-lg font-semibold text-center">{title}</p>
-</div>
+    <p
+      style={{
+        background: "linear-gradient(90deg, #ff0080, #ff8c00, #40e0d0)",
+        WebkitBackgroundClip: "text",
+        WebkitTextFillColor: "transparent",
+        fontSize: "1.5rem",
+        fontWeight: "bold",
+      }}
+      className="text-white text-lg font-semibold text-center"
+    >
+      {title}
+    </p>
+  </div>
 );
 export default Home;
