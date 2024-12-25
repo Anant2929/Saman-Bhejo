@@ -8,7 +8,6 @@ import { useParcelRegistration } from "../../context/ParcelContext";
 import CreateParcelPic from "../../assets/images/Create parcel.png";
 import CarryParcelPic from "../../assets/images/Carrying Parcel.png";
 
-
 const Home = () => {
   const navigate = useNavigate();
   const {
@@ -143,7 +142,7 @@ const Home = () => {
                 />
               </svg>
             </div>
-            <h2 className="text-transparent bg-gradient-to-r from-[#ff6600] via-[#ff8c00] to-[#ffb84d] bg-clip-text text-lg font-bold leading-tight tracking-[-0.015em]">
+            <h2 className="text-white text-lg font-bold leading-tight tracking-[-0.015em]">
               Saman Bhejo
             </h2>
           </div>
@@ -155,7 +154,7 @@ const Home = () => {
                   <Link
                     key={item}
                     to={`/home/${item.toLowerCase()}`} // Automatically generates the correct path
-                    className="text-transparent bg-gradient-to-r from-[#ff6600] via-[#ff8c00] to-[#ffb84d] bg-clip-text text-1.5rem font-semibold transition duration-300 hover:text-[#f3f3f3]"
+                    className="text-white text-sm font-medium transition duration-300 hover:text-[#607AFB]"
                   >
                     {item}
                   </Link>
@@ -164,7 +163,7 @@ const Home = () => {
             </nav>
             <div className="relative">
               <div
-                className="w-10 h-10 rounded-full text-transparent bg-gradient-to-r from-[#ff6600] via-[#ff8c00] to-[#ffb84d] flex items-center justify-center cursor-pointer transition transform duration-300 hover:scale-110"
+                className="w-10 h-10 bg-[#607AFB] rounded-full flex items-center justify-center cursor-pointer transition transform duration-300 hover:scale-110"
                 onClick={toggleSidebar}
               >
                 <svg
@@ -179,7 +178,7 @@ const Home = () => {
               </div>
 
               {showSidebar && (
-                <div className="absolute top-12 right-0 w-48 bg-[#000000] border border-zinc-400 rounded-lg shadow-lg py-2">
+                <div className="absolute top-12 right-0 w-48 bg-[#2a2d36] rounded-lg shadow-lg py-4">
                   {[
                     "Edit Profile",
                     "Add Address",
@@ -188,16 +187,14 @@ const Home = () => {
                   ].map((item, index) => (
                     <button
                       key={index}
-                      className="block w-full text-left px-4 py-2 hover:bg-slate-900 transition duration-300 relative"
+                      className="block w-full text-left px-4 py-2 text-white hover:bg-[#3C3F4A] transition"
                       onClick={() =>
                         handleSidebarClick(
                           `/userProfile/${item.toLowerCase().replace(" ", "-")}`
                         )
                       }
                     >
-                      <span className="text-transparent bg-gradient-to-r from-[#ff6600] via-[#ff8c00] to-[#ffb84d] bg-clip-text">
                         {item}
-                      </span>
                     </button>
                   ))}
                   {/* Use the Logout component here */}
@@ -267,21 +264,12 @@ const Home = () => {
         <div className="px-10 md:px-40 flex flex-1 justify-center py-5">
           <div className="layout-content-container flex flex-col max-w-[960px] flex-1">
             <h1
-              style={{
-                background: "linear-gradient(90deg, #ff0080, #ff8c00, #40e0d0)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
               className="text-white text-[36px] font-semibold text-center py-4"
             >
               Welcome {username} {otp && `, Your otp is : ${otp.otp}`}
             </h1>
             <h2
-              style={{
-                background: "linear-gradient(90deg, #ff0080, #ff8c00, #40e0d0)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
+             
               className="text-white text-[24px] font-semibold text-center py-5"
             >
               Manage Parcel
