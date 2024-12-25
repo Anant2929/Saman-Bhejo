@@ -71,7 +71,7 @@ const DeliveryDetailsForm = () => {
             formData
           );
           console.log("Data sent successfully:", formData);
-          setTimedMessage("Form submitted successfully!" ,"success");
+          setTimedMessage("Form submitted successfully!", "success");
           const updatedFormData = { ...formData, ...response.data };
           setFormData(updatedFormData);
           setCurrentState(5);
@@ -97,179 +97,95 @@ const DeliveryDetailsForm = () => {
 
   return (
     <div
-      className="relative flex size-full min-h-screen flex-col bg-[#000000] dark group/design-root overflow-x-hidden"
+      className="relative flex size-full min-h-screen flex-col bg-[#000000] overflow-x-hidden"
       style={{ fontFamily: 'Inter, "Noto Sans", sans-serif' }}
     >
       <div className="layout-container flex h-full grow flex-col">
-        <div className="px-40 flex flex-1 justify-center py-5">
-          <div className="layout-content-container flex flex-col w-[512px] max-w-[512px] py-5 max-w-[960px] flex-1">
-            <div className="flex flex-col gap-3 p-4">
-              <div className="flex gap-6 justify-between">
-                <p className="text-[#F8F9FB] text-base font-medium leading-normal">
+        <div className="px-6 sm:px-12 lg:px-40 flex flex-1 justify-center py-10">
+          <div className="layout-content-container flex flex-col w-full max-w-[600px] bg-[#000000] shadow-xl rounded-lg p-6">
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center justify-between pb-4">
+                <p className="text-[#f3f2f1] text-sm font-semibold uppercase">
                   Step 4/4
                 </p>
               </div>
-              <div className="rounded bg-[#32415D]">
+              <div className="rounded-full bg-gray-700 overflow-hidden">
                 <div
-                  className="h-2 rounded bg-[#F4C753]"
+                  className="h-2 bg-gradient-to-r from-yellow-400 to-yellow-600"
                   style={{ width: "100%" }}
                 ></div>
               </div>
             </div>
-            <h2 className="text-[#F8F9FB] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">
+            <h2 className="text-gray-200 text-[24px] font-bold leading-snug tracking-tight pt-6 pb-4">
               Delivery Details
             </h2>
 
-            {/* From City */}
-            <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-              <label className="flex flex-col min-w-40 flex-1">
-                <p className="text-[#F8F9FB] text-base font-medium leading-normal pb-2">
-                  From City
-                </p>
+            {/* Form Fields */}
+            {[
+              {
+                label: "From City",
+                name: "fromCity",
+                placeholder: "E.g. New York",
+              },
+              {
+                label: "From State",
+                name: "fromState",
+                placeholder: "E.g. NY",
+              },
+              {
+                label: "From Zip Code",
+                name: "fromZip",
+                placeholder: "E.g. 10001",
+              },
+              {
+                label: "To City",
+                name: "toCity",
+                placeholder: "E.g. Los Angeles",
+              },
+              { label: "To State", name: "toState", placeholder: "E.g. CA" },
+              {
+                label: "To Zip Code",
+                name: "toZip",
+                placeholder: "E.g. 90001",
+              },
+              {
+                label: "Expected Delivery Date",
+                name: "expectedDeliveryDate",
+                placeholder: "",
+                type: "date",
+              },
+            ].map((field) => (
+              <div key={field.name} className="flex flex-col gap-2 mb-6">
+                <label className="text-[#D1D5DB] text-base font-medium">
+                  {field.label}
+                </label>
                 <input
-                  name="fromCity"
-                  value={localFormData.fromCity}
+                  type={field.type || "text"}
+                  name={field.name}
+                  value={localFormData[field.name]}
                   onChange={handleInputChange}
-                  placeholder="E.g. New York"
-                  className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#F8F9FB] focus:outline-0 focus:ring-0 border border-[#32415D] bg-[#1D2A36] focus:border-[#32415D] h-14 placeholder:text-[#8A9DC0] p-[15px] text-base font-normal leading-normal"
+                  placeholder={field.placeholder}
+                  className="form-input w-full rounded-lg bg-[#0F172A] border border-[#334155] focus:border-[#F4C753] text-[#F9FAFA] placeholder:text-[#6B7280] p-4 text-sm outline-none focus:ring-2 focus:ring-[#F4C753]"
                 />
-                {errors.fromCity && (
-                  <span className="text-red-500 text-sm">
-                    {errors.fromCity}
+                {errors[field.name] && (
+                  <span className="text-red-500 text-sm mt-1">
+                    {errors[field.name]}
                   </span>
                 )}
-              </label>
-            </div>
+              </div>
+            ))}
 
-            {/* From State */}
-            <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-              <label className="flex flex-col min-w-40 flex-1">
-                <p className="text-[#F8F9FB] text-base font-medium leading-normal pb-2">
-                  From State
-                </p>
-                <input
-                  name="fromState"
-                  value={localFormData.fromState}
-                  onChange={handleInputChange}
-                  placeholder="E.g. NY"
-                  className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#F8F9FB] focus:outline-0 focus:ring-0 border border-[#32415D] bg-[#1D2A36] focus:border-[#32415D] h-14 placeholder:text-[#8A9DC0] p-[15px] text-base font-normal leading-normal"
-                />
-                {errors.fromState && (
-                  <span className="text-red-500 text-sm">
-                    {errors.fromState}
-                  </span>
-                )}
-              </label>
-            </div>
-
-            {/* From Zip Code */}
-            <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-              <label className="flex flex-col min-w-40 flex-1">
-                <p className="text-[#F8F9FB] text-base font-medium leading-normal pb-2">
-                  From Zip Code
-                </p>
-                <input
-                  name="fromZip"
-                  value={localFormData.fromZip}
-                  onChange={handleInputChange}
-                  placeholder="E.g. 10001"
-                  className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#F8F9FB] focus:outline-0 focus:ring-0 border border-[#32415D] bg-[#1D2A36] focus:border-[#32415D] h-14 placeholder:text-[#8A9DC0] p-[15px] text-base font-normal leading-normal"
-                />
-                {errors.fromZip && (
-                  <span className="text-red-500 text-sm">{errors.fromZip}</span>
-                )}
-              </label>
-            </div>
-
-            {/* to City */}
-            <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-              <label className="flex flex-col min-w-40 flex-1">
-                <p className="text-[#F8F9FB] text-base font-medium leading-normal pb-2">
-                  to City
-                </p>
-                <input
-                  name="toCity"
-                  value={localFormData.toCity}
-                  onChange={handleInputChange}
-                  placeholder="E.g. New York"
-                  className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#F8F9FB] focus:outline-0 focus:ring-0 border border-[#32415D] bg-[#1D2A36] focus:border-[#32415D] h-14 placeholder:text-[#8A9DC0] p-[15px] text-base font-normal leading-normal"
-                />
-                {errors.toCity && (
-                  <span className="text-red-500 text-sm">{errors.toCity}</span>
-                )}
-              </label>
-            </div>
-
-            {/* to State */}
-            <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-              <label className="flex flex-col min-w-40 flex-1">
-                <p className="text-[#F8F9FB] text-base font-medium leading-normal pb-2">
-                  to State
-                </p>
-                <input
-                  name="toState"
-                  value={localFormData.toState}
-                  onChange={handleInputChange}
-                  placeholder="E.g. NY"
-                  className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#F8F9FB] focus:outline-0 focus:ring-0 border border-[#32415D] bg-[#1D2A36] focus:border-[#32415D] h-14 placeholder:text-[#8A9DC0] p-[15px] text-base font-normal leading-normal"
-                />
-                {errors.toState && (
-                  <span className="text-red-500 text-sm">{errors.toState}</span>
-                )}
-              </label>
-            </div>
-
-            {/* to Zip Code */}
-            <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-              <label className="flex flex-col min-w-40 flex-1">
-                <p className="text-[#F8F9FB] text-base font-medium leading-normal pb-2">
-                  to Zip Code
-                </p>
-                <input
-                  name="toZip"
-                  value={localFormData.toZip}
-                  onChange={handleInputChange}
-                  placeholder="E.g. 10001"
-                  className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#F8F9FB] focus:outline-0 focus:ring-0 border border-[#32415D] bg-[#1D2A36] focus:border-[#32415D] h-14 placeholder:text-[#8A9DC0] p-[15px] text-base font-normal leading-normal"
-                />
-                {errors.toZip && (
-                  <span className="text-red-500 text-sm">{errors.toZip}</span>
-                )}
-              </label>
-            </div>
-
-            {/* Expected Delivery Date */}
-            <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-              <label className="flex flex-col min-w-40 flex-1">
-                <p className="text-[#F8F9FB] text-base font-medium leading-normal pb-2">
-                  Expected Delivery Date
-                </p>
-                <input
-                  type="date"
-                  name="expectedDeliveryDate"
-                  value={localFormData.expectedDeliveryDate}
-                  onChange={handleInputChange}
-                  className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#F8F9FB] focus:outline-0 focus:ring-0 border border-[#32415D] bg-[#1D2A36] focus:border-[#32415D] h-14 placeholder:text-[#8A9DC0] p-[15px] text-base font-normal leading-normal"
-                />
-                {errors.expectedDeliveryDate && (
-                  <span className="text-red-500 text-sm">
-                    {errors.expectedDeliveryDate}
-                  </span>
-                )}
-              </label>
-            </div>
-
-            {/* Prev and Submit Buttons */}
-            <div className="flex gap-4 px-4 py-3">
+            {/* Buttons */}
+            <div className="flex gap-4 px-2 sm:px-4 pt-6">
               <button
                 onClick={handlePrevClick}
-                className="bg-[#32415D] text-white font-medium py-3 px-6 rounded-lg w-full"
+                className="w-full py-3 rounded-lg bg-gray-700 text-gray-300 font-medium hover:bg-gray-600 transition-all duration-300"
               >
                 Prev
               </button>
               <button
                 onClick={handleSubmitClick}
-                className="bg-[#F4C753] text-white font-medium py-3 px-6 rounded-lg w-full"
+                className="w-full py-3 rounded-lg bg-gradient-to-r from-yellow-500 to-yellow-600 text-white font-medium hover:from-yellow-600 hover:to-yellow-700 transition-all duration-300"
               >
                 Submit
               </button>

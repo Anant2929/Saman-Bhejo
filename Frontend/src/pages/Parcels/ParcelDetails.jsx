@@ -54,80 +54,79 @@ export default function ParcelForm() {
 
   return (
     <div
-      className="relative flex size-full min-h-fit flex-col bg-[#000000] dark group/design-root overflow-x-hidden"
+      className="relative flex items-center justify-center min-h-screen bg-[#000000] text-white overflow-hidden"
       style={{ fontFamily: 'Inter, "Noto Sans", sans-serif' }}
     >
-      <div className="layout-container flex flex-1 justify-center  min-h-fit grow flex-col">
-        <div className="px-40 flex flex-1 justify-center py-5">
-          <div className="layout-content-container flex flex-col w-[512px] max-w-[512px] py-5 max-w-[960px] flex-1">
-            <div className="flex flex-col gap-3 p-4">
-              <div className="flex gap-6 justify-between">
-                <p className="text-[#F8F9FB] text-base font-medium leading-normal">
-                  Step 1/4
-                </p>
-              </div>
-              <div className="rounded bg-[#505362]">
-                <div
-                  className="h-2 rounded bg-[#F4C753]"
-                  style={{ width: "25%" }}
-                ></div>
-              </div>
+      <div className="layout-container flex flex-1 justify-center items-center px-6 py-10">
+        <div className="layout-content-container flex flex-col w-full max-w-[600px] bg-[#000000] rounded-2xl shadow-lg p-8">
+          {/* Step Progress */}
+          <div className="flex flex-col gap-3 mb-6">
+            <div className="flex justify-between items-center">
+              <p className="text-[#F4C753] text-sm font-semibold uppercase">
+                Step 1/4
+              </p>
             </div>
-            <h1 className="text-[#F9FAFA] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 text-left pb-3 pt-5">
-              Parcel Details
-            </h1>
+            <div className="relative w-full h-2 bg-[#0F172A] rounded-full">
+              <div
+                className="absolute top-0 left-0 h-full bg-[#F4C753] rounded-full"
+                style={{ width: "25%" }}
+              ></div>
+            </div>
+          </div>
 
+          {/* Header */}
+          <h1 className="text-[#F9FAFA] text-[24px] font-bold leading-snug mb-8 text-center">
+            Parcel Details
+          </h1>
+
+          {/* Form */}
+          <div className="flex flex-col gap-6">
             {/* Parcel Name */}
-            <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-              <label className="flex flex-col min-w-40 flex-1">
-                <p className="text-[#F9FAFA] text-base font-medium leading-normal pb-2">
-                  Parcel Name
-                </p>
-                <input
-                  name="parcelName"
-                  value={localFormData.parcelName}
-                  onChange={handleInputChange}
-                  placeholder="E.g. Birthday Gift"
-                  className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#F9FAFA] focus:outline-0 focus:ring-0 border border-[#505362] bg-[#1D2A36] focus:border-[#505362] h-14 placeholder:text-[#D5D6DD] p-[15px] text-base font-normal leading-normal"
-                />
-                {errors.parcelName && (
-                  <span className="text-red-500 text-sm">
-                    {errors.parcelName}
-                  </span>
-                )}
-              </label>
-            </div>
+            <label className="flex flex-col gap-2">
+              <p className="text-[#D1D5DB] text-base font-medium">Parcel Name</p>
+              <input
+                name="parcelName"
+                value={localFormData.parcelName}
+                onChange={handleInputChange}
+                placeholder="E.g. Birthday Gift"
+                className="form-input w-full rounded-lg bg-[#0F172A] border border-[#334155] focus:border-[#F4C753] text-[#F9FAFA] placeholder:text-[#6B7280] p-4 text-sm outline-none focus:ring-2 focus:ring-[#F4C753]"
+              />
+              {errors.parcelName && (
+                <span className="text-red-500 text-xs">
+                  {errors.parcelName}
+                </span>
+              )}
+            </label>
 
             {/* Weight and Type */}
-            <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-              <label className="flex flex-col min-w-40 flex-1">
-                <p className="text-[#F9FAFA] text-base font-medium leading-normal pb-2">
-                  Weight
-                </p>
+            <div className="flex gap-4">
+              {/* Weight */}
+              <label className="flex-1 flex flex-col gap-2">
+                <p className="text-[#D1D5DB] text-base font-medium">Weight</p>
                 <input
                   name="parcelWeight"
                   value={localFormData.parcelWeight}
                   onChange={handleInputChange}
                   placeholder="1 lb"
-                  className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#F9FAFA] focus:outline-0 focus:ring-0 border border-[#505362] bg-[#1D2A36] focus:border-[#505362] h-14 placeholder:text-[#D5D6DD] p-[15px] text-base font-normal leading-normal"
+                  className="form-input w-full rounded-lg bg-[#0F172A] border border-[#334155] focus:border-[#F4C753] text-[#F9FAFA] placeholder:text-[#6B7280] p-4 text-sm outline-none focus:ring-2 focus:ring-[#F4C753]"
                 />
                 {errors.parcelWeight && (
-                  <span className="text-red-500 text-sm">
+                  <span className="text-red-500 text-xs">
                     {errors.parcelWeight}
                   </span>
                 )}
               </label>
-              <label className="flex flex-col min-w-40 flex-1">
-                <p className="text-[#F9FAFA] text-base font-medium leading-normal pb-2">
-                  Type
-                </p>
+
+              {/* Type */}
+              <label className="flex-1 flex flex-col gap-2">
+                <p className="text-[#D1D5DB] text-base font-medium">Type</p>
                 <select
                   name="parcelType"
                   value={localFormData.parcelType}
                   onChange={handleInputChange}
-                  className="form-select flex w-full min-w-0 flex-1 rounded-xl text-[#F9FAFA] focus:outline-0 focus:ring-0 border border-[#505362] bg-[#1D2A36] focus:border-[#505362] h-14 placeholder:text-[#D5D6DD] p-[15px] text-base font-normal leading-normal"
+                  className="form-select w-full rounded-lg bg-[#0F172A] border border-[#334155] focus:border-[#F4C753] text-[#F9FAFA] placeholder:text-[#6B7280] p-4 text-sm outline-none focus:ring-2 focus:ring-[#F4C753]"
                 >
-                  <option value="" disabled className="border rounded-lg">
+                  <option value="" disabled>
                     Select Type
                   </option>
                   <option value="Document">Document</option>
@@ -138,7 +137,7 @@ export default function ParcelForm() {
                   <option value="Others">Others</option>
                 </select>
                 {errors.parcelType && (
-                  <span className="text-red-500 text-sm">
+                  <span className="text-red-500 text-xs">
                     {errors.parcelType}
                   </span>
                 )}
@@ -146,76 +145,62 @@ export default function ParcelForm() {
             </div>
 
             {/* Description */}
-            <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-              <label className="flex flex-col min-w-40 flex-1">
-                <p className="text-[#F9FAFA] text-base font-medium leading-normal pb-2">
-                  Description
-                </p>
-                <textarea
-                  name="parcelDescription"
-                  value={localFormData.parcelDescription}
-                  onChange={handleInputChange}
-                  placeholder="E.g. A box of chocolates"
-                  className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#F9FAFA] focus:outline-0 focus:ring-0 border border-[#505362] bg-[#1D2A36] focus:border-[#505362] min-h-36 placeholder:text-[#D5D6DD] p-[15px] text-base font-normal leading-normal"
-                ></textarea>
-                {errors.parcelDescription && (
-                  <span className="text-red-500 text-sm">
-                    {errors.parcelDescription}
-                  </span>
-                )}
-              </label>
-            </div>
+            <label className="flex flex-col gap-2">
+              <p className="text-[#D1D5DB] text-base font-medium">Description</p>
+              <textarea
+                name="parcelDescription"
+                value={localFormData.parcelDescription}
+                onChange={handleInputChange}
+                placeholder="E.g. A box of chocolates"
+                className="form-input w-full rounded-lg bg-[#0F172A] border border-[#334155] focus:border-[#F4C753] text-[#F9FAFA] placeholder:text-[#6B7280] p-4 text-sm outline-none focus:ring-2 focus:ring-[#F4C753] resize-none h-24"
+              ></textarea>
+              {errors.parcelDescription && (
+                <span className="text-red-500 text-xs">
+                  {errors.parcelDescription}
+                </span>
+              )}
+            </label>
 
             {/* Photo URL */}
-            <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-              <label className="flex flex-col min-w-40 flex-1">
-                <p className="text-[#F9FAFA] text-base font-medium leading-normal pb-2">
-                  Photo URL
-                </p>
-                <input
-                  name="parcelPhotoURL"
-                  value={localFormData.parcelPhotoURL}
-                  onChange={handleInputChange}
-                  placeholder="(Optional)"
-                  className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#F9FAFA] focus:outline-0 focus:ring-0 border border-[#505362] bg-[#1D2A36] focus:border-[#505362] h-14 placeholder:text-[#D5D6DD] p-[15px] text-base font-normal leading-normal"
-                />
-                {errors.parcelPhotoURL && (
-                  <span className="text-red-500 text-sm">
-                    {errors.parcelPhotoURL}
-                  </span>
-                )}
-              </label>
-            </div>
+            <label className="flex flex-col gap-2">
+              <p className="text-[#D1D5DB] text-base font-medium">Photo URL</p>
+              <input
+                name="parcelPhotoURL"
+                value={localFormData.parcelPhotoURL}
+                onChange={handleInputChange}
+                placeholder="(Optional)"
+                className="form-input w-full rounded-lg bg-[#0F172A] border border-[#334155] focus:border-[#F4C753] text-[#F9FAFA] placeholder:text-[#6B7280] p-4 text-sm outline-none focus:ring-2 focus:ring-[#F4C753]"
+              />
+              {errors.parcelPhotoURL && (
+                <span className="text-red-500 text-xs">
+                  {errors.parcelPhotoURL}
+                </span>
+              )}
+            </label>
 
             {/* Volume */}
-            <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-              <label className="flex flex-col min-w-40 flex-1">
-                <p className="text-[#F9FAFA] text-base font-medium leading-normal pb-2">
-                  Volume
-                </p>
-                <input
-                  name="volume"
-                  value={localFormData.volume}
-                  onChange={handleInputChange}
-                  placeholder="E.g. 1ft x 1ft x 1ft"
-                  className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#F9FAFA] focus:outline-0 focus:ring-0 border border-[#505362] bg-[#1D2A36] focus:border-[#505362] h-14 placeholder:text-[#D5D6DD] p-[15px] text-base font-normal leading-normal"
-                />
-                {errors.volume && (
-                  <span className="text-red-500 text-sm">{errors.volume}</span>
-                )}
-              </label>
-            </div>
-
-            {/* Next Button */}
-            <div className="px-4 py-2">
-              <button
-                onClick={handleNextClick}
-                className="bg-[#F4C753] text-white font-medium py-3 px-6 rounded-lg w-full"
-              >
-                Next
-              </button>
-            </div>
+            <label className="flex flex-col gap-2">
+              <p className="text-[#D1D5DB] text-base font-medium">Volume</p>
+              <input
+                name="volume"
+                value={localFormData.volume}
+                onChange={handleInputChange}
+                placeholder="E.g. 1ft x 1ft x 1ft"
+                className="form-input w-full rounded-lg bg-[#0F172A] border border-[#334155] focus:border-[#F4C753] text-[#F9FAFA] placeholder:text-[#6B7280] p-4 text-sm outline-none focus:ring-2 focus:ring-[#F4C753]"
+              />
+              {errors.volume && (
+                <span className="text-red-500 text-xs">{errors.volume}</span>
+              )}
+            </label>
           </div>
+
+          {/* Next Button */}
+          <button
+            onClick={handleNextClick}
+            className="mt-8 bg-[#F4C753] text-[#1E293B] font-semibold py-3 px-6 rounded-lg w-full hover:bg-[#F4D96D] transition duration-200"
+          >
+            Next
+          </button>
         </div>
       </div>
     </div>
