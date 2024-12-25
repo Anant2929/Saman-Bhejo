@@ -92,7 +92,7 @@ export default function Login() {
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="appearance-none rounded-lg bg-[rgba(62,60,60,0.5)] text-[#E0E] p-3 pl-10 pr-10 w-full
+            className="appearance-none rounded-lg bg-[rgba(62,60,60,0.5)] text-[#fff] p-3 pl-10 pr-10 w-full
               border-2 border-transparent transition duration-300 hover:border-[#5E3CF6] focus:border-[#5E3CF6] focus:outline-none"
           />
           <img
@@ -114,7 +114,7 @@ export default function Login() {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="appearance-none rounded-lg bg-[rgba(62,60,60,0.5)] text-[#E0E0E0] p-3 pl-10 pr-10 w-full
+            className="appearance-none rounded-lg bg-[rgba(62,60,60,0.5)] text-[#ffffff] p-3 pl-10 pr-10 w-full
               border-2 border-transparent transition duration-300 hover:border-[#5E3CF6] focus:border-[#5E3CF6] focus:outline-none"
           />
           <img

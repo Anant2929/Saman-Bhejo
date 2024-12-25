@@ -302,22 +302,10 @@ const Card = ({ imageUrl, title, onClick }) => (
     onClick={onClick}
   >
     <div
-      className="w-full aspect-square bg-center bg-cover rounded-3xl"
+      className="w-full aspect-square bg-center bg-cover rounded-xl"
       style={{ backgroundImage: `url(${imageUrl})` }}
     ></div>
-    <p
-      style={{
-        background: "linear-gradient(90deg, #ff0080, #ff8c00, #40e0d0)",
-        WebkitBackgroundClip: "text",
-        WebkitTextFillColor: "transparent",
-        fontSize: "1.5rem", // Adjust font size here
-        fontWeight: "bold",
-      }}
-      className="text-center"
-    >
-      {title}
-    </p>
-  </div>
+    <p className="text-white text-lg font-semibold text-center">{title}</p>
+</div>
 );
-
 export default Home;
