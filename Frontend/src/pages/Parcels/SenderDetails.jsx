@@ -180,7 +180,7 @@ const SenderForm = () => {
               </button>
               <button
                 onClick={handleNextClick}
-                className="bg-[#F4C753] text-[#1E293B] font-semibold py-3 px-6 rounded-lg w-full hover:bg-[#F4D96D] transition duration-200"
+                className="w-full py-3 rounded-lg bg-gradient-to-r from-yellow-500 to-yellow-600 text-white font-medium hover:from-yellow-600 hover:to-yellow-700 transition-all duration-300"
               >
                 Next
               </button>
