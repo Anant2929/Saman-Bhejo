@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { useParcelRegistration } from "../../context/ParcelContext";
 import { useSocket } from "../../context/SocketContext";
+import Logout from "../Auth/Logout";
 
 const UserParcels = () => {
   const { parcels, setParcels} = useParcelRegistration(); // Use extended context
@@ -62,15 +63,16 @@ const UserParcels = () => {
     return true;
   });
 
+ 
+
   const toggleSidebar = () => {
-    setShowSidebar((prev) => !prev);
+    setShowSidebar(!showSidebar);
   };
 
   const handleSidebarClick = (path) => {
-    console.log(`Redirecting to ${path}`);
+    navigate(path);
     setShowSidebar(false);
   };
-
   const handleMoreInfo = (parcel) => {
  
     if(parcel){
@@ -80,15 +82,18 @@ const UserParcels = () => {
   } // Navigate to the details page
   };
 
-  const handleTracking = () =>{
+  const handleTracking = (parcelid) =>{
+    setParcelId(parcelid)
     navigate("/trackingStatus");
   }
 
   return (
     <div className="bg-[#000000] min-h-screen text-white">
       {/* Header */}
-      <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#392f28] px-10 py-3">
-        <div className="flex items-center gap-4 text-white">
+      <header  className = "fixed top-0 w-full h-20 flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#3C3F4A] px-10 py-3 bg-[#000000] z-50 ">
+
+{/* <header className="fixed top-0 left-0 w-full z-10 flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#392f28] px-10 py-3 overflow-y-hidden"> */} 
+        <div className="flex items-center gap-4 text-white animate-blink">
           <div className="w-6 h-6">
             <svg
               viewBox="0 0 48 48"
@@ -112,13 +117,13 @@ const UserParcels = () => {
           <nav className="flex items-center gap-9">
             {["Home", "About", "Notifications", "Pricing", "Contact"].map(
               (item) => (
-                <a
+                <Link
                   key={item}
+                  to={`/${item.toLowerCase()}`} // Automatically generates the correct path
                   className="text-white text-sm font-medium transition duration-300 hover:text-[#607AFB]"
-                  href="#"
                 >
                   {item}
-                </a>
+                </Link>
               )
             )}
           </nav>
@@ -139,20 +144,27 @@ const UserParcels = () => {
             </div>
 
             {showSidebar && (
-              <div className="absolute top-12 right-0 w-48 bg-[#2a2d36] rounded-lg shadow-lg py-4">
-                {["Edit Profile", "Add Address", "Parcels", "Payment Methods"].map(
-                  (item, index) => (
-                    <button
-                      key={index}
-                      className="block w-full text-left px-4 py-2 text-white hover:bg-[#3C3F4A] transition"
-                      onClick={() =>
-                        handleSidebarClick(`/${item.toLowerCase().replace(" ", "-")}`)
-                      }
-                    >
-                      {item}
-                    </button>
-                  )
-                )}
+              <div className="absolute top-12 right-0 w-48 bg-[#111216] border rounded-xl shadow-lg py-4">
+                {[
+                  "Edit Profile",
+                  "Add Address",
+                  "Parcels",
+                  "Payment Methods",
+                ].map((item, index) => (
+                  <button
+                    key={index}
+                    className="block w-full text-left px-4 py-2 text-white hover:bg-[#3C3F4A] transition"
+                    onClick={() =>
+                      handleSidebarClick(
+                        `/userProfile/${item.toLowerCase().replace(" ", "-")}`
+                      )
+                    }
+                  >
+                    {item}
+                  </button>
+                ))}
+                {/* Use the Logout component here */}
+                <Logout />
               </div>
             )}
           </div>
@@ -198,7 +210,7 @@ const UserParcels = () => {
                 <button className="bg-[#607AFB] px-4 py-2 rounded-lg hover:bg-[#809CFF] transition" onClick={() => handleMoreInfo(parcel)} >
                   More Info
                 </button>
-                <button className="bg-[#607AFB] px-4 py-2 rounded-lg hover:bg-[#809CFF] transition" onClick={handleTracking} >
+                <button className="bg-[#607AFB] px-4 py-2 rounded-lg hover:bg-[#809CFF] transition" onClick={()=>handleTracking(parcel._id)} >
                   Track
                 </button>
               </div>

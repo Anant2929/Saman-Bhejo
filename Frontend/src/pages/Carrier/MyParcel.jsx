@@ -29,24 +29,30 @@ const ParcelList = () => {
   
   const handleSenderOtpSubmit = () => {
     // Check if OTP is empty
+    console.log(" i am in sender otp")
+
     if (!senderOtp) {
       setError("Please enter the OTP");
       return;
     }
   
     if (socket) {
+      console.log(" i am in socket otp")
       socket.emit(
         'Parcel Picked Up',
-        { parcelId, otp: senderOtp },
+        { parcelId, otp: Number(senderOtp) },
         (err, response) => {
+
+          console.log("res",response)
+
           if (err) {
             setError(response.message || "Invalid OTP"); // If there's an error, show the error message or default to "Invalid OTP"
             setSenderVerified(false);
           } else {
-            setSenderVerified(true);
+            
             setShowSenderOtpModal(false);
             setError(""); // Clear the error message
-            setShowReceiverOtpModal(true);
+       
           }
         }
       );
@@ -56,14 +62,14 @@ const ParcelList = () => {
   
 
   const handleReceiverOtpSubmit = () => {
-    if (!senderVerified) {
-      setError('Sender OTP verification is required first.');
-      return;
-    }
+    // if (!senderVerified) {
+    //   // setError('Sender OTP verification is required first.');
+    //   return;
+    // }
     if(socket){
     socket.emit(
       'Parcel Delivered',
-      { parcelId, otp: receiverOtp }, // Replace 'parcel123' with actual parcel ID
+      { parcelId, otp:Number(receiverOtp) }, // Replace 'parcel123' with actual parcel ID
       (err, response) => {
         if (err) {
           setError(response.message);
@@ -211,19 +217,33 @@ const ParcelList = () => {
     navigate(path);
     setShowSidebar(false);
   };
-  const handleTrackingClick =(parceltrackingStatus) =>{
+  const handleTrackingClick =(parceltrackingStatus,parcelid) =>{
+
     console.log("tracking status",parceltrackingStatus)
+            setParcelId(parcelid)
+
       if(parceltrackingStatus === "Picked Up"){
         setShowReceiverOtpModal(true)
       }
+     
       else{
         setShowSenderOtpModal(true)
       }
-    // navigate("/trackingStatus");
+
+ 
   }
   const handleDecline  =() =>{
-    setShowSenderOtpModal(false)
+    if(showSenderOtpModal)
+
+ {   setShowSenderOtpModal(false)}
+
+ if(showReceiverOtpModal){
+  setShowReceiverOtpModal(false) ;
+ }
+
+
   }
+
 
   return (
     <div
@@ -402,7 +422,7 @@ const ParcelList = () => {
                         Open Details
                       </button>
                       <button className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition"
-                       onClick={() => handleTrackingClick(parcel.trackingStatus)}
+                       onClick={() => handleTrackingClick(parcel.trackingStatus,parcel._id)}
                       >
                         Tracking
                       </button>
@@ -463,35 +483,37 @@ const ParcelList = () => {
   </div>
 )}
 
+
+
  {/* Receiver OTP Modal */}
- {showReceiverOtpModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h2 className="text-white text-lg font-bold">Enter Receiver OTP</h2>
-            <input
-              type="text"
-              value={receiverOtp}
-              onChange={(e) => setReceiverOtp(e.target.value)}
-              className="otp-input"
-              maxLength={4}
-            />
-            <button
-              className="bg-green-600 text-white px-4 py-2 rounded"
-              onClick={handleReceiverOtpSubmit}
-            >
-              {error && <span>error.message</span>}
-              Confirm
-            </button>
-            <button
-              className="bg-green-600 text-white px-4 py-2 rounded"
-             
-            >
-           
-              Decline
-            </button>
-          </div>
-        </div>
-      )}
+            {showReceiverOtpModal && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="bg-[#333333] rounded-lg p-6 w-[90%] max-w-sm shadow-lg">
+      <p className="text-white text-lg font-bold mb-4 text-center">Enter Receiver OTP</p>
+      <input
+        type="text"
+        value={receiverOtp}
+        onChange={(e) => setReceiverOtp(e.target.value)}
+        className="w-full p-2 text-center border border-gray-500 rounded-lg mb-4 text-white bg-[#222222]"
+        maxLength={4}
+        placeholder="Enter 4-digit OTP"
+      />
+      <button
+        className="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-all"
+        onClick={handleReceiverOtpSubmit}
+      >
+        Confirm
+      </button>
+      <button
+        className="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition-all"
+        onClick={handleDecline}
+      >
+        Decline
+      </button>
+      {error && <span className="text-red-500 mt-2">{error}</span>} {/* Display the error message */}
+    </div>
+  </div>
+)}
 
   
         {showModal && (

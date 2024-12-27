@@ -134,7 +134,9 @@ const EditProfile = () => {
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col">
       {/* Header */}
-      <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#392f28] px-10 py-3">
+      <header  className = "fixed top-0 w-full h-20 flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#3C3F4A] px-10 py-3 bg-[#000000] z-50 ">
+
+{/* <header className="fixed top-0 left-0 w-full z-10 flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#392f28] px-10 py-3 overflow-y-hidden"> */} 
         <div className="flex items-center gap-4 text-white animate-blink">
           <div className="w-6 h-6">
             <svg
@@ -161,7 +163,7 @@ const EditProfile = () => {
               (item) => (
                 <Link
                   key={item}
-                  to={`/home/${item.toLowerCase()}`} // Automatically generates the correct path
+                  to={`/${item.toLowerCase()}`} // Automatically generates the correct path
                   className="text-white text-sm font-medium transition duration-300 hover:text-[#607AFB]"
                 >
                   {item}
@@ -186,7 +188,7 @@ const EditProfile = () => {
             </div>
 
             {showSidebar && (
-              <div className="absolute top-12 right-0 w-48 bg-[#2a2d36] rounded-lg shadow-lg py-4">
+              <div className="absolute top-12 right-0 w-48 bg-[#111216] border rounded-xl shadow-lg py-4">
                 {[
                   "Edit Profile",
                   "Add Address",

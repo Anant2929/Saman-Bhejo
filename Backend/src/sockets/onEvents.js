@@ -451,9 +451,10 @@ socket.on("carrierConfirmedParcel", async ({ parcelId, id }) => {
 });
 
 // Parcel Picked Up Event
-socket.on("Parcel Delivered", async (data, callback) => {
+socket.on("Parcel Picked Up", async (data, callback) => {
   try {
     let { parcelId, otp } = data;
+    console.log("data is",data)
     
     // Fetch the parcel details using parcel ID
     const parcel = await ParcelSchema.findById(parcelId);
@@ -464,19 +465,19 @@ socket.on("Parcel Delivered", async (data, callback) => {
 
     // Fetch sender details using sender ID from the parcel
     const sender = await User.findById(senderDetails);
-    if (!receiver) {
+    if (!sender) {
       return callback("Error", { message: "Sender not found" });
     }
 
     // Verify the OTP provided
     if (sender.otp === otp) {
       // Update the parcel status to "Picked Up"
-      parcel.status = "Picked Up";
+      parcel.trackingStatus = "Picked Up";
       await parcel.save();
 
       // Create notification for the receiver
       const senderNotification = new Notification({
-        parcelId: parcelId,
+        parcelId: parcel._id,
         senderId: parcel.carrierDetails,
         receiverId: parcel.senderDetails,
         status: "pending",
@@ -486,7 +487,7 @@ socket.on("Parcel Delivered", async (data, callback) => {
       });
       await senderNotification.save();
       const receiverNotification = new Notification({
-        parcelId: parcelId,
+        parcelId: parcel._id,
         senderId: parcel.carrierDetails,
         receiverId: parcel.receiverDetails,
         status: "pending",
@@ -526,14 +527,17 @@ socket.on("Parcel Delivered", async (data, callback) => {
    delete otpMessages[sender] ;
       // Return success via callback
       callback(null, {success: true, message: "Parcel status updated successfully to 'Parcel Picked up'" });
+      console.log("rParcel status updated successfully to 'Parcel Picked up",)
 
     } else {
       // Emit error for invalid OTP and return via callback
       callback("Error", { message: "Invalid OTP" });
+      console.log("error in inavlid")
     }
   } catch (error) {
     console.error("Error updating parcel status:", error);
     callback("Error", { message: "An error occurred while updating the parcel status" });
+    console.log("error",error)
   }
 });
 
@@ -558,7 +562,7 @@ socket.on("Parcel Delivered", async (data, callback) => {
     // Verify the OTP provided
     if (receiver.otp === otp) {
       // Update the parcel status to "Picked Up"
-      parcel.status = "Delivered ";
+      parcel.trackingStatus = "Delivered";
       await parcel.save();
 
       // Create notification for the receiver
@@ -584,8 +588,8 @@ socket.on("Parcel Delivered", async (data, callback) => {
       await receiverNotification.save();
 
       // Notify the sender about the status update
-      if (user[sender._id]) {
-        io.to(user[sender._id]).emit("receiverUpdateParcelStatus", {
+      if (user[parcel.senderDetails]) {
+        io.to(user[parcel.senderDetails]).emit("receiverUpdateParcelStatus", {
           notification :senderNotification
         });
       }
