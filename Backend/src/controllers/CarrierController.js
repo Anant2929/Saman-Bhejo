@@ -41,6 +41,7 @@ const CarrierRegister = async (req, res) => {
     // Extract required fields from the request body
     const userId = req.user.id;
     const {
+      carrierName,
       carrierContactNumber,
       carrierCity,
       carrierState,
@@ -61,6 +62,7 @@ const CarrierRegister = async (req, res) => {
 
     // Validate required fields
     if (
+      !carrierName ||
       !carrierContactNumber ||
       !carrierCity ||
       !carrierState ||
@@ -94,6 +96,9 @@ const CarrierRegister = async (req, res) => {
       carriertravelToCity,
       carrierToCityPostalCode,
       carrierTicketPhoto,
+      carrierName,
+      carrierContactNumber
+
     });
 
     // Save the carrier to the database

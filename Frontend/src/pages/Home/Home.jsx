@@ -65,7 +65,7 @@ const Home = () => {
         { id, notificationType },
         (response) => {
           setFetching(false);
-          navigate("/home/notifications");
+          navigate("/notifications");
         }
       );
     }
@@ -78,7 +78,7 @@ const Home = () => {
         "deletePendingMessage",
         { id, notificationType },
         (response) => {
-          navigate("/home/notifications");
+          navigate("/notifications");
         }
       );
     }

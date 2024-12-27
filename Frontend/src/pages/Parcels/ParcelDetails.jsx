@@ -62,13 +62,13 @@ export default function ParcelForm() {
           {/* Step Progress */}
           <div className="flex flex-col gap-3 mb-6">
             <div className="flex justify-between items-center">
-              <p className="text-[#F4C753] text-sm font-semibold uppercase">
+              <p className="text-[#F4C753] text-sm font-semibold">
                 Step 1/4
               </p>
             </div>
             <div className="relative w-full h-2 bg-[#0F172A] rounded-full">
               <div
-                className="absolute top-0 left-0 h-full bg-[#F4C753] rounded-full"
+                className="absolute top-0 left-0 h-full bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full"
                 style={{ width: "25%" }}
               ></div>
             </div>
@@ -102,12 +102,12 @@ export default function ParcelForm() {
             <div className="flex gap-4">
               {/* Weight */}
               <label className="flex-1 flex flex-col gap-2">
-                <p className="text-[#D1D5DB] text-base font-medium">Weight</p>
+                <p className="text-[#D1D5DB] text-base font-medium">Weight (kg)</p>
                 <input
                   name="parcelWeight"
                   value={localFormData.parcelWeight}
                   onChange={handleInputChange}
-                  placeholder="1 lb"
+                  placeholder="1 kg"
                   className="form-input w-full rounded-lg bg-[#0F172A] border border-[#334155] focus:border-[#F4C753] text-[#F9FAFA] placeholder:text-[#6B7280] p-4 text-sm outline-none focus:ring-2 focus:ring-[#F4C753]"
                 />
                 {errors.parcelWeight && (

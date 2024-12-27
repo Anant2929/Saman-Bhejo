@@ -73,11 +73,11 @@ const ReceiverAddress = () => {
             {/* Step Progress */}
             <div className="flex flex-col gap-3 mb-6">
               <div className="flex justify-between items-center">
-                <p className="text-[#F4C753] text-sm font-semibold uppercase">Step 3/4</p>
+                <p className="text-[#F4C753] text-sm font-semibold ">Step 3/4</p>
               </div>
               <div className="relative w-full h-2 bg-[#334155] rounded-full">
                 <div
-                  className="absolute top-0 left-0 h-full bg-[#F4C753] rounded-full"
+                  className="absolute top-0 left-0 h-full bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full"
                   style={{ width: "75%" }}
                 ></div>
               </div>

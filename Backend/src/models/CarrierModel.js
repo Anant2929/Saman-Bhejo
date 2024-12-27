@@ -7,6 +7,8 @@ const carrierSchema = new mongoose.Schema({
         ref: 'User', // Reference to User schema
         required: true
     },
+    carrierName:{type:String , required:true},
+    carrierContactNumber:{type:Number , required:true},
     carrierCity:{
         type: String,
         required : true,

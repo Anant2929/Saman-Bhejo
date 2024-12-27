@@ -68,90 +68,93 @@ function SubmissionSummary() {
   
 
   return (
-    <div className="max-w-4xl mx-auto p-8 bg-[#000000]  text-white rounded-lg shadow-xl">
-      <h2 className="text-center text-3xl font-bold mb-2">
+    <div className="max-w-3xl mx-auto p-8 bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white rounded-lg shadow-2xl mt-8">
+      <h2 className="text-center text-4xl font-extrabold mb-4 text-blue-500">
         Form Submission Summary
       </h2>
-      <p className="text-center text-gray-400 mb-6">
+      <p className="text-center text-gray-400 mb-8 italic">
         Please review the information before proceeding
       </p>
-
+  
       {/* Sender's Details */}
-      <div className="bg-gray-800 p-6 rounded-lg mb-6 flex justify-between items-center">
+      <div className="bg-gray-800 hover:bg-gray-700 transition duration-200 p-6 rounded-lg mb-6 flex justify-between items-center shadow-lg">
         <div>
-          <h3 className="text-lg font-semibold">Sender's Details</h3>
-          <p className="text-gray-300">Name: {formData.senderName}...</p>
+          <h3 className="text-xl font-semibold text-gray-200">Sender's Details</h3>
+          <p className="text-gray-300 mt-2">Name: {formData.senderName}...</p>
         </div>
         <button
           onClick={() => handleEditClick(2)}
-          className="text-blue-400 hover:text-blue-300 underline font-medium"
+          className="text-gray-200 underline font-medium transition duration-300 hover:text-[#607AFB]"
         >
           Edit
         </button>
       </div>
-
+  
       {/* Receiver's Details */}
-      <div className="bg-gray-800 p-6 rounded-lg mb-6 flex justify-between items-center">
+      <div className="bg-gray-800 hover:bg-gray-700 transition duration-200 p-6 rounded-lg mb-6 flex justify-between items-center shadow-lg">
         <div>
-          <h3 className="text-lg font-semibold">Receiver's Details</h3>
-          <p className="text-gray-300">Name: {formData.ReciverName}...</p>
+          <h3 className="text-xl font-semibold text-gray-200">Receiver's Details</h3>
+          <p className="text-gray-300 mt-2">Name: {formData.ReciverName}...</p>
         </div>
         <button
           onClick={() => handleEditClick(3)}
-          className="text-blue-400 hover:text-blue-300 underline font-medium"
+          className="underline font-medium transition duration-300 hover:text-[#607AFB]"
         >
           Edit
         </button>
       </div>
-
+  
       {/* Parcel Details */}
-      <div className="bg-gray-800 p-6 rounded-lg mb-6 flex justify-between items-center">
+      <div className="bg-gray-800 hover:bg-gray-700 transition duration-200 p-6 rounded-lg mb-6 flex justify-between items-center shadow-lg">
         <div>
-          <h3 className="text-lg font-semibold">Parcel Details</h3>
-          <p className="text-gray-300">Parcel Type: {formData.parcelType}</p>
+          <h3 className="text-xl font-semibold text-gray-200">Parcel Details</h3>
+          <p className="text-gray-300 mt-2">Parcel Type: {formData.parcelType}</p>
           <p className="text-gray-300">Weight: {formData.parcelWeight}kg</p>
         </div>
         <button
           onClick={() => handleEditClick(1)}
-          className="text-blue-400 hover:text-blue-300 underline font-medium"
+          className="text-gray-200 underline font-medium transition duration-300 hover:text-[#607AFB]"
         >
           Edit
         </button>
       </div>
-
+  
       {/* Total Price */}
-      <div className="bg-gray-800 p-6 rounded-lg mb-6">
-        <h3 className="text-lg font-semibold mb-2">Total Price</h3>
+      <div className="bg-gray-800 hover:bg-gray-700 transition duration-200 p-6 rounded-lg mb-6 shadow-lg">
+        <h3 className="text-xl font-semibold mb-4">Total Price</h3>
         <div className="flex justify-between items-center">
           <div className="text-gray-300">
             <p>Last Delivery Date: {formData.expectedDeliveryDate}</p>
             <p>Distance: {formData.distance} KM</p>
           </div>
           <div className="text-right">
-            <p className="text-4xl font-bold text-green-400">
+            <p className="text-5xl font-extrabold text-green-400">
               ₹{formData.estimatedPrice}
             </p>
           </div>
         </div>
       </div>
-
+  
       {/* Action Buttons */}
-      <div className="flex justify-between mt-8">
+      <div className="flex justify-between mt-10">
         <button
-          onClick={() => {navigate("/home") , setCurrentState(1)}}
-          className="bg-red-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-red-700 transition duration-200"
+          onClick={() => {
+            navigate("/home"), setCurrentState(1);
+          }}
+          className="bg-red-600 text-white py-3 px-8 rounded-lg font-bold hover:bg-red-700 transition-transform transform hover:scale-105 duration-200"
         >
           Decline
         </button>
         <button
           onClick={handleConfirmClick}
-          className="bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition duration-200"
+          className="bg-blue-600 text-white py-3 px-8 rounded-lg font-bold hover:bg-blue-700 transition-transform transform hover:scale-105 duration-200"
         >
           Confirm
         </button>
       </div>
     </div>
   );
+  
 }
 
 export default SubmissionSummary;

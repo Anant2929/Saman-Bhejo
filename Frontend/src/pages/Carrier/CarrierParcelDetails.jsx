@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useParcelRegistration } from "../../context/ParcelContext";
 import axios from "axios";
 import  {useSocket} from "../../context/SocketContext"
+import dayjs from "dayjs";
+
+import Logout from "../Auth/Logout";
 export default function ParcelInfoDisplay() {
- 
+
   const navigate = useNavigate();
   const { parcelId ,socketId,id , socket} = useSocket();
 
@@ -42,6 +45,8 @@ export default function ParcelInfoDisplay() {
   };
 
   const [fields, setFields] = useState(initialFields);
+  const { currentState } = useParcelRegistration();
+  const [showSidebar, setShowSidebar] = useState(false)
   
  
   useEffect(() => {
@@ -59,7 +64,7 @@ export default function ParcelInfoDisplay() {
         const { data } = await axios.get(`/api/parcel/parcelsInfo/Specific/${parcelId}`);
 
         if (data.success) {
-          console.log(" i am in data sucuces baby")
+          
           const { sender, receiver ,parcel } = data;
 
 
@@ -118,11 +123,27 @@ export default function ParcelInfoDisplay() {
   }, [parcelId]);
 
 
+
+  const toggleSidebar = () => {
+    setShowSidebar(!showSidebar);
+  };
+
+  const handleSidebarClick = (path) => {
+    navigate(path);
+    setShowSidebar(false);
+  };
+
+
   const handleConfirmation = ()=>{
+    console.log(" ia m in console")
+    if(socket){
     socket.emit("carrierConfirmedParcel", { parcelId, id }, (response) => {
-      // Handle the response from the server here
-      console.log(response);
-  });
+      if (response.success) {
+        console.log(`Parcel  successful:`, response);
+      } else {
+        console.error(`Parcel ${action.toLowerCase()} failed:`, response.error);
+      }
+  });}
   navigate("/home/carrierDetails/parcelList")
   }
 
@@ -138,10 +159,16 @@ export default function ParcelInfoDisplay() {
       style={{ fontFamily: '"Poppins", sans-serif' }}
     >
       {/* Header */}
-      <header className="fixed top-0 w-full h-20 flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#3C3F4A] px-10 py-3 bg-[#000000] z-50">
+      <header  className = "fixed top-0 w-full h-20 flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#3C3F4A] px-10 py-3 bg-[#000000] z-50 ">
+
+{/* <header className="fixed top-0 left-0 w-full z-10 flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#392f28] px-10 py-3 overflow-y-hidden"> */} 
         <div className="flex items-center gap-4 text-white animate-blink">
           <div className="w-6 h-6">
-            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg
+              viewBox="0 0 48 48"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
               <path
                 fillRule="evenodd"
                 clipRule="evenodd"
@@ -154,21 +181,67 @@ export default function ParcelInfoDisplay() {
             Saman Bhejo
           </h2>
         </div>
-        <nav className="flex items-center gap-9">
-          {["Home", "About", "Notifications", "Pricing", "Contact"].map((item) => (
-            <a
-              key={item}
-              className="text-white text-sm font-medium transition duration-300 hover:text-[#607AFB]"
-              href="/home"
+
+        <div className="flex flex-1 justify-end gap-8">
+          <nav className="flex items-center gap-9">
+            {["Home", "About", "Notifications", "Pricing", "Contact"].map(
+              (item) => (
+                <Link
+                  key={item}
+                  to={`/${item.toLowerCase()}`} // Automatically generates the correct path
+                  className="text-white text-sm font-medium transition duration-300 hover:text-[#607AFB]"
+                >
+                  {item}
+                </Link>
+              )
+            )}
+          </nav>
+          <div className="relative">
+            <div
+              className="w-10 h-10 bg-[#607AFB] rounded-full flex items-center justify-center cursor-pointer transition transform duration-300 hover:scale-110"
+              onClick={toggleSidebar}
             >
-              {item}
-            </a>
-          ))}
-        </nav>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                fill="white"
+                viewBox="0 0 256 256"
+              >
+                <path d="M128,120a40,40,0,1,0-40-40A40,40,0,0,0,128,120Zm0,16c-28.72,0-84,14.44-84,43.2,0,12.85,10.26,23.2,23.08,23.2H188.92c12.82,0,23.08-10.35,23.08-23.2C212,150.44,156.72,136,128,136Z"></path>
+              </svg>
+            </div>
+
+            {showSidebar && (
+              <div className="absolute top-12 right-0 w-48 bg-[#111216] border rounded-xl shadow-lg py-4">
+                {[
+                  "Edit Profile",
+                  "Add Address",
+                  "Parcels",
+                  "Payment Methods",
+                ].map((item, index) => (
+                  <button
+                    key={index}
+                    className="block w-full text-left px-4 py-2 text-white hover:bg-[#3C3F4A] transition"
+                    onClick={() =>
+                      handleSidebarClick(
+                        `/userProfile/${item.toLowerCase().replace(" ", "-")}`
+                      )
+                    }
+                  >
+                    {item}
+                  </button>
+                ))}
+                {/* Use the Logout component here */}
+                <Logout />
+              </div>
+            )}
+          </div>
+        </div>
       </header>
 
            {/* Main Content */}
-           <div className="flex flex-col items-center py-5">
+           <div className="flex flex-col items-center py-5 bg-gradient-to-br from-gray-900 via-black to-gray-900 mt-20">
         <div
           className="w-full max-w-[480px] bg-center bg-cover bg-no-repeat rounded-xl h-40 overflow-hidden"
           style={{
@@ -191,8 +264,16 @@ export default function ParcelInfoDisplay() {
                   .replace(/^./, (str) => str.toUpperCase())}
                 :
               </span>
-              <span className="text-[#93adc8] text-base font-normal">
-                {value || "N/A"}
+              <span
+                className={`${
+                  key === "distance" || key === "deliveryCharges" || key === "paymentStatus"
+                    ? "text-green-500 font-extrabold"
+                    : "text-[#93adc8]"
+                } text-base`}
+              >
+             {key === "expectedDeliveryDate" && fields[key]
+                  ? dayjs(fields[key]).format("MMMM D, YYYY")
+                  : fields[key] || "N/A"}
               </span>
             </div>
           ))}

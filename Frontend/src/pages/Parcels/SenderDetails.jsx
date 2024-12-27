@@ -129,11 +129,11 @@ const SenderForm = () => {
             {/* Step Progress */}
             <div className="flex flex-col gap-3 mb-6">
               <div className="flex justify-between items-center">
-                <p className="text-[#F4C753] text-sm font-semibold uppercase">Step 2/4</p>
+                <p className="text-[#F4C753] text-sm font-semibold ">Step 2/4</p>
               </div>
               <div className="relative w-full h-2 bg-[#334155] rounded-full">
                 <div
-                  className="absolute top-0 left-0 h-full bg-[#F4C753] rounded-full"
+                  className="absolute top-0 left-0 h-full bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full"
                   style={{ width: "50%" }}
                 ></div>
               </div>
@@ -180,7 +180,8 @@ const SenderForm = () => {
               </button>
               <button
                 onClick={handleNextClick}
-                className="w-full py-3 rounded-lg bg-gradient-to-r from-yellow-500 to-yellow-600 text-white font-medium hover:from-yellow-600 hover:to-yellow-700 transition-all duration-300"
+                 className="w-full py-3 rounded-lg bg-gradient-to-r from-yellow-500 to-yellow-600 text-white font-medium hover:from-yellow-600 hover:to-yellow-700 transition-all duration-300"
+               
               >
                 Next
               </button>

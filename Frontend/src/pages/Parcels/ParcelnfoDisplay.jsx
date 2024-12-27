@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useParcelRegistration } from "../../context/ParcelContext";
 import axios from "axios";
-import  {useSocket} from "../../context/SocketContext"
-export default function ParcelInfoDisplay() {
- 
-  const navigate = useNavigate();
-  const { parcelId ,socketId} = useSocket();
+import { useSocket } from "../../context/SocketContext";
+import dayjs from "dayjs";
 
-  // Define only the required fields
+export default function ParcelInfoDisplay() {
+  const navigate = useNavigate();
+  const { parcelId, socketId } = useSocket();
+
   const initialFields = {
     senderName: "",
     senderContactNumber: "",
@@ -37,38 +37,23 @@ export default function ParcelInfoDisplay() {
     distance: "",
     expectedDeliveryDate: "",
     deliveryCharges: "",
- 
-
+    paymentStatus: "", // Added paymentStatus field here
+    carrier: null, // For carrier data
   };
 
   const [fields, setFields] = useState(initialFields);
-  
- 
+
   useEffect(() => {
-    console.log(" i am in console baby")
     const fetchParcelDetails = async () => {
-
-      console.log(" i am in fetchParcelDeatails baby")
       try {
-
         if (!parcelId) {
           console.log("No parcel ID available.");
           return;
         }
-          else{
         const { data } = await axios.get(`/api/parcel/parcelsInfo/Specific/${parcelId}`);
 
         if (data.success) {
-          console.log(" i am in data sucuces baby")
-          const { sender, receiver ,parcel } = data;
-          if(data.carrier){
-            
-          }
-
-
-         
-          console.log("sender,data,rceiver",parcel,sender,receiver)
-          // Construct fields object with only the required keys
+          const { sender, receiver, parcel, carrier } = data;
           const updatedFields = {
             ...initialFields, // Start with blank values
             senderName: sender?.senderName || "",
@@ -77,52 +62,42 @@ export default function ParcelInfoDisplay() {
             senderCity: sender?.senderCity || "",
             senderState: sender?.senderState || "",
             senderPostalCode: sender?.senderPostalCode || "",
-            ...(receiver && { // Add receiver details only if receiver exists
-              receiverName: receiver.receiverName || "",
-              receiverContactNumber: receiver.receiverContactNumber || "",
-              receiverAddress: receiver.receiverAddress || "",
-              receiverCity: receiver.receiverCity || "",
-              receiverState: receiver.receiverState || "",
-              receiverPostalCode: receiver.receiverPostalCode || "",
-            }),
-            ...(parcel && {
-              parcelName: parcel?.parcelName || "",
-              parcelWeight: parcel?.parcelWeight || "",
-              parcelType: parcel?.parcelType || "",
-              volume: parcel?.volume || "",
-              parcelDescription: parcel?.parcelDescription || "",
-              parcelPhotoUrl: parcel?.parcelPhotoUrl || "",
-              distance: parcel?.distance || "",
-              expectedDeliveryDate: parcel?.expectedDeliveryDate || "",
-              deliveryCharges: parcel?.deliveryCharges || "",
-              paymentStatus: parcel?.paymentStatus || "",
-              fromCity: parcel?.fromCity ||"",
-              fromState: parcel?.fromState ||"",
-              fromPincode:parcel?.fromPincode || "",
-              toCity:parcel?.toCity || "",
-              toState: parcel?.toState||"",
-              toPincode: parcel?.toPincode ||"",
-            }
-
-            )
-           
-             // Add only relevant fields from selectedParcel
+            receiverName: receiver?.receiverName || "",
+            receiverContactNumber: receiver?.receiverContactNumber || "",
+            receiverAddress: receiver?.receiverAddress || "",
+            receiverCity: receiver?.receiverCity || "",
+            receiverState: receiver?.receiverState || "",
+            receiverPostalCode: receiver?.receiverPostalCode || "",
+            parcelName: parcel?.parcelName || "",
+            parcelWeight: parcel?.parcelWeight || "",
+            parcelType: parcel?.parcelType || "",
+            volume: parcel?.volume || "",
+            parcelDescription: parcel?.parcelDescription || "",
+            parcelPhotoUrl: parcel?.parcelPhotoUrl || "",
+            distance: parcel?.distance || "",
+            expectedDeliveryDate: parcel?.expectedDeliveryDate || "",
+            deliveryCharges: parcel?.deliveryCharges || "",
+            paymentStatus: parcel?.paymentStatus || "", // Add paymentStatus field if available
+            fromCity: parcel?.fromCity || "",
+            fromState: parcel?.fromState || "",
+            fromPincode: parcel?.fromPincode || "",
+            toCity: parcel?.toCity || "",
+            toState: parcel?.toState || "",
+            toPincode: parcel?.toPincode || "",
+            carrier: carrier || null, // Add carrier info if available
           };
-
           setFields(updatedFields);
-        
-        }}
+        }
       } catch (error) {
         console.error("Error fetching parcel details:", error);
       }
     };
-    console.log(" i am in fendings baby")
+
     fetchParcelDetails();
   }, [parcelId]);
 
   // Check if data is loading
   if (!fields.senderName && !fields.receiverName) {
-
     return <div className="text-black">Loading parcel details...</div>;
   }
 
@@ -162,7 +137,7 @@ export default function ParcelInfoDisplay() {
       </header>
 
       {/* Main Content */}
-      <div className="flex flex-col items-center py-5">
+      <div className="flex flex-col items-center py-5 bg-gradient-to-br from-gray-900 via-black to-gray-900 mt-20">
         <div
           className="w-full max-w-[480px] bg-center bg-cover bg-no-repeat rounded-xl h-40 overflow-hidden"
           style={{
@@ -177,7 +152,33 @@ export default function ParcelInfoDisplay() {
           Review the parcel details below.
         </p>
         <div className="w-full max-w-[480px] px-4">
-          {Object.entries(fields).map(([key, value]) => (
+          {/* Sender Details */}
+          <h3 className="text-white text-lg font-bold pt-4">Sender Details</h3>
+          {["senderName", "senderContactNumber", "senderAddress", "senderCity", "senderState", "senderPostalCode"].map((key) => (
+            <div key={key} className="py-2 flex justify-between items-center">
+              <span className="text-white text-base font-medium capitalize">
+                {key
+                  .replace(/([A-Z])/g, " $1")
+                  .replace(/^./, (str) => str.toUpperCase())}
+                :
+              </span>
+              <span
+                className={`${
+                  key === "distance" || key === "deliveryCharges" || key === "paymentStatus"
+                    ? "text-green-500 font-extrabold"
+                    : "text-[#93adc8]"
+                } text-base`}
+              >
+                {key === "expectedDeliveryDate" && fields[key]
+                  ? dayjs(fields[key]).format("MMMM D, YYYY")
+                  : fields[key] || "N/A"}
+              </span>
+            </div>
+          ))}
+          
+          {/* Receiver Details */}
+          <h3 className="text-white text-lg font-bold pt-4">Receiver Details</h3>
+          {["receiverName", "receiverContactNumber", "receiverAddress", "receiverCity", "receiverState", "receiverPostalCode"].map((key) => (
             <div key={key} className="py-2 flex justify-between items-center">
               <span className="text-white text-base font-medium capitalize">
                 {key
@@ -186,10 +187,54 @@ export default function ParcelInfoDisplay() {
                 :
               </span>
               <span className="text-[#93adc8] text-base font-normal">
-                {value || "N/A"}
+                {fields[key] || "N/A"}
               </span>
             </div>
           ))}
+
+          {/* Parcel Details */}
+          <h3 className="text-white text-lg font-bold pt-4">Parcel Details</h3>
+          {["parcelName", "parcelWeight", "parcelType", "volume", "parcelDescription", "distance", "expectedDeliveryDate", "deliveryCharges"].map((key) => (
+            <div key={key} className="py-2 flex justify-between items-center">
+              <span className="text-white text-base font-medium capitalize">
+                {key
+                  .replace(/([A-Z])/g, " $1")
+                  .replace(/^./, (str) => str.toUpperCase())}
+                :
+              </span>
+              <span
+                className={`${
+                  key === "deliveryCharges" || key === "paymentStatus" || key === "expectedDeliveryDate"|| key === "distance"
+                    ? "text-green-500 font-extrabold"
+                    : "text-[#93adc8]"
+                } text-base`}
+              >
+                {key === "expectedDeliveryDate" && fields[key]
+                  ? dayjs(fields[key]).format("MMMM D, YYYY")
+                  : fields[key] || "N/A"}
+              </span>
+            </div>
+          ))}
+          
+          {/* Carrier Details - Only if carrier exists */}
+          {fields.carrier && (
+            <>
+              <h3 className="text-white text-lg font-bold pt-4">Carrier Details</h3>
+              {["carrierName", "carrierContactNumber", "carrierCity", "carrierState", "carrierZipCode", "carrierTravelMode", "carrierVehicleModel", "carrierLicensePlate", "carriertravelDate", "carrierFromCity", "carrierToCity"].map((key) => (
+                <div key={key} className="py-2 flex justify-between items-center">
+                  <span className="text-white text-base font-medium capitalize">
+                    {key
+                      .replace(/([A-Z])/g, " $1")
+                      .replace(/^./, (str) => str.toUpperCase())}
+                    :
+                  </span>
+                  <span className="text-[#93adc8] text-base font-normal">
+                    {fields.carrier[key] || "N/A"}
+                  </span>
+                </div>
+              ))}
+            </>
+          )}
         </div>
       </div>
     </div>

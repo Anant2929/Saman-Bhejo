@@ -132,9 +132,9 @@ const findSenderReceiver = async (
   const receiver = await User.findOne({ contactNumber: RecivercontactNumber });
   if (!receiver) throw new Error("Receiver not found.");
 
-    if(receiver === sender){
-      throw new Error("Sender and receiver name and contact number should be different.")
-    }
+    // if(receiver === sender){
+    //   throw new Error("Sender and receiver name and contact number should be different.")
+    // }
   return { sender, receiver } 
 };
 
@@ -172,8 +172,8 @@ const get_price_distance = async (req, res) => {
     const { estimatedPrice, distance } = await calculatePriceAndDistance(
       parcelData.parcelWeight,
       parcelData.parcelType,
-      parcelData.senderCity,
-      parcelData.ReciverCity
+      parcelData.fromCity,
+      parcelData.toCity
     );
     // const estimatedPrice = 600;
     // const distance = 6;
@@ -199,8 +199,8 @@ const registerParcel = async (req, res) => {
     const { estimatedPrice, distance } = await calculatePriceAndDistance(
       parcelData.parcelWeight,
       parcelData.parcelType,
-      parcelData.senderCity,
-      parcelData.ReciverCity
+      parcelData.fromCity,
+      parcelData.toCity
     );
 
     const parcelPhotoUrl = req.file

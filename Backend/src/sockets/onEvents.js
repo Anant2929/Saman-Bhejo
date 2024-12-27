@@ -159,19 +159,10 @@ const setupOnEvents = () => {
           { new: true } // Return the updated document
         );
     
-        const notificationDocument = await Notification.findById(notificationId);
-        console.log("Notification document found:", notificationDocument);
+        await Notification.findByIdAndDelete(notificationId);
+        console.log("Notification deleted:", notificationId);
     
-        if (notificationDocument) {
-          const updateHandlingStatus = await Notification.findOneAndUpdate(
-            { _id: notificationId },
-            { handlingStatus: true },
-            { new: true }
-          );
-          console.log("Updated Handling Status:", updateHandlingStatus);
-        } else {
-          console.log("No document found with notificationId:", notificationId);
-        }
+        
     
         let sender = updatedParcel.receiverDetails;
         let receiver = updatedParcel.senderDetails;
@@ -182,7 +173,7 @@ const setupOnEvents = () => {
           status: "pending",
           notificationType: "response",
           handlingStatus: true,
-          message : "Receiver Confirmed the parcel"
+          message : `${trackingStatus} the parcel`
         });
         await responseNotification.save();
     
@@ -281,15 +272,30 @@ const setupOnEvents = () => {
 
 
     socket.on("changeNotificationStatus", async (data, callback) => {
-     let { notificationId } = data;
-      console.log("notification id",notificationId)
+      let { notificationId } = data;
+      console.log("notification id", notificationId);
     
       try {
-        // Update the notification status in the database
-
-        console.log("notification id",notificationId)
+        // Find the notification first
+        const notification = await Notification.findById(notificationId);
+    
+        if (!notification) {
+          console.error("Notification not found.");
+          return callback({ success: false, error: "Notification not found !!!." });
+        }
+    
+        // Check if notificationType is "response" and delete if true
+        // if (notification.notificationType === "response") {
+        //   // Delete the notification if it's a response type
+        //   await Notification.findByIdAndDelete(notificationId);
+        //   console.log("Notification deleted:", notificationId);
+    
+        //   return callback({ success: true, message: "Notification deleted" });
+        // }
+    
+        // Otherwise, just update the status to "read"
         const updatedNotification = await Notification.findOneAndUpdate(
-          { _id : notificationId }, // Match notification by its ID
+          { _id: notificationId }, // Match notification by its ID
           { status: "read" }, // Update status to "read"
           { new: true } // Return the updated document
         );
@@ -310,6 +316,7 @@ const setupOnEvents = () => {
         callback({ success: false, error: "Failed to update notification status." });
       }
     });
+    
 
 
     const normalizeDate = (date) => {
@@ -337,16 +344,17 @@ socket.on("carrierConfirmedParcel", async ({ parcelId, id }) => {
     console.log("Parcel updated successfully with carrier ID:", id);
 
     // Find the carrier and update their parcel details
-    let {fromCity , toCity , expectedDeliveryDate} = parcel ;
-        const normalizedate = normalizeDate(expectedDeliveryDate);
+   
+     const normalizedate = normalizeDate(parcel.expectedDeliveryDate);
 
     const carrier = await CarrierSchema.findOne({
-      _id : id,
-      carriertravelFromCity:fromCity,
-      carriertravelToCity: toCity,
-      carriertravelDate : {$lte :normalizedate },
+      carrier: id,
+       carriertravelFromCity:parcel.fromCity,
+       carriertravelToCity: parcel.toCity,
+        carriertravelDate : {$lte :normalizedate },
       
     });
+    console.log("carrier ",carrier)
     if (!carrier) {
       console.log("Carrier not found");
       return;
@@ -356,7 +364,6 @@ socket.on("carrierConfirmedParcel", async ({ parcelId, id }) => {
     await carrier.save();
     console.log("carrier is,",carrier)
     console.log(" parcl is", parcel)
-
 
 
     // Fetch sender and receiver OTPs
@@ -370,7 +377,7 @@ socket.on("carrierConfirmedParcel", async ({ parcelId, id }) => {
       senderId: id,
       receiverId: parcel.senderDetails,
       status: "pending",
-      notificationType: "carrier response",
+      notificationType: "response",
       message : "A carrier has accepted the parcel being sent to you",
       handlingStatus: true,
     });
@@ -386,14 +393,18 @@ socket.on("carrierConfirmedParcel", async ({ parcelId, id }) => {
       io.to(user[parcel.senderDetails]).emit("receiverUpdateParcelStatus", {
         notification: responseNotification,
       });
+      otpMessages[parcel.senderDetails] = []
+      otpMessages[parcel.senderDetails].push({otp : senderOtp });
+     
     } else {
       if (!otpMessages[parcel.senderDetails]) {
         otpMessages[parcel.senderDetails] = [];
       }
-      otpMessages[parcel.senderDetails].push({otp : senderOtp });
+      
       if (!senderMessages[parcel.senderDetails]) {
         senderMessages[parcel.senderDetails] = [];
       }
+      otpMessages[parcel.senderDetails].push({otp : senderOtp });
       senderMessages[parcel.senderDetails].push({ notification: responseNotification });
       console.log("Pending message saved for offline sender:", parcel.senderDetails);
     }
@@ -404,9 +415,9 @@ socket.on("carrierConfirmedParcel", async ({ parcelId, id }) => {
       senderId: id,
       receiverId: parcel.receiverDetails,
       status: "pending",
-      notificationType: "carrier response",
+      notificationType: "response",
       handlingStatus: true,
-      message : "A carrier has accepted the parcel being sent to you"
+      message : "A carrier has accepted the parcel being sent by you"
     });
     await receiverNotification.save();
 
@@ -420,6 +431,8 @@ socket.on("carrierConfirmedParcel", async ({ parcelId, id }) => {
       io.to(user[parcel.receiverDetails]).emit("receiverUpdateParcelStatus", {
         notification: receiverNotification,
       });
+      otpMessages[parcel.senderDetails] = []
+      otpMessages[parcel.receiverDetails].push({ otp : receiverOtp });
     } else {
       if (!otpMessages[parcel.receiverDetails]) {
         otpMessages[parcel.receiverDetails] = [];

@@ -14,9 +14,7 @@ function ParcelRegistration() {
   const [showSidebar, setShowSidebar] = useState(false);
   const navigate = useNavigate(); // Initialize useNavigate
 
-  const handleHomeClick = () => {
-    navigate("/home"); // Navigate to home when clicked
-  };
+  
 
   const toggleSidebar = () => {
     setShowSidebar(!showSidebar);

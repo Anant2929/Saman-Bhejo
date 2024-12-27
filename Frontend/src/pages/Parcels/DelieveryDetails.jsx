@@ -105,7 +105,7 @@ const DeliveryDetailsForm = () => {
           <div className="layout-content-container flex flex-col w-full max-w-[600px] bg-[#000000] shadow-xl rounded-lg p-6">
             <div className="flex flex-col gap-3">
               <div className="flex items-center justify-between pb-4">
-                <p className="text-[#f3f2f1] text-sm font-semibold uppercase">
+                <p className="text-[#f3f2f1] text-sm font-semibold ">
                   Step 4/4
                 </p>
               </div>
@@ -116,7 +116,7 @@ const DeliveryDetailsForm = () => {
                 ></div>
               </div>
             </div>
-            <h2 className="text-gray-200 text-[24px] font-bold leading-snug tracking-tight pt-6 pb-4">
+            <h2 className="text-gray-200 text-[24px] font-bold leading-snug tracking-tight pt-6 text-center pb-4">
               Delivery Details
             </h2>
 

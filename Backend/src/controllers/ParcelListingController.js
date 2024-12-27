@@ -29,6 +29,8 @@ const ParcelListing = async (req, res) => {
       fromCity: carriertravelFromCity,
       toCity: carriertravelToCity,
       expectedDeliveryDate: { $gte: normalizedCarrierTravelDate },
+       trackingStatus: "Receiver Accepted"
+    
     });
 
     if (!parcels || parcels.length === 0) {
