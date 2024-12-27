@@ -4,11 +4,11 @@ import { useNavigate, Link } from "react-router-dom";
 import demo from "../../assets/images/Saman bhejo.jpg";
 import Logout from "../Auth/Logout";
 import { useSocket } from "../../context/SocketContext";
-
+import dayjs from "dayjs";
 
 const ParcelList = () => {
   const navigate = useNavigate();
-  const { setParcelId } = useSocket();
+  const { parcelId,socket,setParcelId } = useSocket();
   const [parcels, setParcels] = useState([]);
   const [filteredParcels, setFilteredParcels] = useState([]);
   const [filters, setFilters] = useState({
@@ -18,8 +18,64 @@ const ParcelList = () => {
   });
   const [error, setError] = useState("");
 
+  const [showSenderOtpModal, setShowSenderOtpModal] = useState(false);
+  const [showReceiverOtpModal, setShowReceiverOtpModal] = useState(false);
+  const [senderOtp, setSenderOtp] = useState('');
+  const [receiverOtp, setReceiverOtp] = useState('');
+  const [senderVerified, setSenderVerified] = useState(false);
+ 
   const [showModal, setShowModal] = useState(false);
-  const [showSidebar, setShowSidebar] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(false); 
+  
+  const handleSenderOtpSubmit = () => {
+    // Check if OTP is empty
+    if (!senderOtp) {
+      setError("Please enter the OTP");
+      return;
+    }
+  
+    if (socket) {
+      socket.emit(
+        'Parcel Picked Up',
+        { parcelId, otp: senderOtp },
+        (err, response) => {
+          if (err) {
+            setError(response.message || "Invalid OTP"); // If there's an error, show the error message or default to "Invalid OTP"
+            setSenderVerified(false);
+          } else {
+            setSenderVerified(true);
+            setShowSenderOtpModal(false);
+            setError(""); // Clear the error message
+            setShowReceiverOtpModal(true);
+          }
+        }
+      );
+    }
+  };
+  
+  
+
+  const handleReceiverOtpSubmit = () => {
+    if (!senderVerified) {
+      setError('Sender OTP verification is required first.');
+      return;
+    }
+    if(socket){
+    socket.emit(
+      'Parcel Delivered',
+      { parcelId, otp: receiverOtp }, // Replace 'parcel123' with actual parcel ID
+      (err, response) => {
+        if (err) {
+          setError(response.message);
+        } else {
+          setShowReceiverOtpModal(false);
+          setError(null);
+        }
+      }
+    );}
+  };
+
+
 
   const handleCancelJourney = async () => {
     try {
@@ -155,6 +211,19 @@ const ParcelList = () => {
     navigate(path);
     setShowSidebar(false);
   };
+  const handleTrackingClick =(parceltrackingStatus) =>{
+    console.log("tracking status",parceltrackingStatus)
+      if(parceltrackingStatus === "Picked Up"){
+        setShowReceiverOtpModal(true)
+      }
+      else{
+        setShowSenderOtpModal(true)
+      }
+    // navigate("/trackingStatus");
+  }
+  const handleDecline  =() =>{
+    setShowSenderOtpModal(false)
+  }
 
   return (
     <div
@@ -162,107 +231,92 @@ const ParcelList = () => {
       style={{ fontFamily: 'Inter, "Noto Sans", sans-serif' }}
     >
       <div className="layout-container flex h-full grow flex-col">
-      <header  className = "fixed top-0 w-full h-20 flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#3C3F4A] px-10 py-3 bg-[#000000] z-50 ">
-
-{/* <header className="fixed top-0 left-0 w-full z-10 flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#392f28] px-10 py-3 overflow-y-hidden"> */} 
-        <div className="flex items-center gap-4 text-white animate-blink">
-          <div className="w-6 h-6">
-            <svg
-              viewBox="0 0 48 48"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M24 4H6V17.3333V30.6667H24V44H42V30.6667V17.3333H24V4Z"
-                fill="currentColor"
-              />
-            </svg>
-          </div>
-          <h2 className="text-white text-lg font-bold leading-tight tracking-[-0.015em]">
-            Saman Bhejo
-          </h2>
-        </div>
-
-        <div className="flex flex-1 justify-end gap-8 ">
-          <nav className="flex items-center gap-9">
-            {["Home", "About", "Notifications", "Pricing", "Contact"].map(
-              (item) => (
-                <Link
-                  key={item}
-                  to={`/${item.toLowerCase()}`} // Automatically generates the correct path
-                  className="text-white text-sm font-medium transition duration-300 hover:text-[#607AFB]"
-                >
-                  {item}
-                </Link>
-              )
-            )}
-          </nav>
-          <div className="relative">
-            <div
-              className="w-10 h-10 bg-[#607AFB] rounded-full flex items-center justify-center cursor-pointer transition transform duration-300 hover:scale-110"
-              onClick={toggleSidebar}
-            >
+        <header className="fixed top-0 w-full h-20 flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#3C3F4A] px-10 py-3 bg-[#000000] z-50">
+          <div className="flex items-center gap-4 text-white animate-blink">
+            <div className="w-6 h-6">
               <svg
+                viewBox="0 0 48 48"
+                fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                fill="white"
-                viewBox="0 0 256 256"
               >
-                <path d="M128,120a40,40,0,1,0-40-40A40,40,0,0,0,128,120Zm0,16c-28.72,0-84,14.44-84,43.2,0,12.85,10.26,23.2,23.08,23.2H188.92c12.82,0,23.08-10.35,23.08-23.2C212,150.44,156.72,136,128,136Z"></path>
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M24 4H6V17.3333V30.6667H24V44H42V30.6667V17.3333H24V4Z"
+                  fill="currentColor"
+                />
               </svg>
             </div>
-
-            {showSidebar && (
-              <div className="absolute top-12 right-0 w-48 bg-[#111216] border rounded-xl shadow-lg py-4">
-                {[
-                  "Edit Profile",
-                  "Add Address",
-                  "Parcels",
-                  "Payment Methods",
-                ].map((item, index) => (
-                  <button
-                    key={index}
-                    className="block w-full text-left px-4 py-2 text-white hover:bg-[#3C3F4A] transition"
-                    onClick={() =>
-                      handleSidebarClick(
-                        `/userProfile/${item.toLowerCase().replace(" ", "-")}`
-                      )
-                    }
+            <h2 className="text-white text-lg font-bold leading-tight tracking-[-0.015em]">
+              Saman Bhejo
+            </h2>
+          </div>
+  
+          <div className="flex flex-1 justify-end gap-8">
+            <nav className="flex items-center gap-9">
+              {["Home", "About", "Notifications", "Pricing", "Contact"].map(
+                (item) => (
+                  <Link
+                    key={item}
+                    to={`/${item.toLowerCase()}`}
+                    className="text-white text-sm font-medium transition duration-300 hover:text-[#607AFB]"
                   >
                     {item}
-                  </button>
-                ))}
-                {/* Use the Logout component here */}
-                <Logout />
+                  </Link>
+                )
+              )}
+            </nav>
+            <div className="relative">
+              <div
+                className="w-10 h-10 bg-[#607AFB] rounded-full flex items-center justify-center cursor-pointer transition transform duration-300 hover:scale-110"
+                onClick={toggleSidebar}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  fill="white"
+                  viewBox="0 0 256 256"
+                >
+                  <path d="M128,120a40,40,0,1,0-40-40A40,40,0,0,0,128,120Zm0,16c-28.72,0-84,14.44-84,43.2,0,12.85,10.26,23.2,23.08,23.2H188.92c12.82,0,23.08-10.35,23.08-23.2C212,150.44,156.72,136,128,136Z"></path>
+                </svg>
               </div>
-            )}
+  
+              {showSidebar && (
+                <div className="absolute top-12 right-0 w-48 bg-[#111216] border rounded-xl shadow-lg py-4">
+                  {[
+                    "Edit Profile",
+                    "Add Address",
+                    "Parcels",
+                    "Payment Methods",
+                  ].map((item, index) => (
+                    <button
+                      key={index}
+                      className="block w-full text-left px-4 py-2 text-white hover:bg-[#3C3F4A] transition"
+                      onClick={() =>
+                        handleSidebarClick(
+                          `/userProfile/${item.toLowerCase().replace(" ", "-")}`
+                        )
+                      }
+                    >
+                      {item}
+                    </button>
+                  ))}
+                  <Logout />
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      </header>
-        <button
-          className="bg-red-600 text-white w-1/5 px-4 py-2 rounded-lg hover:bg-red-700 transition ml-auto mt-20"
-          onClick={() => setShowModal(true)}
-        >
-          Cancel this journey
-        </button>
-
-        <button
-          className="bg-blue-600 text-white w-1/5 px-2 py-2 rounded-lg hover:bg-red-700 transition mr-auto"
-          onClick={() => navigate("/home/carrierDetails/parcelList/")}
-        >
-         All Parcels
-        </button>
-        <div className="px-40 flex flex-1 justify-center py-5">
+        </header>
+  
+        <div className="px-40 flex flex-1 justify-center py-5 mt-20">
           <div className="layout-content-container flex flex-col max-w-[960px] flex-1">
-            <div className="flex flex-wrap justify-between gap-3 p-4">
-              <p className="text-[#FFFFFF] tracking-light text-[32px] font-bold leading-tight min-w-72">
-               My Parcels
+            <div className="flex justify-center gap-3 p-4">
+              <p className="text-[#FFFFFF] text-center tracking-light text-[32px] font-bold leading-tight">
+                My Parcels
               </p>
             </div>
-
+  
             {/* Filters */}
             <div className="flex gap-3 p-3 flex-wrap pr-4">
               <select
@@ -277,7 +331,7 @@ const ParcelList = () => {
                 <option value="100-200">₹100 - ₹200</option>
                 <option value="200-500">₹200 - ₹500</option>
               </select>
-
+  
               <input
                 type="date"
                 className="rounded-xl bg-[#333333] text-[#FFFFFF] p-2"
@@ -286,7 +340,7 @@ const ParcelList = () => {
                   setFilters({ ...filters, deliveryDate: e.target.value })
                 }
               />
-
+  
               <select
                 className="rounded-xl bg-[#333333] text-[#FFFFFF] p-2"
                 value={filters.sortBy}
@@ -301,7 +355,7 @@ const ParcelList = () => {
                 <option value="dateNewerToOld">Date (Newer to Older)</option>
               </select>
             </div>
-
+  
             {/* Parcels */}
             <div className="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-3 p-4">
               {error ? (
@@ -319,11 +373,9 @@ const ParcelList = () => {
                       style={{
                         backgroundImage: `url(${
                           parcel.img ||
-                          demo ||
                           "https://via.placeholder.com/150"
                         })`,
                       }}
-                      onClick={() => handleCardClick(parcel._id)}
                     >
                       <span className="absolute top-2 right-2 bg-black bg-opacity-70 text-green-400 text-lg font-bold px-3 py-1 rounded">
                         ₹{parcel.deliveryCharges}
@@ -341,15 +393,107 @@ const ParcelList = () => {
                       Dropoff: {parcel.toCity}
                     </p>
                     <p className="text-[#CBCBCB] text-sm font-normal leading-normal">
-                      Expected Date: {parcel.expectedDeliveryDate}
+                      Expected Date: {" "}
+                      {dayjs(parcel.expectedDeliveryDate).format("DD/MM/YYYY")}
                     </p>
+                    <div className="flex gap-2 mt-2">
+                      <button className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition" 
+                      onClick={() => handleCardClick(parcel._id)}>
+                        Open Details
+                      </button>
+                      <button className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition"
+                       onClick={() => handleTrackingClick(parcel.trackingStatus)}
+                      >
+                        Tracking
+                      </button>
+                      <button className="bg-purple-600 text-white px-3 py-1 rounded hover:bg-purple-700 transition">
+                        Chat
+                      </button>
+                    </div>
                   </div>
                 ))
               )}
             </div>
           </div>
         </div>
+  
+        {/* Buttons at Bottom */}
+        <div className="fixed bottom-5 w-full flex justify-between px-10">
+          <button
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+            onClick={() => navigate("/home/carrierDetails/parcelList/")}
+          >
+            All Parcels
+          </button>
+          <button
+            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition"
+            onClick={() => setShowModal(true)}
+          >
+            Cancel this Journey
+          </button>
+        </div>
 
+             {/* Sender OTP Modal */}
+             {showSenderOtpModal && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="bg-[#333333] rounded-lg p-6 w-[90%] max-w-sm shadow-lg">
+      <p className="text-white text-lg font-bold mb-4 text-center">Enter Sender OTP</p>
+      <input
+        type="text"
+        value={senderOtp}
+        onChange={(e) => setSenderOtp(e.target.value)}
+        className="w-full p-2 text-center border border-gray-500 rounded-lg mb-4 text-white bg-[#222222]"
+        maxLength={4}
+        placeholder="Enter 4-digit OTP"
+      />
+      <button
+        className="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-all"
+        onClick={handleSenderOtpSubmit}
+      >
+        Confirm
+      </button>
+      <button
+        className="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition-all"
+        onClick={handleDecline}
+      >
+        Decline
+      </button>
+      {error && <span className="text-red-500 mt-2">{error}</span>} {/* Display the error message */}
+    </div>
+  </div>
+)}
+
+ {/* Receiver OTP Modal */}
+ {showReceiverOtpModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h2 className="text-white text-lg font-bold">Enter Receiver OTP</h2>
+            <input
+              type="text"
+              value={receiverOtp}
+              onChange={(e) => setReceiverOtp(e.target.value)}
+              className="otp-input"
+              maxLength={4}
+            />
+            <button
+              className="bg-green-600 text-white px-4 py-2 rounded"
+              onClick={handleReceiverOtpSubmit}
+            >
+              {error && <span>error.message</span>}
+              Confirm
+            </button>
+            <button
+              className="bg-green-600 text-white px-4 py-2 rounded"
+             
+            >
+           
+              Decline
+            </button>
+          </div>
+        </div>
+      )}
+
+  
         {showModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
             <div className="bg-[#333333] rounded-lg p-6 w-[90%] max-w-sm">

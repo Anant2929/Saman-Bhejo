@@ -451,90 +451,208 @@ socket.on("carrierConfirmedParcel", async ({ parcelId, id }) => {
 });
 
 // Parcel Picked Up Event
-socket.on("Parcel Picked Up", async ({ otp, parcelId }) => {
+socket.on("Parcel Delivered", async (data, callback) => {
   try {
+    let { parcelId, otp } = data;
+    
     // Fetch the parcel details using parcel ID
     const parcel = await ParcelSchema.findById(parcelId);
     if (!parcel) {
-      return socket.emit("Error", { message: "Parcel not found" });
+      return callback("Error", { message: "Parcel not found" });
     }
+    let {senderDetails,receiverDetails,carrierDetails} = parcel
 
     // Fetch sender details using sender ID from the parcel
-    const sender = await User.findById(parcel.senderId);
-    if (!sender) {
-      return socket.emit("Error", { message: "Sender not found" });
+    const sender = await User.findById(senderDetails);
+    if (!receiver) {
+      return callback("Error", { message: "Sender not found" });
     }
 
     // Verify the OTP provided
     if (sender.otp === otp) {
       // Update the parcel status to "Picked Up"
-      parcel.status = "Parcel Picked Up";
+      parcel.status = "Picked Up";
       await parcel.save();
+
+      // Create notification for the receiver
+      const senderNotification = new Notification({
+        parcelId: parcelId,
+        senderId: parcel.carrierDetails,
+        receiverId: parcel.senderDetails,
+        status: "pending",
+        notificationType: "response",
+        handlingStatus: true,
+        message: "Parcel status updated to `Parcel Picked Up'",
+      });
+      await senderNotification.save();
+      const receiverNotification = new Notification({
+        parcelId: parcelId,
+        senderId: parcel.carrierDetails,
+        receiverId: parcel.receiverDetails,
+        status: "pending",
+        notificationType: "response",
+        handlingStatus: true,
+        message: "Parcel status updated to `Parcel Delievred ' ",
+      });
+      await receiverNotification.save();
 
       // Notify the sender about the status update
       if (user[sender._id]) {
-        io.to(user[sender._id]).emit("Status Updated", {
-          message: "Parcel status updated to 'Parcel Picked Up'",
+        io.to(user[sender._id]).emit("receiverUpdateParcelStatus", {
+          notification :senderNotification
         });
       }
+     
+
+      // Notify the receiver about the status update
+      if (user[parcel.receiverDetails]) {
+        io.to(user[parcel.receiverDetails]).emit("receiverUpdateParcelStatus", {
+          notification :receiverNotification
+        });
+      }
+
+      // Store the notification in senderMessages for sender and receiver
+      if (!senderMessages[senderDetails]) {
+        senderMessages[senderDetails] = [];
+      }
+      senderMessages[senderDetails].push({ notification: senderDetails});
+
+      if (!senderMessages[parcel.receiverDetails]) {
+        senderMessages[parcel.receiverDetails] = [];
+      }
+      senderMessages[parcel.receiverDetails].push({ notification: receiverNotification });
+
+    
+   delete otpMessages[sender] ;
+      // Return success via callback
+      callback(null, {success: true, message: "Parcel status updated successfully to 'Parcel Picked up'" });
+
     } else {
-      // Emit error for invalid OTP
-      socket.emit("Error", { message: "Invalid OTP" });
+      // Emit error for invalid OTP and return via callback
+      callback("Error", { message: "Invalid OTP" });
     }
   } catch (error) {
     console.error("Error updating parcel status:", error);
-    socket.emit("Error", { message: "An error occurred while updating the parcel status" });
+    callback("Error", { message: "An error occurred while updating the parcel status" });
   }
 });
 
 // Parcel Delivered Event
-socket.on("Parcel Delivered", async ({ otp, parcelId }) => {
+socket.on("Parcel Delivered", async (data, callback) => {
   try {
+    let { parcelId, otp } = data;
+    
     // Fetch the parcel details using parcel ID
     const parcel = await ParcelSchema.findById(parcelId);
     if (!parcel) {
-      return socket.emit("Error", { message: "Parcel not found" });
+      return callback("Error", { message: "Parcel not found" });
     }
+    let {senderDetails,receiverDetails,carrierDetails} = parcel
 
-    // Fetch receiver details using receiver ID from the parcel
+    // Fetch sender details using sender ID from the parcel
     const receiver = await User.findById(parcel.receiverDetails);
     if (!receiver) {
-      return socket.emit("Error", { message: "Receiver not found" });
+      return callback("Error", { message: "Sender not found" });
     }
 
     // Verify the OTP provided
     if (receiver.otp === otp) {
-      // Update the parcel status to "Delivered"
-      parcel.status = "Parcel Delivered";
+      // Update the parcel status to "Picked Up"
+      parcel.status = "Delivered ";
       await parcel.save();
 
-      // Create a notification for the receiver
+      // Create notification for the receiver
+      const senderNotification = new Notification({
+        parcelId: parcelId,
+        senderId: parcel.carrierDetails,
+        receiverId: parcel.senderDetails,
+        status: "pending",
+        notificationType: "response",
+        handlingStatus: true,
+        message: "Parcel status updated to `Parcel Delievred'",
+      });
+      await senderNotification.save();
       const receiverNotification = new Notification({
-        parcelId,
-        senderId: parcel.senderId,
+        parcelId: parcelId,
+        senderId: parcel.carrierDetails,
         receiverId: parcel.receiverDetails,
         status: "pending",
-        notificationType: "carrier response",
+        notificationType: "response",
         handlingStatus: true,
-        message: "A carrier has accepted the parcel being sent to you",
+        message: "Parcel status updated to `Parcel Delievred ' ",
       });
       await receiverNotification.save();
 
-      // Notify the receiver about the status update
-      if (user[receiver._id]) {
-        io.to(user[receiver._id]).emit("Status Updated", {
-          message: "Parcel status updated to 'Parcel Delivered'",
+      // Notify the sender about the status update
+      if (user[sender._id]) {
+        io.to(user[sender._id]).emit("receiverUpdateParcelStatus", {
+          notification :senderNotification
         });
       }
+     
+
+      // Notify the receiver about the status update
+      if (user[parcel.receiverDetails]) {
+        io.to(user[parcel.receiverDetails]).emit("receiverUpdateParcelStatus", {
+          notification :receiverNotification
+        });
+      }
+
+      // Store the notification in senderMessages for sender and receiver
+      if (!senderMessages[senderDetails]) {
+        senderMessages[senderDetails] = [];
+      }
+      senderMessages[senderDetails].push({ notification: senderDetails});
+
+      if (!senderMessages[parcel.receiverDetails]) {
+        senderMessages[parcel.receiverDetails] = [];
+      }
+      senderMessages[parcel.receiverDetails].push({ notification: receiverNotification });
+
+    
+   delete otpMessages[receiver] ;
+      // Return success via callback
+      callback(null, {success: true, message: "Parcel status updated successfully to 'Parcel Delivered'" });
+
     } else {
-      // Emit error for invalid OTP
-      socket.emit("Error", { message: "Invalid OTP" });
+      // Emit error for invalid OTP and return via callback
+      callback("Error", { message: "Invalid OTP" });
     }
   } catch (error) {
     console.error("Error updating parcel status:", error);
-    socket.emit("Error", { message: "An error occurred while updating the parcel status" });
+    callback("Error", { message: "An error occurred while updating the parcel status" });
   }
 });
+// Client-side
+socket.on("trackingStatus", async (data, callback) => {
+  try {
+    let { parcelId } = data;
+    
+    // Fetch the parcel details using the parcel ID
+    const parcel = await ParcelSchema.findById(parcelId);
+    
+    if (!parcel) {
+      return callback({
+        status: "error",
+        message: "Parcel not found",
+      });
+    }
+    console.log("tracking status",parcel.trackingStatus)
+    // Return the current tracking status of the parcel using the callback
+    return callback({
+      status: "success",
+      trackingStatus: parcel.trackingStatus, // Assuming trackingStatus is a field in your Parcel schema
+    });
+
+  } catch (error) {
+    console.error("Error fetching parcel details:", error);
+    return callback({
+      status: "error",
+      message: "An error occurred while fetching the parcel status",
+    });
+  }
+});
+
 
 
     // Handle user disconnection

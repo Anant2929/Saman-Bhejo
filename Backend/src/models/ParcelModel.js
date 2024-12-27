@@ -46,7 +46,6 @@ const parcelSchema = new mongoose.Schema({
       "Receiver Accepted", // Receiver ne parcel accept kiya
       "Receiver Rejected", // Receiver ne parcel reject kiya
       "Carrier Accepted Parcel",
-      "Carried",          // Accept hone ke baad parcel carried hai
       "Picked Up",        // Parcel pickup hua
       "In Transit",       // Transit me hai
       "Delivered",        // Successfully delivered
