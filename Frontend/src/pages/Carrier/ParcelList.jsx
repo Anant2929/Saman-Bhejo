@@ -4,8 +4,24 @@ import { useNavigate, Link } from "react-router-dom";
 import demo from "../../assets/images/Saman bhejo.jpg";
 import Logout from "../Auth/Logout";
 import { useSocket } from "../../context/SocketContext";
+import ClothingImg from "../../assets/images/Clothing.jpeg" ;
+import  DocumentImg from"../../assets/images/Documents.jpeg"
+import ElectronicsImg from "../../assets/images/Electronics.jpeg";
+import MedicinesImg from "../../assets/images/Medicines.jpeg";
+import FoodImg from "../../assets/images/Food.jpeg";
+
 
 const ParcelList = () => {
+
+
+  const imageMap = {
+    'Clothing': ClothingImg,
+    'Documents': DocumentImg,
+    'Electronics': ElectronicsImg,
+    'Medicines': MedicinesImg,
+    'Food': FoodImg,
+  };
+
   const navigate = useNavigate();
   const { setParcelId } = useSocket();
   const [parcels, setParcels] = useState([]);
@@ -155,6 +171,9 @@ const ParcelList = () => {
     setShowSidebar(false);
   };
 
+
+  
+
   return (
     <div
       className="relative flex size-full min-h-screen flex-col bg-black dark group/design-root overflow-x-hidden "
@@ -242,18 +261,19 @@ const ParcelList = () => {
         </div>
       </header>
        
-      <button
-          className="bg-red-600 text-white w-1/5 px-4 py-2 rounded-lg hover:bg-red-700 transition ml-auto mt-20"
-          onClick={() => setShowModal(true)}
-        >
-          Cancel this journey
-        </button>
-        <button
-          className="bg-blue-600 text-white w-1/5 px-2 py-2 rounded-lg hover:bg-red-700 transition mr-auto"
-          onClick={() => navigate("/home/carrierDetails/parcelList/myParcel")}
-        >
-        My Parcels
-        </button>
+    
+          <button
+  className="fixed bottom-10 right-10 bg-red-600 text-white w-1/10 z-50 px-4 py-2 rounded-lg hover:bg-red-700 transition"
+  onClick={() => setShowModal(true)}
+>
+  Cancel this journey
+</button>
+<button
+  className="fixed bottom-10 left-10 bg-blue-600 text-white w-1/9 px-2 py-2 rounded-lg hover:bg-blue-700 transition"
+  onClick={() => navigate("/home/carrierDetails/parcelList/myParcel")}
+>
+  My Parcels
+</button>
         <div className="px-40 flex flex-1 justify-center py-5">
       
           <div className="layout-content-container flex flex-col max-w-[960px] flex-1">
@@ -277,7 +297,7 @@ const ParcelList = () => {
                 <option value="100-200">₹100 - ₹200</option>
                 <option value="200-500">₹200 - ₹500</option>
               </select>
-
+              
               <input
                 type="date"
                 className="rounded-xl bg-[#333333] text-[#FFFFFF] p-2"
@@ -303,7 +323,7 @@ const ParcelList = () => {
             </div>
 
             {/* Parcels */}
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-3 p-4">
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(180px,2fr))] gap-3 p-4">
               {error ? (
                 <p className="text-[#FFFFFF] text-lg font-bold text-center w-full">
                   {error}
@@ -314,14 +334,11 @@ const ParcelList = () => {
                     key={index}
                     className="flex flex-col gap-3 pb-3 relative"
                   >
+                   
                     <div
                       className="w-3/4 bg-center bg-no-repeat aspect-square bg-cover rounded-xl cursor-pointer transform transition-transform duration-300 hover:scale-105"
                       style={{
-                        backgroundImage: `url(${
-                          parcel.img ||
-                          demo ||
-                          "https://via.placeholder.com/150"
-                        })`,
+                        backgroundImage: `url(${parcel.parcelType === 'Other' ? parcel.parcelPhotoUrl : imageMap[parcel.parcelType]})`,
                       }}
                       onClick={() => handleCardClick(parcel._id)}
                     >

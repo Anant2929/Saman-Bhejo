@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 // Define the schema for the User model
 const userSchema = new mongoose.Schema({
@@ -26,25 +26,24 @@ const userSchema = new mongoose.Schema({
     unique: true, // Assuming a maximum length for contact number
   },
   socketId: {
-    type : String, 
+    type: String,
   },
   CarrierStatus: {
-    type:Boolean,
-    default:false
+    type: Boolean,
+    default: false,
   },
-
-  
+  profilePicture: {
+    type: String,
+  },
   otp: {
     type: Number,
     required: true, // Set true if OTP is mandatory
     default: null, // Default value for OTP
-  }
-  
-
-})
+  },
+});
 
 // Create the User model based on the schema
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model("User", userSchema);
 
 // Export the User model
 module.exports = User;

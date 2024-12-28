@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParcelRegistration } from "../../context/ParcelContext";
 
 export default function ParcelForm() {
-  const { formData, setFormData, setCurrentState } = useParcelRegistration();
+  const { formData, setFormData, setCurrentState , handleFileChange } = useParcelRegistration();
   const [localFormData, setLocalFormData] = useState({
     parcelName: "",
     parcelWeight: "",
@@ -27,6 +27,7 @@ export default function ParcelForm() {
     setLocalFormData(updatedData);
   };
 
+
   const validateFields = () => {
     let newErrors = {};
     if (!localFormData.parcelName)
@@ -50,6 +51,11 @@ export default function ParcelForm() {
       localStorage.setItem("parcelFormData", JSON.stringify(updatedFormData));
       setCurrentState(2);
     }
+  };
+
+  const onFileChange = (e) => {
+    const file = e.target.files[0];
+    handleFileChange(file);  // Store the file in context
   };
 
   return (
@@ -166,8 +172,8 @@ export default function ParcelForm() {
               <p className="text-[#D1D5DB] text-base font-medium">Photo URL</p>
               <input
                 name="parcelPhotoURL"
-                value={localFormData.parcelPhotoURL}
-                onChange={handleInputChange}
+                type="file"
+                onChange={onFileChange}
                 placeholder="(Optional)"
                 className="form-input w-full rounded-lg bg-[#0F172A] border border-[#334155] focus:border-[#F4C753] text-[#F9FAFA] placeholder:text-[#6B7280] p-4 text-sm outline-none focus:ring-2 focus:ring-[#F4C753]"
               />

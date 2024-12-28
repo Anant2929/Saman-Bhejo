@@ -5,10 +5,11 @@ import axios from "axios";
 import { useSocket } from "../../context/SocketContext";
 import dayjs from "dayjs";
 import Logout from "../Auth/Logout";
-
+import CircleLoader from "react-spinners/CircleLoader";
 export default function ParcelInfoDisplay() {
   const navigate = useNavigate();
   const { parcelId, socketId } = useSocket();
+const [loading,setLoading] = useState(false)
 
   const initialFields = {
     senderName: "",
@@ -45,11 +46,14 @@ export default function ParcelInfoDisplay() {
   const [fields, setFields] = useState(initialFields);
   const [showSidebar, setShowSidebar] = useState(false);
 
+
   useEffect(() => {
     const fetchParcelDetails = async () => {
+      setLoading(true); 
       try {
         if (!parcelId) {
           console.log("No parcel ID available.");
+          setLoading(false);
           return;
         }
         const { data } = await axios.get(`/api/parcel/parcelsInfo/Specific/${parcelId}`);
@@ -92,13 +96,21 @@ export default function ParcelInfoDisplay() {
         }
       } catch (error) {
         console.error("Error fetching parcel details:", error);
+      } finally {
+        setLoading(false); // Stop loading after the API call
       }
     };
 
     fetchParcelDetails();
   }, [parcelId]);
 
-
+  if ((!fields.senderName && !fields.receiverName)  || loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
+        <CircleLoader color="#607AFB" loading={true} size={100} />
+      </div>
+    );
+  }
 
   const toggleSidebar = () => {
     setShowSidebar(!showSidebar);
@@ -109,9 +121,7 @@ export default function ParcelInfoDisplay() {
     setShowSidebar(false);
   };
   // Check if data is loading
-  if (!fields.senderName && !fields.receiverName) {
-    return <div className="text-black">Loading parcel details...</div>;
-  }
+ 
 
   return (
     <div

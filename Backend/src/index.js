@@ -8,6 +8,7 @@ const cookieParser = require('cookie-parser');
 const oAuthRoutes = require('./routes/oAuthRoute');
 const parcelRoutes = require('./routes/ParcelRoute');
 const CarrierRoutes = require('./routes/CarrierRoute');
+const fileRoute = require('./routes/fileRoute.js');
 const http = require("http");
 const socketIo = require("socket.io");
 const passport = require('passport');
@@ -67,6 +68,8 @@ app.use('/oAuth', oAuthRoutes);
 app.use("/user", userRoutes);
 app.use("/parcel", parcelRoutes);
 app.use("/carrier" , CarrierRoutes);
+app.use("/fileUpload" , fileRoute);
+app.use('/uploads', express.static('uploads'));
 
 // Start the server using `server.listen` to enable socket.io
 server.listen(port, () => {

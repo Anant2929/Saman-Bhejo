@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate , Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Logout from "../Auth/Logout";
 
 const EditProfile = () => {
   const [email, setEmail] = useState("");
   const [aadhaar, setAadhaar] = useState("");
-  const [profilePicture, setProfilePicture] = useState(null);
+  const [profilePicture, setProfilePicture] = useState("");
   const [userDetails, setUserDetails] = useState({});
-  const [isEditingEmail, setIsEditingEmail] = useState(false); // Toggle email editing
-  const [aadhaarVerified, setAadhaarVerified] = useState(false); // Aadhaar verification state
+  const [isEditingEmail, setIsEditingEmail] = useState(false);
+  const [aadhaarVerified, setAadhaarVerified] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
   const navigate = useNavigate();
 
@@ -30,8 +30,9 @@ const EditProfile = () => {
         });
         setUserDetails(response.data);
         setEmail(response.data.email);
-        setAadhaar(response.data.aadhaar || ""); // Optional Aadhaar
-        setAadhaarVerified(false); // Reset verification on fetch
+        setAadhaar(response.data.aadhaar || "");
+        setProfilePicture(response.data.profilePicture || "");
+        setAadhaarVerified(false);
       } catch (error) {
         console.error("Error fetching user information:", error);
       }
@@ -40,23 +41,32 @@ const EditProfile = () => {
     fetchUserInfo();
   }, []);
 
-  const handleProfilePictureChange = (e) => {
+  const handleProfilePictureChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = () => setProfilePicture(reader.result);
-      reader.readAsDataURL(file);
+      const formData = new FormData();
+      formData.append("file", file);
+
+      try {
+        const response = await axios.post("/api/fileUpload/upload", formData, {
+          withCredentials: true,
+        });
+        setProfilePicture(response.data.fileUrl);
+        alert("Profile picture updated successfully!");
+      } catch (error) {
+        console.error("Error uploading profile picture:", error);
+        alert("Failed to upload profile picture.");
+      }
     }
   };
 
   const handleAadhaarChange = (e) => {
-    const value = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
+    const value = e.target.value.replace(/\D/g, "");
     setAadhaar(value);
-    setAadhaarVerified(false); // Reset verification if Aadhaar changes
+    setAadhaarVerified(false);
   };
 
   const verifyAadhaar = () => {
-    // Placeholder Aadhaar verification logic
     if (validateAadhaar(aadhaar)) {
       alert("Aadhaar verified successfully!");
       setAadhaarVerified(true);
@@ -67,7 +77,7 @@ const EditProfile = () => {
 
   const validateAadhaar = (aadhaarNumber) => {
     if (!/^\d{12}$/.test(aadhaarNumber)) return false; // Check format with regex
-  
+
     // Verhoeff Algorithm Logic
     const d = [
       [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
@@ -81,7 +91,7 @@ const EditProfile = () => {
       [8, 7, 6, 5, 9, 3, 2, 1, 0, 4],
       [9, 8, 7, 6, 5, 4, 3, 2, 1, 0],
     ];
-  
+
     const p = [
       [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
       [1, 5, 7, 6, 2, 8, 3, 0, 9, 4],
@@ -92,13 +102,13 @@ const EditProfile = () => {
       [2, 7, 9, 3, 8, 0, 6, 4, 1, 5],
       [7, 0, 4, 6, 9, 1, 3, 2, 5, 8],
     ];
-  
+
     let c = 0;
     const invertedArray = aadhaarNumber.split("").reverse();
     for (let i = 0; i < invertedArray.length; i++) {
       c = d[c][p[i % 8][parseInt(invertedArray[i], 10)]];
     }
-  
+
     return c === 0;
   };
 
@@ -109,18 +119,21 @@ const EditProfile = () => {
     }
 
     try {
-      const updateData = { email, aadhaar: aadhaar || userDetails.aadhaar };
+      const updateData = {
+        email,
+        aadhaar: aadhaar || userDetails.aadhaar,
+        profilePicture,
+      };
+
       const response = await axios.put(
         "/api/user/UpdateUserDetails",
         updateData,
-        {
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
 
       if (response.status === 200) {
         alert("Profile updated successfully!");
-        setUserDetails({ ...userDetails, email, aadhaar });
+        setUserDetails({ ...userDetails, email, aadhaar, profilePicture });
         setIsEditingEmail(false);
       } else {
         throw new Error("Failed to update profile.");
@@ -134,9 +147,7 @@ const EditProfile = () => {
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col">
       {/* Header */}
-      <header  className = "fixed top-0 w-full h-20 flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#3C3F4A] px-10 py-3 bg-[#000000] z-50 ">
-
-{/* <header className="fixed top-0 left-0 w-full z-10 flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#392f28] px-10 py-3 overflow-y-hidden"> */} 
+      <header className="fixed top-0 w-full h-20 flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#3C3F4A] px-10 py-3 bg-[#000000] z-50 ">
         <div className="flex items-center gap-4 text-white animate-blink">
           <div className="w-6 h-6">
             <svg
@@ -214,10 +225,7 @@ const EditProfile = () => {
           </div>
         </div>
       </header>
-
-      {/* Main Content */}
       <div className="flex flex-col items-center py-10 px-4">
-        {/* Profile Picture Section */}
         <div className="mb-8 flex flex-col items-center">
           <div
             className="w-32 h-32 bg-gray-700 rounded-full bg-cover bg-center"
@@ -238,9 +246,7 @@ const EditProfile = () => {
           </label>
         </div>
 
-        {/* User Info Section */}
         <div className="w-full max-w-md">
-          {/* Name */}
           <div className="mb-6">
             <label className="block mb-2 text-gray-400">Name:</label>
             <div className="flex items-center justify-between bg-gray-800 p-3 rounded">
@@ -256,7 +262,6 @@ const EditProfile = () => {
             </div>
           </div>
 
-          {/* Email with Edit Option */}
           <div className="mb-6">
             <label className="block mb-2 text-gray-400">Email ID:</label>
             <div className="flex items-center bg-gray-800 p-3 rounded">
@@ -279,7 +284,6 @@ const EditProfile = () => {
             </div>
           </div>
 
-          {/* Aadhaar with Verify Option */}
           <div className="mb-6">
             <label className="block mb-2 text-gray-400">Aadhaar Number:</label>
             <div className="flex items-center bg-gray-800 p-3 rounded">
@@ -300,11 +304,6 @@ const EditProfile = () => {
                 {aadhaarVerified ? "Verified" : "Verify"}
               </button>
             </div>
-            {aadhaar.length > 0 && aadhaar.length < 12 && (
-              <span className="text-red-500 text-sm">
-                Aadhaar number must be 12 digits.
-              </span>
-            )}
           </div>
         </div>
 

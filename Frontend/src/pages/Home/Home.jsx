@@ -7,6 +7,7 @@ import Logout from "../Auth/Logout";
 import { useParcelRegistration } from "../../context/ParcelContext";
 import CreateParcelPic from "../../assets/images/Create parcel.png";
 import CarryParcelPic from "../../assets/images/Carrying Parcel.png";
+import CircleLoader from "react-spinners/CircleLoader";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -28,10 +29,13 @@ const Home = () => {
     useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
   const { setFetching } = useParcelRegistration();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUsername = async () => {
+       
       try {
+        setLoading(true);
         const response = await axios.get("/api/user/getname", {
           withCredentials: true,
         });
@@ -46,11 +50,21 @@ const Home = () => {
         }
       } catch (error) {
         console.error("Error fetching username:", error);
+      }finally {
+        setLoading(false); // Ensure loading is stopped in both success and error cases
       }
     };
 
     fetchUsername();
   }, [token, parcelNotification, responseNotification]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
+        <CircleLoader color="#607AFB" loading={true} size={100} />
+      </div>
+    );
+  }
 
   const handleNotificationClick = (notificationType) => {
     console.log(" i am in a handle notification home");
@@ -87,6 +101,7 @@ const Home = () => {
   const CreateParcel = () => {
     navigate("/parcel/details");
   };
+
 
   const CarryParcel = () => {
     const fetchCarrierStatus = async () => {

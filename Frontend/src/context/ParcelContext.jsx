@@ -6,7 +6,34 @@ const ParcelContext = createContext();
 // Create a provider component
 export const ParcelRegistrationProvider = ({ children }) => {
   const [currentState, setCurrentState] = useState(1);
-  const [formData, setFormData] = useState({});
+  const [file, setFile] = useState(null);
+  const [formData, setFormData] = useState({
+    parcelName: "",
+    parcelWeight: "",
+    parcelType: "",
+    parcelDescription: "",
+    parcelPhotoURL: "",
+    volume: "",
+    senderName: '',
+    senderContactNumber: '',
+    senderAddress: '',
+    senderCity: '',
+    senderState: '',
+    senderPostalCode: '',
+    ReciverName: "",
+    RecivercontactNumber: "",
+    ReciverAddress: "",
+    ReciverCity: "",
+    ReciverState: "",
+    ReciverPostalCode: "",
+    fromCity: "",
+    fromState: "",
+    fromZip: "",
+    toCity: "",
+    toState: "",
+    toZip: "",
+    expectedDeliveryDate: "",
+  });
   const [fetching,setFetching] = useState(JSON.parse(localStorage.getItem("fetching"))||false)
   // Add new states for fetched parcels and the selected parcel
   const [parcels, setParcels] = useState([]);
@@ -26,6 +53,11 @@ export const ParcelRegistrationProvider = ({ children }) => {
     };
 
   }, [notificationId]);
+
+  const handleFileChange = (file) => {
+    setFile(file);  // Store the file in context
+  };
+
   return (
     <ParcelContext.Provider
       value={{
@@ -40,7 +72,9 @@ export const ParcelRegistrationProvider = ({ children }) => {
         fetching,
         setFetching,
         notificationId,
-        setNotificationId
+        setNotificationId,
+        handleFileChange,
+        file
       }}
     >
       {children}

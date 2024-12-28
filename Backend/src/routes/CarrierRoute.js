@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const upload = require('../config/multerConfig'); // Import multer config
 const {verifyToken} = require('../utils/jwtutils');
 const { CarrierRegister , CarrierDelete } = require('../controllers/CarrierController');
 const { ParcelListing,MyParcel } = require('../controllers/ParcelListingController')

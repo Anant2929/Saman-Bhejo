@@ -91,7 +91,7 @@ const extractParcelData = (req) => {
 
   // If all fields are present, handle the parcel photo URL
   const parcelPhotoUrl = req.file
-    ? `/uploads/${req.file.filename}`
+    ? req.file.path
     : parcelPhotoURL;
 
   return {
@@ -132,9 +132,9 @@ const findSenderReceiver = async (
   const receiver = await User.findOne({ contactNumber: RecivercontactNumber });
   if (!receiver) throw new Error("Receiver not found.");
 
-    // if(receiver === sender){
-    //   throw new Error("Sender and receiver name and contact number should be different.")
-    // }
+    if(receiver === sender){
+      throw new Error("Sender and receiver name and contact number should be different.")
+    }
   return { sender, receiver } 
 };
 
@@ -175,8 +175,6 @@ const get_price_distance = async (req, res) => {
       parcelData.fromCity,
       parcelData.toCity
     );
-    // const estimatedPrice = 600;
-    // const distance = 6;
     return res.status(200).json({
       message: "Price and distance calculated successfully",
       distance,
@@ -203,16 +201,12 @@ const registerParcel = async (req, res) => {
       parcelData.toCity
     );
 
-    const parcelPhotoUrl = req.file
-      ? `/uploads/${req.file.filename}`
-      : parcelData.parcelPhotoURL;
-
     const parcel = new Parcel({
       parcelName: parcelData.parcelName,
       parcelWeight: parcelData.parcelWeight,
       parcelType: parcelData.parcelType,
       parcelDescription: parcelData.parcelDescription,
-      parcelPhotoUrl,
+      parcelPhotoUrl: parcelData.parcelPhotoURL,
       senderDetails: sender._id,
       receiverDetails: receiver._id,
       fromCity: parcelData.fromCity,
@@ -258,7 +252,6 @@ const registerParcel = async (req, res) => {
 
     console.log("userid", sender._id, "receive", receiver._id);
 
-   
     res
       .status(201)
       .json({ message: "Parcel registered successfully",receiverRecord,senderRecord, parcel });

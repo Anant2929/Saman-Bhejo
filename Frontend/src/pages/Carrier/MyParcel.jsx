@@ -5,6 +5,12 @@ import demo from "../../assets/images/Saman bhejo.jpg";
 import Logout from "../Auth/Logout";
 import { useSocket } from "../../context/SocketContext";
 import dayjs from "dayjs";
+import ClothingImg from "../../assets/images/Clothing.jpeg" ;
+import  DocumentImg from"../../assets/images/Documents.jpeg"
+import ElectronicsImg from "../../assets/images/Electronics.jpeg";
+import MedicinesImg from "../../assets/images/Medicines.jpeg";
+import FoodImg from "../../assets/images/Food.jpeg";
+
 
 const ParcelList = () => {
   const navigate = useNavigate();
@@ -17,6 +23,14 @@ const ParcelList = () => {
     sortBy: "",
   });
   const [error, setError] = useState("");
+
+  const imageMap = {
+    'Clothing': ClothingImg,
+    'Documents': DocumentImg,
+    'Electronics': ElectronicsImg,
+    'Medicines': MedicinesImg,
+    'Food': FoodImg,
+  };
 
   const [showSenderOtpModal, setShowSenderOtpModal] = useState(false);
   const [showReceiverOtpModal, setShowReceiverOtpModal] = useState(false);
@@ -389,12 +403,9 @@ const ParcelList = () => {
                     className="flex flex-col gap-3 pb-3 relative"
                   >
                     <div
-                      className="w-3/4 bg-center bg-no-repeat aspect-square bg-cover rounded-xl cursor-pointer transform transition-transform duration-300 hover:scale-105"
+                      className="w-1/4 bg-center bg-no-repeat aspect-square bg-cover rounded-xl cursor-pointer transform transition-transform duration-300 hover:scale-105"
                       style={{
-                        backgroundImage: `url(${
-                          parcel.img ||
-                          "https://via.placeholder.com/150"
-                        })`,
+                        backgroundImage: `url(${parcel.parcelType === 'Other' ? parcel.parcelPhotoUrl : imageMap[parcel.parcelType]})`,
                       }}
                     >
                       <span className="absolute top-2 right-2 bg-black bg-opacity-70 text-green-400 text-lg font-bold px-3 py-1 rounded">

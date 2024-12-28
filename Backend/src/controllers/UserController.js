@@ -155,10 +155,10 @@ const UserDetails = async (req,res) =>{
 const UpdateUserDetails = async(req,res) =>{
   try {
     const userId = req.user.id;
-    const { email, aadhaar } = req.body;
+    const { email, aadhaar, profilePicture } = req.body; 
 
     // Validate input
-    if (!email && !aadhaar) {
+    if (!email && !aadhaar && !profilePicture) {
       return res.status(400).json({ error: "No data provided for update." });
     }
 
@@ -168,14 +168,16 @@ const UpdateUserDetails = async(req,res) =>{
       return res.status(404).json({ error: "User not found." });
     }
 
-    // Update user details
     if (email) User.email = email;
     if (aadhaar) User.aadhaar = aadhaar;
+    if (profilePicture) User.profilePicture = profilePicture;
 
     // Save updated user data
     await User.save();
 
-    return res.status(200).json({ message: "User details updated successfully." });
+    return res
+      .status(200)
+      .json({ message: "User details updated successfully.", user: User });
   } catch (error) {
     console.error("Error updating user details:", error);
     return res.status(500).json({ error: "Internal server error." });
