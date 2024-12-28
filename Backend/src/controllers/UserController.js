@@ -182,6 +182,30 @@ const UpdateUserDetails = async(req,res) =>{
   }
 }
 
+const ForgotPassword = async(req , res) => {
+  try {
+    const {email , password} = req.body;
+
+    if(!email || !password){
+      return res.status(400).json({ error: "Some field is empty" });
+    }
+
+    const User = await user.findOne({email:email});
+    if(!User){
+      return res.status(404).json({ error: "User not found with this Email." });
+    }
+
+    
+    const hashedPassword = await bcrypt.hash(password, 10);
+    User.password = hashedPassword;
+    await User.save();
+
+    return res.status(200).json({message:"Password Updated Successfully,"});
+  } catch (error) {
+    console.error("Error updating Password:", error);
+    return res.status(500).json({ error: "Internal server error." });
+  }
+}
 
 
-module.exports = { signup, login, logout, getname , CarrierStatus , UserDetails , UpdateUserDetails};
+module.exports = { signup, login, logout, getname , CarrierStatus , UserDetails , UpdateUserDetails , ForgotPassword};

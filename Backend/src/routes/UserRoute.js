@@ -1,11 +1,7 @@
 const express = require("express");
-const { signup ,login,logout,getname,CarrierStatus , UserDetails , UpdateUserDetails} = require("../controllers/UserController.js"); // Adjust this path based on your folder structure
-const jwt = require('jsonwebtoken');
-const app = express() ;
+const { signup , login , logout , getname , CarrierStatus , UserDetails , UpdateUserDetails, ForgotPassword} = require("../controllers/UserController.js");
 const router = express.Router();
-const passport= require("passport")
 const {verifyToken} = require('../utils/jwtutils')
-const OAuthController = require('../controllers/OAuthController.js')
 const {registerParcel} = require('../controllers/ParcelController.js')
 
 // Define the signup route
@@ -17,5 +13,6 @@ router.get('/getname',verifyToken,getname);
 router.get('/carrierStatus' , verifyToken , CarrierStatus);
 router.get('/UserDetails' , verifyToken , UserDetails);
 router.put('/UpdateUserDetails' , verifyToken , UpdateUserDetails);
+router.put('/forgotPassword' , ForgotPassword);
 
 module.exports = router;

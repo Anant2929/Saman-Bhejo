@@ -159,14 +159,6 @@ export default function SignUp() {
           )}
         </div>
 
-        {/* Login Link */}
-        <span className="montserrat-regular text-[#FFF9F9] block text-center mb-6  mt-1">
-          Already a user?
-          <a href="#" onClick={() => setUserLogin(true)} className="text-[#2d9be9] ml-2 text-lg ">
-            Login
-          </a>
-        </span>
-
         {/* Signup Button */}
         <button
           type="submit"
@@ -176,6 +168,14 @@ export default function SignUp() {
         >
           {loading ? "Signing Up..." : "Sign Up"}
         </button>
+
+         {/* Login Link */}
+         <span className="montserrat-regular text-[#FFF9F9] block text-center mt-4">
+          Already a user?
+          <a href="#" onClick={() => setUserLogin(true)} className="text-[#2d9be9] ml-2 text-lg ">
+            Login
+          </a>
+        </span>
       </form>
     </div>
   );

@@ -6,14 +6,10 @@ import axios from "axios";
 import { useUserLogin } from "../../context/userLoginContext";
 import { useMessage } from "../../context/MessageContext";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext"; // Import the Auth context
-import { useSocket } from "../../context/SocketContext"; // Import the SocketContext
 
 export default function Login() {
-  const { setUserLogin  , setForgotPassword} = useUserLogin();
+  const { setUserLogin , setForgotPassword } = useUserLogin();
   const { setTimedMessage } = useMessage();
-  const { setToken } = useAuth();
-  const { setId } = useSocket();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -21,10 +17,10 @@ export default function Login() {
   const [errors, setErrors] = useState({});
 
   const handleSubmit = async (e) => {
+    console.log("entered in submit")
     e.preventDefault();
     const newErrors = {};
 
-    // Validate fields
     if (!email) newErrors.email = "This field is required.";
     if (!password) newErrors.password = "This field is required.";
 
@@ -36,12 +32,8 @@ export default function Login() {
     setErrors({});
 
     try {
-      const res = await axios.post("/api/user/login", { email, password });
-      console.log("Login successful:", res.data);
-
-      // Store user ID from response in SocketContext
-      localStorage.setItem("userId", res.data.id);
-      setId(res.data.id); // Assuming `userId` is part of the response data
+      const res = await axios.put("/api/user/forgotPassword", { email, password });
+      console.log("Password Updated successfuly:", res.data);
 
       // Display success message
       setTimedMessage(res.data.message, "success");
@@ -49,34 +41,22 @@ export default function Login() {
       // Clear input fields
       setEmail("");
       setPassword("");
-
-      // Set the token in context
-      setToken(res.data.token);
-
-      // Navigate to home page
-      navigate("/home");
+    
+      setForgotPassword(false);
+      setUserLogin(true);
     } catch (error) {
-      const errorMsg = error.response?.data.message || "Login failed";
+      const errorMsg = error.response?.data.message || "Password update failed";
       setErrors({ general: errorMsg });
 
       // Display error message
       setTimedMessage(errorMsg, "error");
-      console.error("Login failed:", error);
+      console.error("Password update failed:", error);
     }
-  };
-
-  const googleLogin = () => {
-    window.location.href = "/api/oAuth/auth/google"; // Redirect to Google OAuth
   };
 
   // oAuth/auth/google
   const handleSignUpClick = () => {
-    setUserLogin(false);
-    console.log("Navigating to Sign Up");
-  };
-
-  const handleForgotPassword = () => {
-    setForgotPassword(true);
+    setForgotPassword(false);
     setUserLogin(false);
     console.log("Navigating to Sign Up");
   };
@@ -88,7 +68,7 @@ export default function Login() {
         className="p-6 sm:p-8 lg:p-10 rounded-lg shadow-lg w-full max-w-md"
       >
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#FFF9F9] mb-8 text-center">
-          Login to your Account
+          Enter the email of your Account
         </h1>
 
         {/* Email Input */}
@@ -117,7 +97,7 @@ export default function Login() {
         <div className="relative mb-6 w-full">
           <input
             type="password"
-            placeholder="Password"
+            placeholder="Enter New Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="appearance-none rounded-lg bg-[rgba(62,60,60,0.5)] text-[#ffffff] p-3 pl-10 pr-10 w-full
@@ -136,9 +116,7 @@ export default function Login() {
 
           {/* General Error Message */}
           {errors.general && (
-            <span className="absolute left-0 top-full text-[#ff1111] text-sm mb-1">
-              {errors.general}
-            </span>
+            <span className="absolute left-0 top-full text-[#ff1111] text-sm mb-1">{errors.general}</span>
           )}
         </div>
 
@@ -148,77 +126,21 @@ export default function Login() {
           className="text-white bg-[#2c70a0] p-3 rounded-lg w-full 
             hover:bg-[#1d4366] transition duration-300 hover:scale-105 font-semibold"
         >
-          Login
+          Reset Password
         </button>
 
-        <div className="flex justify-evenly mt-4">
-          {/* Signup link */}
-          <span className="text-[#FFF9F9] block text-center mb-2">
-            New user?
-            <a
-              href="#"
-              onClick={handleSignUpClick}
-              className="text-[#2d9be9] ml-2 text-lg"
-            >
-              Signup
-            </a>
-            
-          </span>
-
-            {<span className="text-[#FFF9F9]">|</span>}
-          {/* Forgot password link */}
-          <span className="text-[#FFF9F9] block text-center mb-2">
-            <a
-              href="#"
-              onClick={handleForgotPassword}
-              className="text-[#2d9be9] text-lg"
-            >
-              Forgot Password
-            </a>
-          </span>
-        </div>
-
-        {/* SSO Section */}
-        <div className="mt-0">
-          <h2 className="text-white text-lg text-center mb-2 font-semibold">
-            Or
-          </h2>
-          <div className="flex justify-center">
-            <button
-              type="button" // Prevents form submission
-              className="flex items-center justify-center text-gray-900 bg-white rounded-lg px-6 py-2 transition duration-300 hover:scale-105"
-              onClick={googleLogin}
-            >
-              <span className="mr-2 font-semibold">Continue with</span>
-              <GoogleIcon />
-            </button>
-          </div>
-        </div>
+        {/* Signup link */}
+        <span className="text-[#FFF9F9] block text-center mt-6">
+          New user?
+          <a
+            href="#"
+            onClick={handleSignUpClick}
+            className="text-[#2d9be9] ml-2 text-lg  "
+          >
+            Signup
+          </a>
+        </span>
       </form>
     </div>
   );
 }
-
-// GoogleIcon component
-const GoogleIcon = () => (
-  <>
-    <span className="font-bold" style={{ color: "#DB4437" }}>
-      G
-    </span>
-    <span className="font-bold" style={{ color: "#4285F4" }}>
-      o
-    </span>
-    <span className="font-bold" style={{ color: "#FBBC05" }}>
-      o
-    </span>
-    <span className="font-bold" style={{ color: "#DB4437" }}>
-      g
-    </span>
-    <span className="font-bold" style={{ color: "#4285F4" }}>
-      l
-    </span>
-    <span className="font-bold" style={{ color: "#FBBC05" }}>
-      e
-    </span>
-  </>
-);
