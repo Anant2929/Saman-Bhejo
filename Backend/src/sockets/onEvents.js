@@ -347,10 +347,10 @@ socket.on("carrierConfirmedParcel", async ({ parcelId, id }) => {
      const normalizedate = normalizeDate(parcel.expectedDeliveryDate);
 
     const carrier = await CarrierSchema.findOne({
-      // carrier:id,
+       carrier:id,
       carriertravelFromCity:parcel.fromCity,
       carriertravelToCity: parcel.toCity,
-      // carriertravelDate : {$lte :normalizedate },
+       carriertravelDate : {$lte :normalizedate },
       
     });
     console.log("carrier", carrier)
@@ -362,7 +362,7 @@ socket.on("carrierConfirmedParcel", async ({ parcelId, id }) => {
     carrier.parcelId = parcelId;
     await carrier.save();
     console.log("carrier is,",carrier)
-    console.log(" parcl is", parcel)
+    console.log(" parcel is", parcel)
 
 
     // Fetch sender and receiver OTPs
