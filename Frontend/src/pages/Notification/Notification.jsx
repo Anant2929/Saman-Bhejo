@@ -168,12 +168,7 @@ const NotificationsPage = () => {
 
       {/* Notifications Section */}
       <main className="px-10 py-8">
-        <div className="flex justify-between items-center mb-6 min-h-fit mt-16 ">
-          <h1 className="text-3xl font-extrabold text-blue-300">Notifications</h1>
-          <button className="bg-blue-500 text-white px-5 py-2 rounded-lg font-medium hover:bg-blue-600 transition duration-300 shadow-lg">
-            Mark All as Read
-          </button>
-        </div>
+       
 
         <div className="space-y-4">
           {notifications.length === 0 ? (

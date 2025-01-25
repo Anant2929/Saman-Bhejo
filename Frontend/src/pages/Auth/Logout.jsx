@@ -18,6 +18,7 @@ const {setFormData} = useParcelRegistration
       // Clear the token from local storage and Auth context
       
       Cookies.remove('token');
+      Cookies.remove('id')
       console.log("gettoken is",Cookies.get('token'))
       setToken(null); // Clear the token in Auth context
       // Redirect to login page

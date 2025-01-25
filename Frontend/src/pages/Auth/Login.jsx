@@ -66,7 +66,8 @@ export default function Login() {
   };
 
   const googleLogin = () => {
-    window.location.href = "/api/oAuth/auth/google"; // Redirect to Google OAuth
+    window.location.href = "/api/oAuth/auth/google"; 
+    console.log("next executed");
   };
 
   // oAuth/auth/google
@@ -199,7 +200,6 @@ export default function Login() {
   );
 }
 
-// GoogleIcon component
 const GoogleIcon = () => (
   <>
     <span className="font-bold" style={{ color: "#DB4437" }}>

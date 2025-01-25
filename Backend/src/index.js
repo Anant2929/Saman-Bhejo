@@ -1,17 +1,18 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
-const userRoutes = require("./routes/UserRoute");
+const passport = require('passport');
+require("./controllers/OAuthController");
 const session = require("express-session");
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const oAuthRoutes = require('./routes/oAuthRoute');
+const userRoutes = require("./routes/UserRoute");
 const parcelRoutes = require('./routes/ParcelRoute');
 const CarrierRoutes = require('./routes/CarrierRoute');
 const fileRoute = require('./routes/fileRoute.js');
 const http = require("http");
 const socketIo = require("socket.io");
-const passport = require('passport');
 const {setupSocketHandlers} = require("./sockets/socketHandler.js");
 
 dotenv.config();

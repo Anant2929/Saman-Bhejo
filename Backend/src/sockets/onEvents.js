@@ -284,14 +284,6 @@ const setupOnEvents = () => {
           return callback({ success: false, error: "Notification not found !!!." });
         }
     
-        // Check if notificationType is "response" and delete if true
-        // if (notification.notificationType === "response") {
-        //   // Delete the notification if it's a response type
-        //   await Notification.findByIdAndDelete(notificationId);
-        //   console.log("Notification deleted:", notificationId);
-    
-        //   return callback({ success: true, message: "Notification deleted" });
-        // }
     
         // Otherwise, just update the status to "read"
         const updatedNotification = await Notification.findOneAndUpdate(
@@ -302,6 +294,14 @@ const setupOnEvents = () => {
     
         if (updatedNotification) {
           console.log(`Notification status updated to 'read':`, updatedNotification);
+           // Check if notificationType is "response" and delete if true
+        if (notification.notificationType === "response") {
+          // Delete the notification if it's a response type
+          await Notification.findByIdAndDelete(notificationId);
+          console.log("Notification deleted:", notificationId);
+    
+          return callback({ success: true, message: "Notification deleted" });
+        }
     
           // Send success response to the client
           callback({ success: true, parcelId: updatedNotification._id });

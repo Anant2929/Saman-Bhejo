@@ -28,7 +28,6 @@ export default function AppRoutes() {
     // Check if token exists in context; if not, check Cookies and set if available
     if (!token) {
       const gettoken = Cookies.get("token");
-      console.log("Token from cookies: ", gettoken);
 
       // Set token in context if found in cookies
       if (gettoken) {

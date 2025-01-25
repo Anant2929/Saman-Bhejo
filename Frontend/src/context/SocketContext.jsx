@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
-
+import Cookies from "js-cookie";
 // Create a context
 const SocketContext = createContext();
 
@@ -11,7 +11,7 @@ const SOCKET_SERVER_URL = "http://localhost:5000";
 // Create a provider component
 export const SocketProvider = ({ children }) => {
   const [id, setId] = useState(() => {
-    const savedId = localStorage.getItem("id");
+    const savedId = localStorage.getItem("id") || Cookies.get("id");
     return savedId ? savedId : ""; // Return saved ID if it exists, otherwise return an empty string
   });
    // State to hold userId
@@ -51,11 +51,14 @@ export const SocketProvider = ({ children }) => {
 
           setSocketId(newSocket.id)
       // Register user when ID is available
-      if (id) {
+      
+      if(id) {
+        console.log(" i am in id")
         newSocket.emit("registerUser", { id }, (response) => {
           console.log("Server Response:", response);
         });
       }
+
     });
 
     // Listen for new parcel notifications
