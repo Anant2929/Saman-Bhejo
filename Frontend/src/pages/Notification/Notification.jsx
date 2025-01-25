@@ -3,6 +3,7 @@ import { useSocket } from "../../context/SocketContext";
 import { useNavigate, Link } from "react-router-dom";
 import { useParcelRegistration } from "../../context/ParcelContext";
 import Logout from "../Auth/Logout";
+import CircleLoader from "react-spinners/CircleLoader";
 
 const NotificationsPage = () => {
   const { currentState } = useParcelRegistration();
@@ -11,6 +12,7 @@ const NotificationsPage = () => {
   const { id, socket, setParcelId } = useSocket();
   const navigate = useNavigate();
   const { setFetching, setNotificationId } = useParcelRegistration();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (socket) {
@@ -19,8 +21,10 @@ const NotificationsPage = () => {
           console.log("all notifications:", response);
           setNotifications(response.notifications);
           localStorage.setItem("notifications", JSON.stringify(response.notifications));
+          setLoading(false)
         } else {
           console.error("Error in notification", response.message);
+          setLoading(false)
         }
       });
 
@@ -29,9 +33,17 @@ const NotificationsPage = () => {
       };
     } else {
       console.log("Socket is not connected yet.");
+      setLoading(false)
     }
   }, [id, socket]);
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
+        <CircleLoader color="#607AFB" loading={true} size={100} />
+      </div>
+    );
+  }
   const handleClick = (notification) => {
     if (notification.notificationType === "action" && notification.status === "pending") {
       console.log("notification id", notification._id);
@@ -163,10 +175,16 @@ const NotificationsPage = () => {
           </button>
         </div>
 
-        {/* Notifications List */}
         <div className="space-y-4">
           {notifications.length === 0 ? (
-            <h3>No Notifications</h3> // Display this if there are no notifications
+             <div className="flex flex-col items-center justify-center h-40">
+             <h3 className="text-blue-500 text-2xl font-semibold">
+               No Notifications
+             </h3>
+             <p className="text-gray-500 text-sm mt-2">
+               You're all caught up for now!
+             </p>
+           </div> 
           ) : (
             notifications.map((notification, index) => {
               const key = notification._id || index;

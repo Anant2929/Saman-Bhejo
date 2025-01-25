@@ -71,6 +71,7 @@ app.use("/carrier" , CarrierRoutes);
 app.use("/fileUpload" , fileRoute);
 app.use('/uploads', express.static('uploads'));
 
+
 // Start the server using `server.listen` to enable socket.io
 server.listen(port, () => {
   console.log(`Server is running on port ${port}`);

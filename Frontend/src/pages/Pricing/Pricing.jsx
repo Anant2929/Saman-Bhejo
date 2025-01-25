@@ -1,11 +1,22 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Logout from "../Auth/Logout";
+import CircleLoader from "react-spinners/CircleLoader";
 
 const Pricing = () => {
   const [showSidebar, setShowSidebar] = useState(false);
   const navigate = useNavigate();
-  
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate a 2-second loading period
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+
+    return () => clearTimeout(timer); // Cleanup the timer
+  }, []);
+
   const toggleSidebar = () => {
     setShowSidebar(!showSidebar);
   };
@@ -14,6 +25,16 @@ const Pricing = () => {
     navigate(path);
     setShowSidebar(false);
   };
+
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
+        <CircleLoader color="#607AFB" loading={true} size={100} />
+      </div>
+    );
+  }
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white">

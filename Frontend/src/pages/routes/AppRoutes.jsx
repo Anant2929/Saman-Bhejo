@@ -19,6 +19,7 @@ import MyParcel from "../Carrier/MyParcel.jsx";
 import AboutPage from "../About/About.jsx";
 import Contact from "../Contact/Contact.jsx";
 import Pricing from "../Pricing/Pricing.jsx"
+import Payment from "../Parcels/Payment.jsx"
 
 export default function AppRoutes() {
   const { token, setToken } = useAuth();
@@ -113,6 +114,11 @@ export default function AppRoutes() {
         <Route
           path="/home/carrierDetails/parcelList/myParcel"
           element={token ? <MyParcel /> : <ParcelList />}
+        />
+        <Route
+        
+        path="/home/parcel/payment"
+        element={token ? <Payment /> : <ParcelList />}
         />
         
       </Routes>

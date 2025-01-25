@@ -1,9 +1,20 @@
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 import { Link } from "react-router-dom";
 import Logout from "../Auth/Logout";
-
+import CircleLoader from "react-spinners/CircleLoader";
 const HelpAndSupport = () => {
   const [showSidebar, setShowSidebar] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate a 2-second loading period
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+
+    return () => clearTimeout(timer); // Cleanup the timer
+  }, []);
+
   const toggleSidebar = () => {
     setShowSidebar(!showSidebar);
   };
@@ -13,6 +24,14 @@ const HelpAndSupport = () => {
     setShowSidebar(false);
   };
 
+  
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
+        <CircleLoader color="#607AFB" loading={true} size={100} />
+      </div>
+    );
+  }
   return (
     <div className="min-h-fit text-white">
       <header className="fixed top-0 w-full h-20 flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#3C3F4A] px-10 py-3 bg-[#000000] z-50">
