@@ -9,6 +9,7 @@ const user = {}; // Stores userId -> socketId mapping
 const pendingMessages = {}; // Stores pending messages for offline users
 const senderMessages = {} ; 
 const otpMessages = {}
+const mongoose = require('mongoose')
 
 const setupOnEvents = () => {
 
@@ -233,7 +234,7 @@ const setupOnEvents = () => {
     
 
     socket.on("fetchParcelData", async ({ parcelId }, callback) => {
-      console.log(" i am feych parceldata")
+      
       try {
         // Fetch parcel data
         const parcelData = await ParcelSchema.findOne(parcelId);
@@ -341,20 +342,18 @@ socket.on("carrierConfirmedParcel", async ({ parcelId, id }) => {
     parcel.trackingStatus = "Carrier Accepted Parcel";
     await parcel.save();
 
-    console.log("Parcel updated successfully with carrier ID:", id);
-
     // Find the carrier and update their parcel details
-   
+    
      const normalizedate = normalizeDate(parcel.expectedDeliveryDate);
 
     const carrier = await CarrierSchema.findOne({
-      carrier: id,
-       carriertravelFromCity:parcel.fromCity,
-       carriertravelToCity: parcel.toCity,
-        carriertravelDate : {$lte :normalizedate },
+      // carrier:id,
+      carriertravelFromCity:parcel.fromCity,
+      carriertravelToCity: parcel.toCity,
+      // carriertravelDate : {$lte :normalizedate },
       
     });
-    console.log("carrier ",carrier)
+    console.log("carrier", carrier)
     if (!carrier) {
       console.log("Carrier not found");
       return;

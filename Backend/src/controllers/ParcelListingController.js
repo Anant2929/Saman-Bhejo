@@ -29,7 +29,7 @@ const ParcelListing = async (req, res) => {
       fromCity: carriertravelFromCity,
       toCity: carriertravelToCity,
       expectedDeliveryDate: { $gte: normalizedCarrierTravelDate },
-      //  trackingStatus: "Receiver Accepted"
+      //trackingStatus: "Receiver Accepted"
     
     });
 

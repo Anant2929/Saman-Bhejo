@@ -4,6 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useParcelRegistration } from "../../context/ParcelContext";
 import Logout from "../Auth/Logout";
 import CircleLoader from "react-spinners/CircleLoader";
+import dayjs from "dayjs";
 
 const NotificationsPage = () => {
   const { currentState } = useParcelRegistration();
@@ -167,10 +168,10 @@ const NotificationsPage = () => {
       </header>
 
       {/* Notifications Section */}
-      <main className="px-10 py-8">
+      <main className="px-10 py-28">
        
 
-        <div className="space-y-4">
+        <div className="space-y-10">
           {notifications.length === 0 ? (
              <div className="flex flex-col items-center justify-center h-40">
              <h3 className="text-blue-500 text-2xl font-semibold">
@@ -209,7 +210,7 @@ const NotificationsPage = () => {
                       >
                         {notification.message}
                       </p>
-                      <span className="text-gray-500 text-sm">{notification.createdAt}</span>
+                      <span className="text-gray-500 text-sm">{dayjs(notification.createdAt).format("MMMM D, YYYY")}</span>
                     </div>
                     <div className="text-gray-500 text-sm mt-2">{statusText}</div>
                   </div>

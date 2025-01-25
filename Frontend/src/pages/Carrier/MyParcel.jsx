@@ -51,7 +51,7 @@ const ParcelList = () => {
     }
   
     if (socket) {
-      console.log(" i am in socket otp")
+   
       socket.emit(
         'Parcel Picked Up',
         { parcelId, otp: Number(senderOtp) },

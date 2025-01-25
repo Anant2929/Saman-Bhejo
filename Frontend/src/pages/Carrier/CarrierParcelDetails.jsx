@@ -135,8 +135,9 @@ export default function ParcelInfoDisplay() {
 
 
   const handleConfirmation = ()=>{
-    console.log(" ia m in console")
+
     if(socket){
+console.log("parceId and id",parcelId, id)
     socket.emit("carrierConfirmedParcel", { parcelId, id }, (response) => {
       if (response.success) {
         console.log(`Parcel  successful:`, response);
