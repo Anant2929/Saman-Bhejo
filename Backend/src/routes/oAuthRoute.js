@@ -43,6 +43,8 @@ router.get(
       httpOnly: true,
       secure: true,
       sameSite: "None",
+      // domain: process.env.NODE_ENV === "production" ? ".saman-bhejo-backend.onrender.com" : "localhost",
+      domain: "localhost",
     });
 
     res.cookie("id", req.user.id, { 

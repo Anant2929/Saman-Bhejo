@@ -33,7 +33,7 @@ export default function AppRoutes() {
       if (gettoken) {
         setToken(gettoken); // This should automatically save in localStorage
       }
-    }
+    }   
   }, [token, setToken]);
   return (
     <BrowserRouter>
