@@ -43,8 +43,8 @@ router.get(
       httpOnly: true,
       secure: true,
       sameSite: "None",
-      // domain: process.env.NODE_ENV === "production" ? ".saman-bhejo-backend.onrender.com" : "localhost",
-      domain: "localhost",
+      domain: process.env.NODE_ENV === "production" ? ".saman-bhejo-backend.onrender.com" : "localhost",
+     
     });
 
     res.cookie("id", req.user.id, { 
@@ -52,6 +52,7 @@ router.get(
       httpOnly: true,
       secure: true,
       sameSite: "None",
+      domain: process.env.NODE_ENV === "production" ? ".saman-bhejo-backend.onrender.com" : "localhost",
     });
 
     res.redirect(`http://localhost:3000/home`);
