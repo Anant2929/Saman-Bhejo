@@ -13,7 +13,8 @@ console.log("Google Strategy Initialized");
 passport.use(new GoogleStrategy({
   clientID: GOOGLE_CLIENT_ID,
   clientSecret: GOOGLE_CLIENT_SECRET,
-  callbackURL: 'http://localhost:5000/oAuth/auth/google/callback' // Redirect URI
+  // callbackURL: 'http://localhost:5000/oAuth/auth/google/callback' // Redirect URI
+  callbackURL: 'https://saman-bhejo-backend.onrender.com/oAuth/auth/google/callback' // Redirect URI
 },
   async (accessToken, refreshToken, profile, done) => {
     try {
