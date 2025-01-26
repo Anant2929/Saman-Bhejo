@@ -19,7 +19,7 @@ router.get(
 router.get(
   "/auth/google/callback",
   (req, res, next) => {
-    console.log("Google OAuth callback triggered");
+    console.log("OAuth callback triggered");
     next();
   },
   passport.authenticate("google", {
@@ -34,21 +34,24 @@ router.get(
 
     console.log("User authenticated successfully:", req.user);
 
-    // Generate token after successful login
     const token = jwt.sign({ id: req.user.id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
+
     res.cookie("token", token, {
       maxAge: 24 * 60 * 60 * 1000,
-      httpOnly: false,
+      httpOnly: true,
+      secure: true,
+      sameSite: "None",
     });
-    res.cookie("id",req.user.id,{ 
+
+    res.cookie("id", req.user.id, { 
       maxAge: 24 * 60 * 60 * 1000,
-      httpOnly: false,
+      httpOnly: true,
+      secure: true,
+      sameSite: "None",
+    });
 
-    })
-
-    // Redirect to frontend with the token
     res.redirect(`http://localhost:3000/home`);
   }
 );
