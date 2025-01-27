@@ -23,7 +23,8 @@ router.get(
     next();
   },
   passport.authenticate("google", {
-    failureRedirect: "http://localhost:3000/user/login",
+    failureRedirect: "https://saman-bhejo-frontend.onrender.com/user/login",
+    // failureRedirect: "http://localhost:3000/user/login",
     session: false,
   }),
   (req, res) => {
@@ -43,7 +44,6 @@ router.get(
       httpOnly: true,
       secure: true,
       sameSite: "None",
-      domain: process.env.NODE_ENV === "production" ? ".saman-bhejo-backend.onrender.com" : "localhost",
      
     });
 
@@ -52,10 +52,10 @@ router.get(
       httpOnly: true,
       secure: true,
       sameSite: "None",
-      domain: process.env.NODE_ENV === "production" ? ".saman-bhejo-backend.onrender.com" : "localhost",
     });
 
-    res.redirect(`http://localhost:3000/home`);
+    res.redirect(`https://saman-bhejo-frontend.onrender.com/home`);
+    // res.redirect(`http://localhost:3000/home`);
   }
 );
 
