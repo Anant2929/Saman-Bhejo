@@ -36,7 +36,9 @@ export default function Login() {
     setErrors({});
 
     try {
-      const res = await axios.post("/api/user/login", { email, password });
+      const res = await axios.post("/api/user/login", { email, password } , {
+        withCredentials:true,
+      });
       console.log("Login successful:", res.data);
 
       // Store user ID from response in SocketContext
