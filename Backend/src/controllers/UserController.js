@@ -37,7 +37,7 @@ const signup = async (req, res) => {
 
     // Send the token as a cookie
     res.cookie("token", token, {
-      httpOnly: true,
+      httpOnly: false,
       secure: true,
       sameSite: "none",
       maxAge: 24 * 60 * 60 * 1000 * 2,
@@ -74,12 +74,12 @@ const login = async (req, res) => {
 
     // Send the token as a cookie
     res.cookie("token", token, {
-      httpOnly: true, // Cookie is accessible only by the web server, helps with security
-      secure: process.env.NODE_ENV === "production", // Use secure cookies in production
+      httpOnly: false, // Cookie is accessible only by the web server, helps with security
+      secure:"true", // Use secure cookies in production
       sameSite: "none",
-      maxAge: 24 * 60 * 60 * 1000 * 1,
+     l
     });
-
+    console.log("Cookie Set:", res.getHeaders());
     return res.status(201).json({
       message: "User Login successfully",
       id: loginUser._id,
