@@ -40,7 +40,7 @@ const signup = async (req, res) => {
       httpOnly: false,
       secure: true,
       sameSite: "none",
-      maxAge: 24 * 60 * 60 * 1000 * 2,
+  
     });
 
     return res.status(201).json({
